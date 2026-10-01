@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@prisma/client": "^7.10.0",
+    "@zxing/browser": "^0.2.1",
     "html5-qrcode": "^2.3.8",
     "next": "16.3.6",
     "react": "19.2.8",

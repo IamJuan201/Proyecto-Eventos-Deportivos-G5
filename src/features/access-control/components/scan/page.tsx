@@ -1,39 +1,50 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { useEffect, useRef, useState } from "react";
+import { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
 
 export default function ScanPage() {
-  const [result, setResult] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const controlsRef = useRef<IScannerControls | null>(null);
+
+  const [result, setResult] = useState("");
 
   useEffect(() => {
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: { width: 250, height: 250 } },
-      false,
-    );
+    const codeReader = new BrowserQRCodeReader();
 
-    scanner.render(
-      (decodedText) => {
-        setResult(decodedText);
-        scanner.clear(); 
-      },
-      () => {
-        
-      },
-    );
+    const startScanner = async () => {
+      try {
+        controlsRef.current = await codeReader.decodeFromVideoDevice(
+          undefined,
+          videoRef.current!,
+          (result) => {
+            if (result) {
+              const text = result.getText();
 
-    
+              setResult(text);
+              console.log("QR:", text);
+
+              controlsRef.current?.stop();
+            }
+          }
+        );
+      } catch (error) {
+        console.error("Error con la cámara:", error);
+      }
+    };
+
+    startScanner();
+
     return () => {
-      scanner.clear().catch(() => {});
+      controlsRef.current?.stop();
     };
   }, []);
 
   return (
     <div>
-      <h1>Scan QR Code</h1>
-      <div id="reader" />
-      {result && <p>Código leído: {result}</p>}
+      <video ref={videoRef} />
+      <p>Escanea el código QR</p>
+      {result && <p>QR: {result}</p>}
     </div>
   );
 }
