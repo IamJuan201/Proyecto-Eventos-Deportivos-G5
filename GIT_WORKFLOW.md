@@ -1,61 +1,36 @@
-# Flujo de Trabajo en Git (Git Workflow)
+# Flujo de ramas y Pull Requests
 
-Para que podamos trabajar simultáneamente sin conflictos, seguiremos una estrategia basada en **Feature Branches** junto con **Pull Requests (PRs)**.
+Este repositorio usa `develop` para integrar el trabajo de cada Sprint y `main` para mantener la versión estable. No se debe trabajar directamente sobre estas ramas.
 
-## 1. Ramas Principales
-- `main`: Es la rama de producción. Siempre debe ser estable. **Nadie sube código directamente a main.**
-- `dev` (opcional si queremos probar antes de producción) o directamente trabajar todo sobre `main` en proyectos pequeños. Asumiremos que las ramas nacen de `main`.
+## Para cada HU
 
-## 2. Nomenclatura de Ramas
-Cada vez que tomes una tarea (un feature, una corrección o algo de documentación), crea una rama nueva desde `main`.
+1. Actualiza `develop` y crea una rama desde ella:
 
-Usa los siguientes prefijos:
-- `feat/`: Para nuevas funcionalidades (ej. `feat/login-page`, `feat/registro-usuarios`).
-- `fix/`: Para arreglar errores (ej. `fix/error-login`).
-- `docs/`: Para cambios de documentación.
-- `refactor/`: Para mejorar código sin cambiar su comportamiento.
+   ```bash
+   git switch develop
+   git pull origin develop
+   git switch -c feat/HU-<numero>-<descripcion>
+   ```
 
-**Ejemplo:** `git checkout -b feat/login-usuario`
+2. Mantén los cambios acotados a la HU. Usa commits pequeños y mensajes descriptivos, por ejemplo `feat: organiza estructura por dominios` o `docs: documenta flujo de migraciones`.
+3. Publica la rama y abre un Pull Request hacia `develop`:
 
-## 3. Flujo de Trabajo Diario
+   ```bash
+   git push -u origin feat/HU-<numero>-<descripcion>
+   ```
 
-### Paso 1: Actualizar tu rama base
-Siempre asegúrate de tener la última versión antes de empezar:
-```bash
-git checkout main
-git pull origin main
-```
+4. En el Pull Request describe el objetivo, resume los cambios e indica las comprobaciones realizadas. Solicita revisión de otro integrante y resuelve sus observaciones antes de integrar.
+5. Al cerrar el Sprint, abre un Pull Request de `develop` hacia `main`. Integra a `main` solo después de la revisión y aprobación del equipo.
 
-### Paso 2: Crear tu rama
-```bash
-git checkout -b feat/nombre-de-tu-tarea
-```
+## Convenciones
 
-### Paso 3: Trabajar y hacer Commits
-Realiza commits atómicos (cambios pequeños y lógicos). Escribe los mensajes en imperativo y en español:
-- BIEN: `feat: agrega el formulario de login`
-- MAL: `agregando login` o `modifique unos archivos`
+- `feat/`: funcionalidad o HU.
+- `fix/`: corrección.
+- `docs/`: documentación.
+- `refactor/`: cambio interno sin modificar el comportamiento.
 
-```bash
-git add <archivos>
-git commit -m "feat: agrega formulario de login"
-```
+Usa nombres cortos que identifiquen el alcance, por ejemplo `feat/HU-12-eventos`.
 
-### Paso 4: Subir tu rama
-```bash
-git push origin feat/nombre-de-tu-tarea
-```
+## Migraciones Prisma
 
-## 4. Pull Requests (PR) y Revisión de Código
-1. Ve a GitHub y abre un Pull Request desde tu rama hacia `main`.
-2. Asigna a otro miembro del equipo (ej. Juan David) para que lo revise.
-3. El revisor dejará comentarios. Si todo está bien, lo aprobará (Approve).
-4. Una vez aprobado, el PR se puede mezclar (Merge) a `main`.
-
-> **Regla de oro:** Si hay conflictos al intentar hacer merge, el creador de la rama debe solucionarlos en su computadora haciendo `git pull origin main` en su rama, resolviendo, y volviendo a subir.
-
-## 5. Migraciones de base de datos (Prisma)
-- Las migraciones viven en `prisma/migrations` y se suben al repositorio junto con el cambio de `prisma/schema.prisma`.
-- Cada cambio del schema se hace en su propia rama y su propio PR: `npx prisma migrate dev --name descripcion-corta`.
-- Nunca edites una migracion que ya esta en `main`; crea una nueva.
-- Si dos ramas tocan `schema.prisma`, quien haga merge de segundo hace `git pull origin main`, resuelve el conflicto y genera la migracion de nuevo.
+Cada cambio del esquema y su migración deben viajar juntos en la misma rama y Pull Request. Crea migraciones con `npx prisma migrate dev --name descripcion-corta`; aplica migraciones ya versionadas en despliegues con `npx prisma migrate deploy`. No edites migraciones que ya llegaron a `develop` o `main`: crea una migración nueva. Si el esquema cambió en otra rama antes de integrar, actualiza tu rama desde `develop`, resuelve el esquema y genera una migración coherente antes de solicitar aprobación.
