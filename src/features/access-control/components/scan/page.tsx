@@ -17,12 +17,14 @@ export default function ScanPage() {
         controlsRef.current = await codeReader.decodeFromVideoDevice(
           undefined,
           videoRef.current!,
-          (result) => {
-            if (result) {
-              const text = result.getText();
+          (result, error) => {
+            console.log("RESULTADO:", result);
+            console.log("ERROR:", error);
 
-              setResult(text);
-              console.log("QR:", text);
+            if (result) {
+              console.log("QR ENCONTRADO:", result.getText());
+
+              setResult(result.getText());
 
               controlsRef.current?.stop();
             }
