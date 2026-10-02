@@ -1,5 +1,4 @@
 import React from "react";
-import { OAuthButtons } from "@/features/auth/components/OAuthButtons";
 
 export default function RegisterPage() {
   return (
@@ -12,13 +11,11 @@ export default function RegisterPage() {
             <span className="text-4xl">🏆</span>
           </div>
           <h1 className="text-4xl font-black text-sport-text leading-tight">
-            Únete a la
-            <br />
+            Únete a la<br />
             <span className="text-sport-emerald">Competencia</span>
           </h1>
           <p className="text-sport-muted text-lg max-w-xs">
-            Crea tu cuenta y empieza a participar en los mejores eventos
-            deportivos.
+            Crea tu cuenta y empieza a participar en los mejores eventos deportivos.
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-px bg-sport-border" />
