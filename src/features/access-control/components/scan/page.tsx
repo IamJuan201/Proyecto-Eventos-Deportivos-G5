@@ -40,17 +40,31 @@ export default function ScanPage() {
   }, []);
 
   return (
-    <main>
-      <h1>Lector QR</h1>
+    <main className="min-h-screen px-4 py-6 md:px-8 lg:px-12">
+  <div className="mx-auto w-full max-w-md md:max-w-lg">
 
-      <div id="reader"></div>
+    <h1 className="mb-6 text-center text-2xl font-bold md:text-4xl">
+      Lector QR
+    </h1>
 
-      {result && (
-        <div>
-          <h2>Resultado:</h2>
-          <p>{result}</p>
-        </div>
-      )}
-    </main>
+    <div
+      id="reader"
+      className="w-full overflow-hidden rounded-xl"
+    />
+
+    {result && (
+      <div className="mt-6 rounded-xl p-4">
+        <h2 className="text-lg font-bold md:text-xl">
+          Resultado
+        </h2>
+
+        <p className="mt-2 break-all text-sm md:text-base">
+          {result}
+        </p>
+      </div>
+    )}
+
+  </div>
+</main>
   );
 }
