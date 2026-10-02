@@ -1,1 +1,60 @@
 @import "tailwindcss";
+
+:root {
+  /* Paleta Elite Club - Grises Carbón y Azul Tecnológico */
+  --bg-base: #141618;
+  --bg-surface: #1A1D20;
+  --glass-bg: rgba(26, 29, 32, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  
+  --accent-blue: #0085FF;
+  --accent-blue-hover: #006FCC;
+  
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  
+  /* Transiciones y efectos */
+  --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Barra de desplazamiento (Scrollbar) delgada y elegante */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-blue);
+}
+
+/* Utilidad de Glassmorphism (Contenedores translúcidos) */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Animación de scroll natural (Fade-in y slide-up) */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: var(--transition-smooth);
+}
+
+.scroll-reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
