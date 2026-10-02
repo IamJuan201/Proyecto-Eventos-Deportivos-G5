@@ -1,52 +1,56 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
+import { useEffect, useState } from "react";
+import { Html5QrcodeScanner } from "html5-qrcode";
 
 export default function ScanPage() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const controlsRef = useRef<IScannerControls | null>(null);
-
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState<string | null>(null);
 
   useEffect(() => {
-    const codeReader = new BrowserQRCodeReader();
+    const scanner = new Html5QrcodeScanner(
+      "reader",
+      {
+        fps: 10,
+        qrbox: {
+          width: 250,
+          height: 250,
+        },
+      },
+      false
+    );
 
-    const startScanner = async () => {
-      try {
-        controlsRef.current = await codeReader.decodeFromVideoDevice(
-          undefined,
-          videoRef.current!,
-          (result, error) => {
-            console.log("RESULTADO:", result);
-            console.log("ERROR:", error);
+    scanner.render(
+      (decodedText) => {
+        setResult(decodedText);
 
-            if (result) {
-              console.log("QR ENCONTRADO:", result.getText());
-
-              setResult(result.getText());
-
-              controlsRef.current?.stop();
-            }
-          }
-        );
-      } catch (error) {
-        console.error("Error con la cámara:", error);
+        // Detener el lector después de detectar el QR
+        scanner.clear().catch((error) => {
+          console.error("Error al detener el scanner:", error);
+        });
+      },
+      (errorMessage) => {
+        // Errores normales mientras busca un QR.
+        // No es necesario mostrarlos.
       }
-    };
-
-    startScanner();
+    );
 
     return () => {
-      controlsRef.current?.stop();
+      scanner.clear().catch(() => {});
     };
   }, []);
 
   return (
-    <div>
-      <video ref={videoRef} />
-      <p>Escanea el código QR</p>
-      {result && <p>QR: {result}</p>}
-    </div>
+    <main>
+      <h1>Lector QR</h1>
+
+      <div id="reader"></div>
+
+      {result && (
+        <div>
+          <h2>Resultado:</h2>
+          <p>{result}</p>
+        </div>
+      )}
+    </main>
   );
 }
