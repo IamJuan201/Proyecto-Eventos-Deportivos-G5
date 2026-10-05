@@ -12,6 +12,7 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
   const [service, categories] = await Promise.all([getDemoService(serviceId), listDemoCategories()]);
   if (!service || !service.isActive) notFound();
   const category = categories.find((item) => item.id === service.categoryId);
+  if (!category?.isActive) notFound();
   const art = service.artwork || "court";
   const { min, max } = reservationDateBounds();
   const user = await getJsonCurrentUser();
