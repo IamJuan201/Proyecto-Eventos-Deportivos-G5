@@ -10,6 +10,7 @@ export type DemoService = {
   isActive: boolean; createdAt: string; chargeType: "por_hora" | "por_persona";
   qrType: "individual" | "grupal"; artwork: string; tag: string;
 };
+export type DemoServiceInput = Pick<DemoService, "categoryId" | "name" | "description" | "imageUrl" | "price" | "durationMinutes" | "capacity" | "capacityPeople" | "operatingDays" | "chargeType" | "qrType">;
 export type DemoReservation = {
   id: string; customerName: string; customerEmail: string; customerIdNumber: string;
   serviceId: string; serviceName: string; date: string; startTime: string; endTime: string;
@@ -351,17 +352,17 @@ export async function deleteDemoCategory(id: string) {
   return serialize(async () => { const db = await readDatabase(); if (db.services.some((service) => service.categoryId === id)) throw new Error("Esta categoría tiene espacios asociados. Desactívala para conservar el historial."); db.categories = db.categories.filter((category) => category.id !== id); await writeDatabase(db); });
 }
 
-export async function createDemoService(input: { categoryId: string; name: string; description: string; imageUrl: string; price: number; durationMinutes: number; capacity: number; operatingDays: number[] }) {
+export async function createDemoService(input: DemoServiceInput) {
   return serialize(async () => {
     const db = await readDatabase(); const name = input.name.trim();
     if (!db.categories.some((category) => category.id === input.categoryId && category.isActive)) throw new Error("Selecciona una categoría activa.");
     if (name.length < 3 || name.length > 100) throw new Error("El nombre debe tener entre 3 y 100 caracteres.");
     if (db.services.some((item) => item.name.toLowerCase() === name.toLowerCase())) throw new Error("Ya existe un espacio con ese nombre.");
-    const item: DemoService = { ...input, id: randomUUID(), name, description: input.description.trim(), capacityPeople: 20, isActive: true, createdAt: new Date().toISOString(), chargeType: "por_hora", qrType: "grupal", artwork: "court", tag: "Nuevo espacio" };
+    const item: DemoService = { ...input, id: randomUUID(), name, description: input.description.trim(), isActive: true, createdAt: new Date().toISOString(), artwork: "court", tag: "Nuevo espacio" };
     db.services.push(item); await writeDatabase(db); return clone(item);
   });
 }
-export async function updateDemoService(id: string, input: { categoryId: string; name: string; description: string; imageUrl: string; price: number; durationMinutes: number; capacity: number; operatingDays: number[] }) {
+export async function updateDemoService(id: string, input: DemoServiceInput) {
   return serialize(async () => { const db = await readDatabase(); const item = db.services.find((service) => service.id === id); if (!item) throw new Error("No encontramos este servicio."); Object.assign(item, input, { name: input.name.trim(), description: input.description.trim() }); await writeDatabase(db); return clone(item); });
 }
 export async function setDemoServiceActive(id: string, isActive: boolean) {

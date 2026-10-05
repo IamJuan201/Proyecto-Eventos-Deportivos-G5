@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { categoryService, CategoryValidationError } from "@/features/categories/services/category.service";
+import { categoryService } from "@/features/categories/services/category.service";
 import { requireDemoRole } from "@/features/auth/lib/json-auth";
 
 const CATEGORIES_PATH = "/admin/categories";
@@ -24,10 +24,7 @@ export async function saveCategory(_prevState: CategoryFormState, formData: Form
       await categoryService.create(input);
     }
   } catch (error) {
-    if (error instanceof CategoryValidationError) {
-      return { error: error.message };
-    }
-    return { error: "No se pudo guardar la categoría." };
+    return { error: error instanceof Error ? error.message : "No se pudo guardar la categoría." };
   }
 
   revalidatePath(CATEGORIES_PATH);
@@ -39,12 +36,24 @@ export async function saveCategory(_prevState: CategoryFormState, formData: Form
 
 export async function toggleCategoryStatus(id: string, isActive: boolean) {
   await requireDemoRole("admin");
-  await categoryService.setActive(id, isActive);
+  try {
+    await categoryService.setActive(id, isActive);
+  } catch (error) {
+    redirectWithError(error, "No se pudo cambiar el estado de la categoría.");
+  }
   revalidatePath(CATEGORIES_PATH);
 }
 
 export async function deleteCategory(id: string) {
   await requireDemoRole("admin");
-  await categoryService.delete(id);
+  try {
+    await categoryService.delete(id);
+  } catch (error) {
+    redirectWithError(error, "No se pudo eliminar la categoría.");
+  }
   revalidatePath(CATEGORIES_PATH);
+}
+
+function redirectWithError(error: unknown, fallback: string): never {
+  redirect(CATEGORIES_PATH + "?error=" + encodeURIComponent(error instanceof Error ? error.message : fallback));
 }

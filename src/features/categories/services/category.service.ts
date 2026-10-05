@@ -49,7 +49,6 @@ export function createCategoryService(repository: CategoryRepository) {
       return repository.setActive(id, isActive);
     },
     delete(id: string): Promise<void> {
-      // TODO: Block deletion when the category has services (HU-18).
       return repository.delete(id);
     },
   };

@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { serviceService, ServiceValidationError } from "@/features/services/services/service.service";
-import type { ServiceInput, WeekDay } from "@/features/services/types/service.types";
+import { serviceService } from "@/features/services/services/service.service";
+import type { ChargeType, QrType, ServiceInput, WeekDay } from "@/features/services/types/service.types";
 import { requireDemoRole } from "@/features/auth/lib/json-auth";
 
 const SERVICES_PATH = "/admin/services";
@@ -21,6 +21,9 @@ export async function saveService(_prevState: ServiceFormState, formData: FormDa
     price: Number(formData.get("price")),
     durationMinutes: Number(formData.get("durationMinutes")),
     capacity: Number(formData.get("capacity")),
+    capacityPeople: Number(formData.get("capacityPeople")),
+    chargeType: String(formData.get("chargeType") ?? "") as ChargeType,
+    qrType: String(formData.get("qrType") ?? "") as QrType,
     operatingDays: formData.getAll("operatingDays").map((day) => Number(day) as WeekDay),
   };
 
@@ -31,10 +34,7 @@ export async function saveService(_prevState: ServiceFormState, formData: FormDa
       await serviceService.create(input);
     }
   } catch (error) {
-    if (error instanceof ServiceValidationError) {
-      return { error: error.message };
-    }
-    return { error: "No se pudo guardar el servicio." };
+    return { error: error instanceof Error ? error.message : "No se pudo guardar el servicio." };
   }
 
   revalidatePath(SERVICES_PATH);
@@ -46,12 +46,24 @@ export async function saveService(_prevState: ServiceFormState, formData: FormDa
 
 export async function toggleServiceStatus(id: string, isActive: boolean) {
   await requireDemoRole("admin");
-  await serviceService.setActive(id, isActive);
+  try {
+    await serviceService.setActive(id, isActive);
+  } catch (error) {
+    redirectWithError(error, "No se pudo cambiar el estado del servicio.");
+  }
   revalidatePath(SERVICES_PATH);
 }
 
 export async function deleteService(id: string) {
   await requireDemoRole("admin");
-  await serviceService.delete(id);
+  try {
+    await serviceService.delete(id);
+  } catch (error) {
+    redirectWithError(error, "No se pudo eliminar el servicio.");
+  }
   revalidatePath(SERVICES_PATH);
+}
+
+function redirectWithError(error: unknown, fallback: string): never {
+  redirect(SERVICES_PATH + "?error=" + encodeURIComponent(error instanceof Error ? error.message : fallback));
 }
