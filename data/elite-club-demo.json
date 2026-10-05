@@ -335,5 +335,11 @@
       "createdAt": "2026-10-01T00:00:00.000Z"
     }
   ],
-  "sessions": []
+  "sessions": [
+    {
+      "token": "404a7d9e-41e6-49a4-b2ef-5d0458a77f6d34bbbd2e-cd26-4545-960f-d02e2f05b93c",
+      "userId": "18fa3de2-79b9-4ede-a463-3e7816432d4b",
+      "expiresAt": "2026-10-19T12:47:50.867Z"
+    }
+  ]
 }

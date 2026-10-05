@@ -74,14 +74,14 @@ Efecto de aparición suave (fade-in y elevación) ideal para renderizar los elem
 
 ### Ejemplo de Tarjeta de Servicio con Glassmorphism
 ```tsx
-<div className="glass-panel rounded-xl p-5 hover:border-[var(--accent-blue)] transition-all">
-  <h3 className="text-[var(--text-primary)] font-semibold text-lg">Cancha Sintética de Fútbol 5</h3>
-  <p className="text-[var(--text-secondary)] text-sm mt-2">
+<div className="glass-panel rounded-xl p-5 hover:border-(--accent-blue) transition-all">
+  <h3 className="text-(--text-primary) font-semibold text-lg">Cancha Sintética de Fútbol 5</h3>
+  <p className="text-(--text-secondary) text-sm mt-2">
     Cancha de césped sintético de alta calidad con iluminación LED nocturna.
   </p>
   <div className="mt-4 flex justify-between items-center">
-    <span className="text-[var(--accent-blue)] font-bold">$70.000 / hora</span>
-    <button className="bg-[var(--accent-blue)] hover:bg-[var(--accent-blue-hover)] text-white px-4 py-2 rounded-lg text-sm transition-colors">
+    <span className="text-(--accent-blue) font-bold">$70.000 / hora</span>
+    <button className="bg-(--accent-blue) hover:bg-(--accent-blue-hover) text-white px-4 py-2 rounded-lg text-sm transition-colors">
       Reservar
     </button>
   </div>
