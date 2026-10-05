@@ -1,3 +1,5 @@
+import { createSupabaseBrowserClient } from "@/shared/lib/supabase/client";
+
 export type LoginCredentials = {
   email: string;
   password: string;
@@ -13,6 +15,8 @@ export type AuthUser = {
   id: string;
   email: string;
   fullName: string;
+  role?: "admin" | "empleado" | "cliente";
+  emailConfirmationRequired?: boolean;
 };
 
 type ErrorResponse = {
@@ -34,6 +38,17 @@ async function getErrorMessage(response: Response, defaultMessage: string): Prom
 }
 
 export const authService = {
+  async loginWithOAuth(provider: "google" | "github", nextPath = "/"): Promise<void> {
+    const supabase = createSupabaseBrowserClient();
+    const callback = new URL("/api/auth/callback", window.location.origin);
+    callback.searchParams.set("next", safeNextPath(nextPath));
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: callback.toString() },
+    });
+    if (error) throw new Error(error.message);
+  },
+
   async login(credentials: LoginCredentials): Promise<AuthUser> {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
@@ -50,11 +65,11 @@ export const authService = {
     return user;
   },
 
-  async register(data: RegisterData): Promise<AuthUser> {
+  async register(data: RegisterData, nextPath = "/"): Promise<AuthUser> {
     const response = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, nextPath: safeNextPath(nextPath) }),
     });
 
     if (!response.ok) {
@@ -77,3 +92,7 @@ export const authService = {
     }
   },
 };
+
+export function safeNextPath(value: string | null | undefined): string {
+  return value?.startsWith("/") && !value.startsWith("//") ? value : "/";
+}

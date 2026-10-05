@@ -1,11 +1,15 @@
 # Migraciones de base de datos
 
-Las migraciones PostgreSQL administradas por Prisma pertenecen en esta carpeta. Se versionan junto con el cambio correspondiente en `../schema.prisma`.
+Las migraciones PostgreSQL administradas por Prisma se versionan junto con el schema.prisma.
 
-El esquema inicial aún no define modelos, así que todavía no hay una migración inicial que generar. Cuando el equipo acuerde los modelos, créala desde la raíz del proyecto con:
+La migración inicial implementa las entidades del diagrama acordado: roles, usuarios, categorías, servicios, horarios, membresías, cierres, empleados, reservas, términos aceptados, pagos, códigos QR y registros de acceso.
 
-```bash
-npx prisma migrate dev --name inicial
-```
+Configura DIRECT_URL en .env.local con la conexión directa de PostgreSQL. Prisma carga .env.local mediante prisma.config.ts; no guardes credenciales en el repositorio.
 
-Configura `DIRECT_URL` en `.env.local` con la conexión directa de Supabase para ejecutar migraciones. No guardes credenciales en el repositorio. Para desplegar migraciones ya creadas se usa `npx prisma migrate deploy`.
+Para aplicar la migración inicial en desarrollo:
+
+    npx prisma migrate deploy
+
+Para cambios posteriores al esquema, crea una migración versionada con npx prisma migrate dev --name descripcion-corta. El índice parcial que mantiene un solo empleado activo por servicio se define directamente en la migración inicial porque Prisma Schema Language no expresa índices parciales.
+
+La web incluye un almacén JSON compartido de demostración en data/elite-club-demo.json para probar el recorrido mientras se conecta el acceso de dominio a Prisma. No se deben subir datos reales de clientes a ese archivo.
