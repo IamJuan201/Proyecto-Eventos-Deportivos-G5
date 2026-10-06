@@ -1,4 +1,4 @@
-import { prisma } from "@/shared/lib/prisma";
+import { getPrisma } from "@/shared/lib/prisma";
 
 export interface RecentBooking {
   id: string;
@@ -20,6 +20,7 @@ export interface DashboardMetrics {
 }
 
 export async function getDashboardMetrics(): Promise<DashboardMetrics> {
+  const prisma = getPrisma();
   const [income, paid, allowedAccesses, accessReads, activeEmployees, recent] = await Promise.all([
     prisma.pago.aggregate({ where: { estado: "aprobado" }, _sum: { monto: true } }),
     prisma.reserva.aggregate({ where: { estado: "pagada" }, _count: true, _sum: { cantidadPersonas: true } }),
