@@ -1,0 +1,976 @@
+{
+  "Rol": [
+    {
+      "id": "bd5ffb46-0855-5716-8ddd-1590228069e9",
+      "nombre": "admin",
+      "descripcion": "Administra catálogo, horarios, empleados y métricas.",
+      "activo": true
+    },
+    {
+      "id": "db741943-f0f2-5e7d-b8f2-a13abb56155f",
+      "nombre": "empleado",
+      "descripcion": "Valida el ingreso con el escáner de su servicio.",
+      "activo": true
+    },
+    {
+      "id": "205f1515-5661-5f52-b3cd-ea91afca1b69",
+      "nombre": "cliente",
+      "descripcion": "Reserva, paga y consulta sus reservas.",
+      "activo": true
+    }
+  ],
+  "Usuario": [
+    {
+      "id": "1563399d-88ff-4712-9640-ca7b76555b52",
+      "rol_id": "bd5ffb46-0855-5716-8ddd-1590228069e9",
+      "nombre": "Administrador Élite Club",
+      "correo": "admin@eliteclub.demo",
+      "contrasena_hash": "8f6c8573-4be7-4a1f-8b5e-c14da32efd00:8df3404485a14acae581b5ce1257ec5a39cafee4db91b3cbf57f75e201cae51fd1778723e00e996a3707cb95aa254b6704e44c8a010338684afd03a0a74796fe",
+      "proveedor_auth": "email",
+      "correo_confirmado": true,
+      "cedula": null,
+      "auth_id": null,
+      "activo": true,
+      "creado_en": "2026-10-01T00:00:00.000Z"
+    },
+    {
+      "id": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "rol_id": "205f1515-5661-5f52-b3cd-ea91afca1b69",
+      "nombre": "Cliente Demo",
+      "correo": "cliente@eliteclub.demo",
+      "contrasena_hash": "ef572bb7-c014-4ce7-9c13-bb4b841b6965:64bc64c1e60c0e5c8503b87b31394b9acc946caff0e6f2d3aa4bdb7d59b3945779c51851c0efd5e5fa1248ddafd1cb3e638180c38e0036643653f5991411f4d9",
+      "proveedor_auth": "email",
+      "correo_confirmado": true,
+      "cedula": null,
+      "auth_id": null,
+      "activo": true,
+      "creado_en": "2026-10-01T00:00:00.000Z"
+    },
+    {
+      "id": "18fa3de2-79b9-4ede-a463-3e7816432d4b",
+      "rol_id": "db741943-f0f2-5e7d-b8f2-a13abb56155f",
+      "nombre": "Camila Rojas",
+      "correo": "empleado@eliteclub.demo",
+      "contrasena_hash": "8329a86c-978b-46b8-b6a4-087861603714:f82b6ca46da33fb33f0904eac125843e2c9a00bea48e85e736ffff546edc1c3c06539962ba8e58acb2756d3d35c889dd619f6c52f06fa9761a38b37f357d1623",
+      "proveedor_auth": "email",
+      "correo_confirmado": true,
+      "cedula": null,
+      "auth_id": null,
+      "activo": true,
+      "creado_en": "2026-10-01T00:00:00.000Z"
+    },
+    {
+      "id": "cc2e7519-f6eb-5fa5-bdc7-1e7d52820fca",
+      "rol_id": "db741943-f0f2-5e7d-b8f2-a13abb56155f",
+      "nombre": "Mateo Vargas",
+      "correo": "mateo.vargas@eliteclub.demo",
+      "contrasena_hash": "bee32f31-1506-5e0c-a815-0c273cc31e54:2a420b37b7a8998bcc203e6a13a8b96cd663be9d3bc9e5e0904904c40457a70cb642923e4b66f21e10e4a1128cb6e420faccd7c18fafe3bb77aea04900bb8c3d",
+      "proveedor_auth": "email",
+      "correo_confirmado": true,
+      "cedula": null,
+      "auth_id": null,
+      "activo": true,
+      "creado_en": "2026-10-01T00:00:00.000Z"
+    }
+  ],
+  "Categoria": [
+    {
+      "id": "704a6214-3365-55b2-983c-89861908b58c",
+      "nombre": "Piscinas",
+      "descripcion": "Experiencias acuáticas para cada ritmo.",
+      "activa": true
+    },
+    {
+      "id": "379d9b4d-2854-543a-a782-b293810abebe",
+      "nombre": "Fitness",
+      "descripcion": "Entrena con enfoque y energía.",
+      "activa": true
+    },
+    {
+      "id": "4cec671d-422f-57a3-956b-5cca9552f315",
+      "nombre": "Bienestar",
+      "descripcion": "Pausa, recupera y vuelve mejor.",
+      "activa": true
+    },
+    {
+      "id": "3a93a107-515a-5c81-9c0a-8525feb20768",
+      "nombre": "Canchas",
+      "descripcion": "Espacios para jugar en equipo.",
+      "activa": true
+    }
+  ],
+  "Servicio": [
+    {
+      "id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "categoria_id": "704a6214-3365-55b2-983c-89861908b58c",
+      "nombre": "Piscina olímpica",
+      "descripcion": "Entrena a tu ritmo en una piscina de 50 metros con carriles disponibles.",
+      "precio": 2000,
+      "tipo_cobro": "por_persona",
+      "capacidad_por_hora": 50,
+      "capacidad_personas": 50,
+      "tipo_qr": "individual",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "fae2d12c-2026-507e-afd4-df61f0786708",
+      "categoria_id": "704a6214-3365-55b2-983c-89861908b58c",
+      "nombre": "Piscina de olas",
+      "descripcion": "Un espacio amplio para refrescarte y disfrutar en familia.",
+      "precio": 2000,
+      "tipo_cobro": "por_persona",
+      "capacidad_por_hora": 50,
+      "capacidad_personas": 50,
+      "tipo_qr": "individual",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "97450a8a-ef3d-55bb-9e52-641ac6a91fcc",
+      "categoria_id": "704a6214-3365-55b2-983c-89861908b58c",
+      "nombre": "Zona de toboganes",
+      "descripcion": "Aventura acuática con acceso por turnos y aforo controlado.",
+      "precio": 2000,
+      "tipo_cobro": "por_persona",
+      "capacidad_por_hora": 50,
+      "capacidad_personas": 50,
+      "tipo_qr": "individual",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "6445da3f-8601-5f50-b23c-063048bbb5bb",
+      "categoria_id": "704a6214-3365-55b2-983c-89861908b58c",
+      "nombre": "Piscina infantil",
+      "descripcion": "Un rincón tranquilo para los más pequeños, siempre acompañados.",
+      "precio": 2000,
+      "tipo_cobro": "por_persona",
+      "capacidad_por_hora": 50,
+      "capacidad_personas": 50,
+      "tipo_qr": "individual",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "1243bd2f-010c-52a7-8a8d-338605d36d02",
+      "categoria_id": "379d9b4d-2854-543a-a782-b293810abebe",
+      "nombre": "Gimnasio",
+      "descripcion": "Zona de fuerza y cardio equipada para una sesión completa.",
+      "precio": 2000,
+      "tipo_cobro": "por_hora",
+      "capacidad_por_hora": 20,
+      "capacidad_personas": 20,
+      "tipo_qr": "individual",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "f0396422-d7c8-5782-a2b5-af678e1e0f88",
+      "categoria_id": "4cec671d-422f-57a3-956b-5cca9552f315",
+      "nombre": "Baño turco",
+      "descripcion": "Un espacio cálido para soltar tensión y recuperar energía.",
+      "precio": 5000,
+      "tipo_cobro": "por_hora",
+      "capacidad_por_hora": 10,
+      "capacidad_personas": 10,
+      "tipo_qr": "individual",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "25e36ff6-dc77-5863-951b-f270f145c92e",
+      "categoria_id": "4cec671d-422f-57a3-956b-5cca9552f315",
+      "nombre": "Sauna",
+      "descripcion": "Temperatura y calma para cerrar tu entrenamiento.",
+      "precio": 5000,
+      "tipo_cobro": "por_hora",
+      "capacidad_por_hora": 10,
+      "capacidad_personas": 10,
+      "tipo_qr": "individual",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "categoria_id": "3a93a107-515a-5c81-9c0a-8525feb20768",
+      "nombre": "Cancha fútbol 11",
+      "descripcion": "Césped amplio, iluminación profesional y espacio para todo el equipo.",
+      "precio": 140000,
+      "tipo_cobro": "por_hora",
+      "capacidad_por_hora": 1,
+      "capacidad_personas": 20,
+      "tipo_qr": "grupal",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "6db5337f-b790-525e-8232-77e59c1b8d99",
+      "categoria_id": "3a93a107-515a-5c81-9c0a-8525feb20768",
+      "nombre": "Microfútbol 5×5",
+      "descripcion": "Dos canchas sintéticas para partidos rápidos y torneos entre amigos.",
+      "precio": 100000,
+      "tipo_cobro": "por_hora",
+      "capacidad_por_hora": 2,
+      "capacidad_personas": 20,
+      "tipo_qr": "grupal",
+      "imagen_url": null,
+      "activo": true
+    },
+    {
+      "id": "02cc4ac7-5245-5306-834c-93ad25d51eeb",
+      "categoria_id": "3a93a107-515a-5c81-9c0a-8525feb20768",
+      "nombre": "Polideportivo",
+      "descripcion": "Un escenario versátil para entrenar, competir y reunirse.",
+      "precio": 100000,
+      "tipo_cobro": "por_hora",
+      "capacidad_por_hora": 1,
+      "capacidad_personas": 20,
+      "tipo_qr": "grupal",
+      "imagen_url": null,
+      "activo": true
+    }
+  ],
+  "HorarioServicio": [
+    {
+      "id": "fc7a09fa-ed6d-59a8-9a06-6b749d7d5a14",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "046dce8f-a683-5d26-bf16-b3b0ade213cf",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "ed6c2132-b45f-53dc-ad74-7182aa8a36a4",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "3f68a8df-121f-531a-b30f-fd84c3ae25f4",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "820a55ff-6fd3-5780-87b9-d6696887f25b",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "5465e124-e887-58a8-8416-a340d9d2ce0a",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "0b0c7f47-aff0-5a5e-ba57-393c08b96b0a",
+      "servicio_id": "fae2d12c-2026-507e-afd4-df61f0786708",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "caa277f1-e3d5-5426-9d5d-d5b660eda6c4",
+      "servicio_id": "fae2d12c-2026-507e-afd4-df61f0786708",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "45804b51-be88-5550-82b8-600bf5bef123",
+      "servicio_id": "fae2d12c-2026-507e-afd4-df61f0786708",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "c64c7292-7c26-50d1-af6c-590fe31f7143",
+      "servicio_id": "fae2d12c-2026-507e-afd4-df61f0786708",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "c43dfa0f-1a99-50db-982d-cc1a69df9e42",
+      "servicio_id": "fae2d12c-2026-507e-afd4-df61f0786708",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "fcd8e2d3-0641-5252-a095-71deb7ffd9a0",
+      "servicio_id": "fae2d12c-2026-507e-afd4-df61f0786708",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "5639b8d2-4002-5a83-91fc-8042c1a7c7e7",
+      "servicio_id": "97450a8a-ef3d-55bb-9e52-641ac6a91fcc",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "bdb2d0c5-74c5-5801-bfc2-89a88e2f8063",
+      "servicio_id": "97450a8a-ef3d-55bb-9e52-641ac6a91fcc",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "be6c28a9-152c-5b0b-a3bc-f889cbb21c68",
+      "servicio_id": "97450a8a-ef3d-55bb-9e52-641ac6a91fcc",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "27558615-b761-523f-bb75-d1870e3e0dbc",
+      "servicio_id": "97450a8a-ef3d-55bb-9e52-641ac6a91fcc",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "d202b235-1db8-51c3-9568-090ef25b18f6",
+      "servicio_id": "97450a8a-ef3d-55bb-9e52-641ac6a91fcc",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "4fca88ff-78d2-5a23-a7e5-989b8e8d6c04",
+      "servicio_id": "97450a8a-ef3d-55bb-9e52-641ac6a91fcc",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "e3b4ca0a-3fab-54ab-8e47-31c590974274",
+      "servicio_id": "6445da3f-8601-5f50-b23c-063048bbb5bb",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "a72f1b03-faf4-57f7-8c46-5c683c862738",
+      "servicio_id": "6445da3f-8601-5f50-b23c-063048bbb5bb",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "d31ddf99-ffe2-5931-8825-aac99497327b",
+      "servicio_id": "6445da3f-8601-5f50-b23c-063048bbb5bb",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "65238903-09ad-5e91-8b61-70cccaab52ef",
+      "servicio_id": "6445da3f-8601-5f50-b23c-063048bbb5bb",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "9e2ae7d5-bd2d-5c1e-99f9-5d4728e53328",
+      "servicio_id": "6445da3f-8601-5f50-b23c-063048bbb5bb",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "9b87cdfb-4b7f-5e5c-8415-b90f45b2f2bc",
+      "servicio_id": "6445da3f-8601-5f50-b23c-063048bbb5bb",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "c5efca2c-8f1e-5dcc-8161-194941ae37b3",
+      "servicio_id": "1243bd2f-010c-52a7-8a8d-338605d36d02",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "8cd8cca0-4175-5230-95d2-35387dccec30",
+      "servicio_id": "1243bd2f-010c-52a7-8a8d-338605d36d02",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "5f3974fa-19c6-5dcc-968f-76ff4262b107",
+      "servicio_id": "1243bd2f-010c-52a7-8a8d-338605d36d02",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "40f949f5-bc6c-5a91-9157-e031ed313a8b",
+      "servicio_id": "1243bd2f-010c-52a7-8a8d-338605d36d02",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "62067afe-20d1-5371-bced-59b13d125528",
+      "servicio_id": "1243bd2f-010c-52a7-8a8d-338605d36d02",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "fe227540-8b05-55ea-b733-fe0a5a4cd7b8",
+      "servicio_id": "1243bd2f-010c-52a7-8a8d-338605d36d02",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "0d0ec30c-a970-5137-ac69-b12b4a345e37",
+      "servicio_id": "f0396422-d7c8-5782-a2b5-af678e1e0f88",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "7b83d86a-899e-5e13-bba2-a04b0caf3aba",
+      "servicio_id": "f0396422-d7c8-5782-a2b5-af678e1e0f88",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "b97c2d00-7098-539c-b11b-e94365c07153",
+      "servicio_id": "f0396422-d7c8-5782-a2b5-af678e1e0f88",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "10dc1ce7-2747-5e0c-b5cb-2fccd9df1c95",
+      "servicio_id": "f0396422-d7c8-5782-a2b5-af678e1e0f88",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "07fcdfc2-1d58-5725-9921-2649c023e6b1",
+      "servicio_id": "f0396422-d7c8-5782-a2b5-af678e1e0f88",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "d662ec31-19a3-513d-a24f-a96ac3fca15e",
+      "servicio_id": "f0396422-d7c8-5782-a2b5-af678e1e0f88",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "ff6e0c3f-5016-5a0b-86f9-f8dea3cbaa76",
+      "servicio_id": "25e36ff6-dc77-5863-951b-f270f145c92e",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "5de442a5-1ed5-522f-b9d6-1b4d24a42ac0",
+      "servicio_id": "25e36ff6-dc77-5863-951b-f270f145c92e",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "4e75077d-9d3c-56cb-b8f5-772df9aff0a3",
+      "servicio_id": "25e36ff6-dc77-5863-951b-f270f145c92e",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "f7f0bfdc-1a5a-5ab9-9c74-a9aa4b93bb44",
+      "servicio_id": "25e36ff6-dc77-5863-951b-f270f145c92e",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "23d612b0-83ef-5df2-bd9e-df9fd746f208",
+      "servicio_id": "25e36ff6-dc77-5863-951b-f270f145c92e",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "9b7dfecd-09ff-5af2-ae56-dad710f3bd80",
+      "servicio_id": "25e36ff6-dc77-5863-951b-f270f145c92e",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "d7c31980-fb6c-541d-b6e5-5b1dfd8be6e5",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "a0879ac5-dfb8-5da8-9113-142224b15173",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "a8d54ffe-f549-5159-a028-95059a2b918a",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "f7b7b8d9-3155-586b-bdba-51cc02057939",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "7efe6758-54c8-5129-8c3d-634900396cb5",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "75b03147-eba3-53be-b5a0-17effdb05756",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "aa209db7-caf3-5f5a-92d1-a0147291a3fd",
+      "servicio_id": "6db5337f-b790-525e-8232-77e59c1b8d99",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "792f1f6a-af67-590e-b833-29f049612dd2",
+      "servicio_id": "6db5337f-b790-525e-8232-77e59c1b8d99",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "8c91bbf2-c7d0-5c52-a448-cda3fb65ce41",
+      "servicio_id": "6db5337f-b790-525e-8232-77e59c1b8d99",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "6e5ebb95-aae1-5ccb-9cdd-a3b99160f40a",
+      "servicio_id": "6db5337f-b790-525e-8232-77e59c1b8d99",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "4b44184c-b5dc-53ef-be1f-92641632d0c6",
+      "servicio_id": "6db5337f-b790-525e-8232-77e59c1b8d99",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "fb5547e0-4356-52d4-b2ac-a044db6fded2",
+      "servicio_id": "6db5337f-b790-525e-8232-77e59c1b8d99",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "82af14da-8a51-519f-8b36-15e63ee11021",
+      "servicio_id": "02cc4ac7-5245-5306-834c-93ad25d51eeb",
+      "dia_semana": 0,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "32956675-1d4c-5d12-9d1e-3c744b51df8e",
+      "servicio_id": "02cc4ac7-5245-5306-834c-93ad25d51eeb",
+      "dia_semana": 2,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "cd0a403f-407f-541c-a8db-f899b9edfa85",
+      "servicio_id": "02cc4ac7-5245-5306-834c-93ad25d51eeb",
+      "dia_semana": 3,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "c8c978be-576b-5ceb-b849-27553eab542d",
+      "servicio_id": "02cc4ac7-5245-5306-834c-93ad25d51eeb",
+      "dia_semana": 4,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "900889ae-329e-5b8e-9896-d0e67210e56c",
+      "servicio_id": "02cc4ac7-5245-5306-834c-93ad25d51eeb",
+      "dia_semana": 5,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    },
+    {
+      "id": "26c66fd5-c147-5d15-b617-6f290eb1e6dc",
+      "servicio_id": "02cc4ac7-5245-5306-834c-93ad25d51eeb",
+      "dia_semana": 6,
+      "hora_inicio": "08:00:00",
+      "hora_fin": "17:00:00",
+      "activo": true
+    }
+  ],
+  "Empleado": [
+    {
+      "id": "3828df1d-45e6-5c1e-b62f-a3673144a72b",
+      "usuario_id": "18fa3de2-79b9-4ede-a463-3e7816432d4b",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "activo": true,
+      "ultima_actividad": null,
+      "eliminado_en": null
+    },
+    {
+      "id": "2f7e40eb-2857-5e9f-8cf6-7c7e565aca9e",
+      "usuario_id": "cc2e7519-f6eb-5fa5-bdc7-1e7d52820fca",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "activo": true,
+      "ultima_actividad": null,
+      "eliminado_en": null
+    }
+  ],
+  "Membresia": [
+    {
+      "id": "fb155afb-1973-527f-9c24-086c90058359",
+      "cliente_id": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "descuento_porcentaje": 30,
+      "fecha_inicio": "2026-10-01",
+      "fecha_fin": "2026-10-31",
+      "activa": true
+    }
+  ],
+  "Reserva": [
+    {
+      "id": "fb520bd0-31c4-5e57-9be2-7c167ad85249",
+      "cliente_id": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "membresia_id": null,
+      "fecha": "2026-10-04",
+      "hora_inicio": "10:00:00",
+      "hora_fin": "11:00:00",
+      "cantidad_horas": 1,
+      "cantidad_cupos": 3,
+      "cantidad_personas": 3,
+      "contiene_menores": true,
+      "adulto_responsable": "Cliente Demo",
+      "estado": "pagada",
+      "bloqueo_expira_en": "2026-10-02T09:10:00-05:00",
+      "subtotal": 6000,
+      "descuento": 0,
+      "total": 6000,
+      "creada_en": "2026-10-02T09:00:00-05:00"
+    },
+    {
+      "id": "9656beb8-6cb7-5405-94be-8561cd576eb2",
+      "cliente_id": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "membresia_id": "fb155afb-1973-527f-9c24-086c90058359",
+      "fecha": "2026-10-10",
+      "hora_inicio": "15:00:00",
+      "hora_fin": "17:00:00",
+      "cantidad_horas": 2,
+      "cantidad_cupos": 1,
+      "cantidad_personas": 14,
+      "contiene_menores": false,
+      "adulto_responsable": null,
+      "estado": "pagada",
+      "bloqueo_expira_en": "2026-10-03T18:10:00-05:00",
+      "subtotal": 280000,
+      "descuento": 84000,
+      "total": 196000,
+      "creada_en": "2026-10-03T18:00:00-05:00"
+    },
+    {
+      "id": "95f791b7-ea1c-5c9e-b721-74217b41093e",
+      "cliente_id": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "servicio_id": "1243bd2f-010c-52a7-8a8d-338605d36d02",
+      "membresia_id": null,
+      "fecha": "2026-10-06",
+      "hora_inicio": "08:00:00",
+      "hora_fin": "09:00:00",
+      "cantidad_horas": 1,
+      "cantidad_cupos": 1,
+      "cantidad_personas": 1,
+      "contiene_menores": false,
+      "adulto_responsable": null,
+      "estado": "expirada",
+      "bloqueo_expira_en": "2026-10-05T07:40:00-05:00",
+      "subtotal": 2000,
+      "descuento": 0,
+      "total": 2000,
+      "creada_en": "2026-10-05T07:30:00-05:00"
+    }
+  ],
+  "Pago": [
+    {
+      "id": "89dd6200-aee9-50ef-9ef9-17af86c50d6e",
+      "reserva_id": "fb520bd0-31c4-5e57-9be2-7c167ad85249",
+      "pasarela": "wompi",
+      "referencia": "EC-R1-1",
+      "transaccion_id": "wompi-test-0001",
+      "monto": 6000,
+      "medio_pago": "CARD",
+      "estado": "aprobado",
+      "fecha_pago": "2026-10-02T09:04:00-05:00",
+      "nombre_comprobante": "Cliente Demo",
+      "cedula_comprobante": "1000000001",
+      "correo_comprobante": "cliente@eliteclub.demo"
+    },
+    {
+      "id": "397a9b49-ea78-5c0c-b432-41e51f597e06",
+      "reserva_id": "9656beb8-6cb7-5405-94be-8561cd576eb2",
+      "pasarela": "wompi",
+      "referencia": "EC-R2-1",
+      "transaccion_id": "wompi-test-0002",
+      "monto": 196000,
+      "medio_pago": "PSE",
+      "estado": "aprobado",
+      "fecha_pago": "2026-10-03T18:06:00-05:00",
+      "nombre_comprobante": "Cliente Demo",
+      "cedula_comprobante": "1000000001",
+      "correo_comprobante": "cliente@eliteclub.demo"
+    },
+    {
+      "id": "fa9a1d46-108e-5a60-862d-d3b0cfbbae37",
+      "reserva_id": "95f791b7-ea1c-5c9e-b721-74217b41093e",
+      "pasarela": "wompi",
+      "referencia": "EC-R3-1",
+      "transaccion_id": "wompi-test-0003",
+      "monto": 2000,
+      "medio_pago": "NEQUI",
+      "estado": "fallido",
+      "fecha_pago": null,
+      "nombre_comprobante": "Cliente Demo",
+      "cedula_comprobante": "1000000001",
+      "correo_comprobante": "cliente@eliteclub.demo"
+    }
+  ],
+  "QR": [
+    {
+      "id": "360c50d8-6b6d-553c-8d39-4ff9a20e1d31",
+      "reserva_id": "fb520bd0-31c4-5e57-9be2-7c167ad85249",
+      "codigo": "EC-QR-R1-1",
+      "tipo": "individual",
+      "usado": true,
+      "fecha_uso": "2026-10-04T10:05:00-05:00"
+    },
+    {
+      "id": "d106ba91-0cf8-58e6-a84d-15f11270ce37",
+      "reserva_id": "fb520bd0-31c4-5e57-9be2-7c167ad85249",
+      "codigo": "EC-QR-R1-2",
+      "tipo": "individual",
+      "usado": false,
+      "fecha_uso": null
+    },
+    {
+      "id": "a4bd6abb-8ec2-5475-9111-9cff67a71aca",
+      "reserva_id": "fb520bd0-31c4-5e57-9be2-7c167ad85249",
+      "codigo": "EC-QR-R1-3",
+      "tipo": "individual",
+      "usado": false,
+      "fecha_uso": null
+    },
+    {
+      "id": "3457543e-d5c2-5181-8770-17ff2fa33e9b",
+      "reserva_id": "9656beb8-6cb7-5405-94be-8561cd576eb2",
+      "codigo": "EC-QR-R2-1",
+      "tipo": "grupal",
+      "usado": false,
+      "fecha_uso": null
+    }
+  ],
+  "RegistroAcceso": [
+    {
+      "id": "018cf3c7-3f1d-531a-9bb9-670332961944",
+      "qr_id": "360c50d8-6b6d-553c-8d39-4ff9a20e1d31",
+      "empleado_id": "3828df1d-45e6-5c1e-b62f-a3673144a72b",
+      "servicio_id": "44ca1521-08f6-5fc0-a6e6-828741797f3b",
+      "resultado": "permitido",
+      "fecha_hora": "2026-10-04T10:05:00-05:00",
+      "codigo_leido": "EC-QR-R1-1"
+    },
+    {
+      "id": "f05ad504-c7f8-59f3-9d07-94f66b642bcb",
+      "qr_id": null,
+      "empleado_id": "2f7e40eb-2857-5e9f-8cf6-7c7e565aca9e",
+      "servicio_id": "4aae8c5b-51c2-5cca-a24a-2bbb4c41d8b8",
+      "resultado": "qr_invalido",
+      "fecha_hora": "2026-10-04T16:20:00-05:00",
+      "codigo_leido": "EC-QR-NO-EXISTE"
+    }
+  ],
+  "CierreServicio": [
+    {
+      "id": "666f0be2-ee38-54a3-bd48-28ddb1a7887a",
+      "servicio_id": null,
+      "fecha_inicio": "2026-10-13T00:00:00-05:00",
+      "fecha_fin": "2026-10-13T23:59:59-05:00",
+      "motivo": "Mantenimiento general después del lunes festivo",
+      "tipo": "mantenimiento",
+      "creado_por": "1563399d-88ff-4712-9640-ca7b76555b52",
+      "activo": true
+    },
+    {
+      "id": "9c82c6dc-1de6-56cd-9359-8abee97f98c7",
+      "servicio_id": "25e36ff6-dc77-5863-951b-f270f145c92e",
+      "fecha_inicio": "2026-10-20T00:00:00-05:00",
+      "fecha_fin": "2026-10-20T23:59:59-05:00",
+      "motivo": "Mantenimiento preventivo de la sauna",
+      "tipo": "mantenimiento",
+      "creado_por": "1563399d-88ff-4712-9640-ca7b76555b52",
+      "activo": true
+    }
+  ],
+  "Festivo": [
+    {
+      "id": "333e9caa-360d-5434-80d0-30688af76171",
+      "fecha": "2026-10-12",
+      "nombre": "Día de la Raza"
+    },
+    {
+      "id": "6d119608-c12f-5087-b9e2-a85c0487194b",
+      "fecha": "2026-11-02",
+      "nombre": "Todos los Santos"
+    },
+    {
+      "id": "ee252fa2-dcd3-5ec6-bb6e-97d0fb90468b",
+      "fecha": "2026-11-16",
+      "nombre": "Independencia de Cartagena"
+    },
+    {
+      "id": "4287a07e-7b3d-5baa-bd3d-adb3c5b4f1b3",
+      "fecha": "2026-12-08",
+      "nombre": "Inmaculada Concepción"
+    },
+    {
+      "id": "536d0609-797a-57bf-81a5-c7fded554ac3",
+      "fecha": "2026-12-25",
+      "nombre": "Navidad"
+    }
+  ],
+  "TerminosAceptados": [
+    {
+      "id": "e245132b-4077-5c31-b812-27b32842ebda",
+      "cliente_id": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "reserva_id": "fb520bd0-31c4-5e57-9be2-7c167ad85249",
+      "version_terminos": "2026-10-01",
+      "aceptado_en": "2026-10-02T09:00:00-05:00"
+    },
+    {
+      "id": "94257d9d-71a0-537c-93bb-85e6bef13cff",
+      "cliente_id": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "reserva_id": "9656beb8-6cb7-5405-94be-8561cd576eb2",
+      "version_terminos": "2026-10-01",
+      "aceptado_en": "2026-10-03T18:00:00-05:00"
+    },
+    {
+      "id": "58ea90b4-b57e-5bf4-808e-a1c3418c65e3",
+      "cliente_id": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "reserva_id": "95f791b7-ea1c-5c9e-b721-74217b41093e",
+      "version_terminos": "2026-10-01",
+      "aceptado_en": "2026-10-05T07:30:00-05:00"
+    }
+  ]
+}
