@@ -21,8 +21,8 @@
 | Tema | Detalle |
 |---|---|
 | Framework | Next.js 16 (App Router, Server Components, Server Actions). Antes de escribir código, leer la guía correspondiente en `node_modules/next/dist/docs/` (ver `AGENTS.md`). |
-| ORM | **Prisma 7.10**, generador `prisma-client`, cliente en `src/generated/prisma` (ignorado por git; se regenera con `npm run db:generate`). |
-| Conexión en tiempo de ejecución | Prisma 7 usa un **driver adapter**: `@prisma/adapter-pg` + `pg`. Cliente compartido en `src/shared/lib/prisma.ts` (protegido con `server-only`). |
+| ORM | **Prisma 7.10**, generador `prisma-client`, cliente en `src/generated/prisma` (ignorado por git). `npm run build` ejecuta `prisma generate` antes de `next build`, así Vercel lo genera en cada despliegue; en local también con `npm run db:generate`. |
+| Conexión en tiempo de ejecución | Prisma 7 usa un **driver adapter**: `@prisma/adapter-pg` + `pg`. Cliente compartido `getPrisma()` en `src/shared/lib/prisma.ts` (protegido con `server-only`). Se crea en la primera consulta, no al importar, para que `next build` funcione sin `DATABASE_URL`. |
 | Configuración de Prisma | `prisma.config.ts` (no `schema.prisma`): ahí está la URL para la CLI (`DIRECT_URL`) y el seed. En Prisma 7 **no existen** `url` ni `directUrl` dentro del `datasource` del schema, ni `prisma.seed` en `package.json`. |
 | Base de datos | Supabase PostgreSQL. Next excluye `pg` y Prisma del bundle de servidor por defecto; no hace falta `serverExternalPackages`. |
 | Auth | Hoy: login propio con `scrypt` y sesión en el JSON (`src/features/auth/lib/json-auth.ts`). **Google OAuth y Supabase Auth son de otro responsable**; el modelo ya los soporta (ver 4). |
@@ -34,7 +34,7 @@
 
 | Variable | Archivo | Uso | Formato |
 |---|---|---|---|
-| `DATABASE_URL` | `.env` | App en tiempo de ejecución (`src/shared/lib/prisma.ts`) | Pooler **transaction** (puerto 6543) con `?pgbouncer=true` |
+| `DATABASE_URL` | `.env` y **variables de entorno de Vercel** | App en tiempo de ejecución (`src/shared/lib/prisma.ts`) | Pooler **transaction** (puerto 6543). `?pgbouncer=true` es opcional con `@prisma/adapter-pg` |
 | `DIRECT_URL` | `.env` | CLI de Prisma: migraciones y seed | Pooler **session** (puerto 5432) |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | `.env.local` | Supabase Auth/OAuth (cliente) | Públicas, no son secretos |
 
@@ -42,6 +42,7 @@
 - Usar el **session pooler** para `DIRECT_URL`: la conexión directa `db.<ref>.supabase.co` solo funciona por IPv6 y falla en muchas redes Windows.
 - ⚠️ **Pendiente local:** en el `.env` de Nicolás, `DATABASE_URL` aún tiene el placeholder `<project-ref>`. Las pruebas del piloto se hicieron pasando `DIRECT_URL` como `DATABASE_URL` por variable de proceso. Hay que completar `DATABASE_URL` con el pooler de transacción.
 - Next carga `.env.local` con prioridad sobre `.env`: no definir `DATABASE_URL` en ambos.
+- **Vercel:** definir `DATABASE_URL` en *Project Settings → Environment Variables* (Preview y Production). Sin ella el build pasa, pero `/admin/metrics` responde error.
 
 ---
 
@@ -122,7 +123,7 @@ Los registros del JSON que referencien colecciones ya migradas (por ejemplo, res
 
 ### 7.3 Convenciones para escribir código con Prisma
 
-- Importar siempre `prisma` desde `@/shared/lib/prisma` (nunca `new PrismaClient()` en otra parte).
+- Obtener el cliente siempre con `getPrisma()` de `@/shared/lib/prisma`, dentro de la función que consulta (nunca `new PrismaClient()` en otra parte ni al nivel del módulo).
 - Consultas en `src/features/<feature>/services/*.ts`; las páginas no llaman a Prisma directamente.
 - Conversión de tipos: `Decimal` → `Number(...)`; `@db.Date` → `date.toISOString().slice(0, 10)`; `@db.Time` → `time.toISOString().slice(11, 16)` (las horas se guardan sobre `1970-01-01` UTC).
 - Calcular "hoy", "+15 días" y franjas horarias en **`America/Bogota`** (el servidor corre en UTC).
