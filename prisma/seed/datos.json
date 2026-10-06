@@ -111,6 +111,8 @@
       "capacidad_personas": 50,
       "tipo_qr": "individual",
       "imagen_url": null,
+      "icono": "water",
+      "etiqueta": "50 m · carriles abiertos",
       "activo": true
     },
     {
@@ -124,6 +126,8 @@
       "capacidad_personas": 50,
       "tipo_qr": "individual",
       "imagen_url": null,
+      "icono": "waves",
+      "etiqueta": "Olas cada 30 min",
       "activo": true
     },
     {
@@ -137,6 +141,8 @@
       "capacidad_personas": 50,
       "tipo_qr": "individual",
       "imagen_url": null,
+      "icono": "slides",
+      "etiqueta": "Plan familiar",
       "activo": true
     },
     {
@@ -150,6 +156,8 @@
       "capacidad_personas": 50,
       "tipo_qr": "individual",
       "imagen_url": null,
+      "icono": "kids",
+      "etiqueta": "Adulto responsable",
       "activo": true
     },
     {
@@ -163,6 +171,8 @@
       "capacidad_personas": 20,
       "tipo_qr": "individual",
       "imagen_url": null,
+      "icono": "fitness",
+      "etiqueta": "Fuerza · cardio",
       "activo": true
     },
     {
@@ -176,6 +186,8 @@
       "capacidad_personas": 10,
       "tipo_qr": "individual",
       "imagen_url": null,
+      "icono": "wellness",
+      "etiqueta": "Máximo 10 personas",
       "activo": true
     },
     {
@@ -189,6 +201,8 @@
       "capacidad_personas": 10,
       "tipo_qr": "individual",
       "imagen_url": null,
+      "icono": "wellness",
+      "etiqueta": "Máximo 10 personas",
       "activo": true
     },
     {
@@ -202,6 +216,8 @@
       "capacidad_personas": 20,
       "tipo_qr": "grupal",
       "imagen_url": null,
+      "icono": "football",
+      "etiqueta": "Hasta 20 jugadores",
       "activo": true
     },
     {
@@ -215,6 +231,8 @@
       "capacidad_personas": 20,
       "tipo_qr": "grupal",
       "imagen_url": null,
+      "icono": "micro",
+      "etiqueta": "2 canchas disponibles",
       "activo": true
     },
     {
@@ -228,6 +246,8 @@
       "capacidad_personas": 20,
       "tipo_qr": "grupal",
       "imagen_url": null,
+      "icono": "court",
+      "etiqueta": "Hasta 20 jugadores",
       "activo": true
     }
   ],
