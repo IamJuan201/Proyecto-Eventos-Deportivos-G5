@@ -1,8 +1,8 @@
 # Migración a PostgreSQL (Supabase + Prisma) — Traspaso de contexto
 
-> **Para quién:** el tech lead y su asistente de IA. Este documento es el punto de partida para continuar la migración del JSON de demo a PostgreSQL sin repetir decisiones ni romper la app.
+> **Para quién:** el equipo y sus asistentes de IA. Contexto, decisiones y convenciones de la base de datos para trabajar sin repetir decisiones ni romper la app.
 >
-> **Estado al 2026-10-05** · Rama `Nicolas-feature/BD/Migracion-Prisma` · Responsable: Nicolás
+> **Estado al 2026-10-06** · Toda la app usa PostgreSQL ([PLAN-MIGRACION-PRISMA.md](PLAN-MIGRACION-PRISMA.md)) · Responsable: Nicolás
 
 ---
 
@@ -11,8 +11,8 @@
 - La base PostgreSQL de Supabase **ya existe y está poblada**: 3 migraciones aplicadas y seed cargado (14 tablas).
 - El modelo sigue el **DER v2** ([docs/DER.md](DER.md)), que es la fuente de verdad.
 - Las tablas están **cerradas a la API pública de Supabase** (RLS sin políticas + permisos revocados). La app accede solo desde el servidor con Prisma.
-- **Solo `/admin/metrics` lee de PostgreSQL.** El resto de la app sigue usando `data/elite-club-demo.json` a través de `src/shared/lib/demo-store.ts`.
-- La migración del resto **debe hacerse por colección dentro del adaptador** (sección 7), porque el JSON usa IDs de texto (`"canchas"`) y la base usa UUID.
+- **Toda la app lee y escribe en PostgreSQL** con Prisma. El JSON de demo y su adaptador (`demo-store`) fueron eliminados el 2026-10-06.
+- Cada feature tiene su servicio Prisma en `src/features/<feature>/services/` (ver sección 6).
 
 ---
 
@@ -25,7 +25,7 @@
 | Conexión en tiempo de ejecución | Prisma 7 usa un **driver adapter**: `@prisma/adapter-pg` + `pg`. Cliente compartido `getPrisma()` en `src/shared/lib/prisma.ts` (protegido con `server-only`). Se crea en la primera consulta, no al importar, para que `next build` funcione sin `DATABASE_URL`. |
 | Configuración de Prisma | `prisma.config.ts` (no `schema.prisma`): ahí está la URL para la CLI (`DIRECT_URL`) y el seed. En Prisma 7 **no existen** `url` ni `directUrl` dentro del `datasource` del schema, ni `prisma.seed` en `package.json`. |
 | Base de datos | Supabase PostgreSQL. Next excluye `pg` y Prisma del bundle de servidor por defecto; no hace falta `serverExternalPackages`. |
-| Auth | Hoy: login propio con `scrypt` y sesión en el JSON (`src/features/auth/lib/json-auth.ts`). **Google OAuth y Supabase Auth son de otro responsable**; el modelo ya los soporta (ver 4). |
+| Auth | Login propio con `scrypt`; usuarios en `Usuario`; sesión en cookie firmada con HMAC (`SESSION_SECRET`, `src/features/auth/lib/session.ts`). **Google OAuth y Supabase Auth son de otro responsable**; el modelo ya los soporta (ver 4). |
 | Pasarela de pago | **Wompi** (Stripe no opera para empresas en Colombia). Aún no integrada; el modelo `Pago` ya está preparado. |
 
 ---
@@ -40,7 +40,7 @@
 
 - `.env*` está en `.gitignore`; `.env.example` es la plantilla versionada **sin secretos**.
 - Usar el **session pooler** para `DIRECT_URL`: la conexión directa `db.<ref>.supabase.co` solo funciona por IPv6 y falla en muchas redes Windows.
-- ⚠️ **Pendiente local:** en el `.env` de Nicolás, `DATABASE_URL` aún tiene el placeholder `<project-ref>`. Las pruebas del piloto se hicieron pasando `DIRECT_URL` como `DATABASE_URL` por variable de proceso. Hay que completar `DATABASE_URL` con el pooler de transacción.
+- `SESSION_SECRET` (`.env` y **Vercel**): firma la cookie de sesión; mínimo 32 caracteres. Sin ella, iniciar sesión falla.
 - Next carga `.env.local` con prioridad sobre `.env`: no definir `DATABASE_URL` en ambos.
 - **Vercel:** definir `DATABASE_URL` en *Project Settings → Environment Variables* (Preview y Production). Sin ella el build pasa, pero `/admin/metrics` responde error.
 
@@ -97,31 +97,19 @@ Detalle completo y motivos en [docs/DER.md](DER.md) ("Cambios frente al DER v1")
 | `prisma.config.ts` | URL de la CLI y comando de seed |
 | `src/shared/lib/prisma.ts` | Cliente Prisma único para la app |
 | `src/features/metrics/services/metrics.service.ts` | Ejemplo de servicio que consulta con Prisma |
-| `src/shared/lib/demo-store.ts` | Adaptador JSON que aún usa el resto de la app |
-| `data/elite-club-demo.json` | JSON de demo **sin modificar** (respaldo y fuente de la app actual) |
+| `src/shared/lib/bogota-time.ts` | Fechas y horas de negocio en `America/Bogota` y conversión `@db.Date` / `@db.Time` |
+| `src/features/*/services/*.ts` | Servicios Prisma por feature (lista en [PLAN-MIGRACION-PRISMA.md](PLAN-MIGRACION-PRISMA.md) §1) |
 | `docs/DER.md` | DER v2 |
 
 ---
 
 ## 7. Cómo continuar la migración (instrucciones para el asistente)
 
-### 7.1 El problema de los IDs
+### 7.1 Estado
 
-El JSON usa slugs (`"piscina-olimpica"`) y la base UUID. Si una pantalla lee categorías de la base y otra guarda servicios en el JSON, las referencias no coinciden y la app falla. **Por eso no se migró Categorías como piloto.** Tampoco hay que convertir el JSON al formato DER: la app lo lee en ~22 archivos.
+La migración por colecciones terminó: la app ya no usa el JSON. Qué archivo maneja cada tabla, las decisiones tomadas (D1–D6) y la verificación están en [PLAN-MIGRACION-PRISMA.md](PLAN-MIGRACION-PRISMA.md).
 
-### 7.2 Estrategia recomendada: migrar por colección dentro de `demo-store`
-
-1. Elegir una colección (por ejemplo, el catálogo: categorías + servicios + horarios).
-2. Cambiar **las funciones de `demo-store`** de esa colección (`listDemoServices`, `getDemoService`, `createDemoService`, …) para que consulten Prisma y devuelvan la misma forma que hoy (`DemoService`, etc.), con los UUID de la base como `id`.
-3. Reemplazar los usos directos de `readDemoDatabase().services` / `.categories` por esas funciones.
-4. Repositorios de feature (`src/features/categories|services/services/*.repository.ts`): crear `prisma-*.repository.ts` con la misma interfaz y cambiar la línea final de `*.service.ts`.
-5. Probar el recorrido completo de la colección y abrir un PR por colección.
-
-**Orden sugerido:** catálogo (categorías, servicios, horarios, cierres, festivos) → empleados → reservas + términos → pagos (Wompi) + QR → registro de acceso → usuarios/Auth (coordinar con el responsable de OAuth) → retirar `demo-store`.
-
-Los registros del JSON que referencien colecciones ya migradas (por ejemplo, reservas con `serviceId` de texto) quedan huérfanos; el JSON de demo no tiene reservas reales, así que basta con reiniciarlo.
-
-### 7.3 Convenciones para escribir código con Prisma
+### 7.2 Convenciones para escribir código con Prisma
 
 - Obtener el cliente siempre con `getPrisma()` de `@/shared/lib/prisma`, dentro de la función que consulta (nunca `new PrismaClient()` en otra parte ni al nivel del módulo).
 - Consultas en `src/features/<feature>/services/*.ts`; las páginas no llaman a Prisma directamente.
@@ -130,14 +118,14 @@ Los registros del JSON que referencien colecciones ya migradas (por ejemplo, res
 - Errores de Prisma a mensajes de usuario: `P2002` = valor único repetido; `P2003` = restricción de clave foránea (por ejemplo, borrar una categoría con servicios).
 - Reservas: verificar cupos y crear la reserva **en una sola transacción** con bloqueo (`SELECT … FOR UPDATE` o advisory lock) para evitar sobreventa.
 
-### 7.4 Reglas de migraciones
+### 7.3 Reglas de migraciones
 
 - Cambiar `schema.prisma` y crear la migración en la **misma rama y PR**: `npx prisma migrate dev --name descripcion-corta`.
 - **Nunca editar** una migración ya integrada a `develop`; crear una nueva.
 - **Toda tabla nueva** debe incluir `ALTER TABLE "<Tabla>" ENABLE ROW LEVEL SECURITY;` en su migración. No usar `FORCE ROW LEVEL SECURITY` (bloquearía a Prisma).
 - En bases compartidas usar `npx prisma migrate deploy`; `migrate reset` solo en una base local propia.
 
-### 7.5 Comandos
+### 7.4 Comandos
 
 ```bash
 npm run db:generate          # genera el cliente Prisma
@@ -169,11 +157,12 @@ npx prisma studio            # explorar datos
 
 | Tema | Estado |
 |---|---|
-| `DATABASE_URL` real en el `.env` de Nicolás | Pendiente (ver 3) |
-| Migrar el resto de colecciones | Pendiente (ver 7.2) |
+| Migrar el resto de colecciones | ✅ Hecho el 2026-10-06 |
+| `SESSION_SECRET` y `DATABASE_URL` en Vercel | Pendiente antes de desplegar |
+| Un empleado activo por servicio (índice parcial) | Confirmar con el equipo |
 | Integración Wompi (widget/checkout + webhook firmado) | Pendiente; modelo listo |
 | Supabase Auth / Google OAuth (`Usuario.auth_id`) | Otro responsable |
-| Job de expiración de bloqueos (10 min) | Pendiente: cron + filtro al consultar disponibilidad |
+| Job de expiración de bloqueos (10 min) | La disponibilidad ya ignora bloqueos vencidos; falta el cron que los marque `expirada` |
 | Festivos 2027 en adelante | Cargar en `Festivo`; los de oct–dic 2026 están en el seed (verificar contra el calendario oficial) |
 | Precio de piscina: ¿por ingreso o por hora? | Pregunta abierta al cliente |
 | Membresía 30 %: ¿mes completo de una vez o semana a semana? | Pregunta abierta al cliente |
@@ -186,6 +175,6 @@ npx prisma studio            # explorar datos
 | `admin@eliteclub.demo` | `Admin123!` | admin |
 | `cliente@eliteclub.demo` | `Cliente123!` | cliente |
 | `empleado@eliteclub.demo` | `Empleado123!` | empleado (Piscina olímpica) |
-| `mateo.vargas@eliteclub.demo` | `Empleado123!` | empleado (Fútbol 11), agregado en el seed porque el JSON lo tenía como empleado sin usuario |
+| `mateo.vargas@eliteclub.demo` | `Empleado123!` | empleado (Fútbol 11), agregado en el seed porque el JSON anterior lo tenía como empleado sin usuario |
 
 Credenciales ficticias, solo para entornos de prueba.

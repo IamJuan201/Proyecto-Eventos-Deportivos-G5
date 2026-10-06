@@ -15,8 +15,8 @@ Este documento parte de lo que ya existe en `develop` después de la integració
 | HU-19 Franjas horarias | PEDG-26 | 🟡 Parcial | `/admin/schedules` muestra un horario fijo de 08:00 a 17:00 y gestiona cierres; las franjas aún no son configurables. |
 
 **Cómo quedó integrado:**
-- Las pantallas y servicios de HU-17/18 se mantienen; los repositorios `mock-*.repository.ts` ahora leen y escriben en `data/elite-club-demo.json` mediante `src/shared/lib/demo-store.ts`.
-- Las acciones verifican `requireDemoRole("admin")` y el layout `(admin)` redirige si el usuario no es admin.
+- Las pantallas y servicios de HU-17/18 se mantienen. **Actualización 2026-10-06:** los repositorios `mock-*` y el JSON fueron reemplazados por `prisma-*.repository.ts` sobre PostgreSQL (ver [PLAN-MIGRACION-PRISMA.md](PLAN-MIGRACION-PRISMA.md)).
+- Las acciones verifican `requireRole("admin")` y el layout `(admin)` redirige si el usuario no es admin.
 - `demo-store` ya impide eliminar una categoría con servicios, y un servicio con reservas o empleados asignados.
 - `npm run lint` y `npm run typecheck` pasan en `develop`.
 

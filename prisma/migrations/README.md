@@ -12,7 +12,7 @@ Para aplicar la migración inicial en desarrollo:
 
 Para cambios posteriores al esquema, crea una migración versionada con npx prisma migrate dev --name descripcion-corta. El índice parcial que mantiene un solo empleado activo por servicio se define directamente en la migración inicial porque Prisma Schema Language no expresa índices parciales.
 
-La web incluye un almacén JSON compartido de demostración en data/elite-club-demo.json para probar el recorrido mientras se conecta el acceso de dominio a Prisma. No se deben subir datos reales de clientes a ese archivo.
+Los datos de demostración se cargan con `npx prisma db seed` desde `prisma/seed/datos.json` (idempotente). No se deben subir datos reales de clientes a ese archivo.
 
 ## Seguridad (Supabase)
 
