@@ -1,21 +1,23 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookingForm } from "@/features/reservations/components/booking-form";
-import { getDemoService, listDemoCategories, reservationDateBounds } from "@/shared/lib/demo-store";
-import { getJsonCurrentUser } from "@/features/auth/lib/json-auth";
+import { getCurrentUser } from "@/features/auth/lib/session";
+import { categoryService } from "@/features/categories/services/category.service";
+import { serviceService } from "@/features/services/services/service.service";
+import { reservationDateBounds } from "@/shared/lib/bogota-time";
 
 const symbols: Record<string, string> = { water: "〰", waves: "≈", slides: "↗", kids: "✦", fitness: "✣", wellness: "◌", football: "◈", micro: "▦", court: "⌗" };
 const money = (value: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(value);
 
 export default async function ServiceDetailPage({ params }: PageProps<"/services/[serviceId]">) {
   const { serviceId } = await params;
-  const [service, categories] = await Promise.all([getDemoService(serviceId), listDemoCategories()]);
+  const service = await serviceService.getById(serviceId);
   if (!service || !service.isActive) notFound();
-  const category = categories.find((item) => item.id === service.categoryId);
+  const category = await categoryService.getById(service.categoryId);
   if (!category?.isActive) notFound();
-  const art = service.artwork || "court";
+  const art = service.icon;
   const { min, max } = reservationDateBounds();
-  const user = await getJsonCurrentUser();
+  const user = await getCurrentUser();
 
   return (
     <main className="club-container">

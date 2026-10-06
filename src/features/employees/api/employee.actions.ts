@@ -2,39 +2,44 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { assignDemoEmployee, createDemoEmployeeAccount, setDemoEmployeeActive } from "@/shared/lib/demo-store";
-import { hashPassword, requireDemoRole } from "@/features/auth/lib/json-auth";
+import { hashPassword } from "@/features/auth/lib/password";
+import { requireRole } from "@/features/auth/lib/session";
+import { assignStaff, createStaffAccount, setStaffActive } from "@/features/employees/services/staff.service";
 
-export async function createDemoEmployeeAction(formData: FormData) {
-  await requireDemoRole("admin");
+const EMPLOYEES_PATH = "/admin/employees";
+
+async function run(work: () => Promise<void>, fallback: string) {
   try {
+    await work();
+  } catch (error) {
+    redirect(EMPLOYEES_PATH + "?error=" + encodeURIComponent(error instanceof Error ? error.message : fallback));
+  }
+  revalidatePath(EMPLOYEES_PATH);
+  revalidatePath("/employee");
+  revalidatePath("/scanner");
+  redirect(EMPLOYEES_PATH);
+}
+
+export async function createEmployeeAction(formData: FormData) {
+  await requireRole("admin");
+  await run(async () => {
     const password = String(formData.get("password") ?? "");
     if (password.length < 8) throw new Error("La contraseña inicial debe tener al menos 8 caracteres.");
-    await createDemoEmployeeAccount({
+    await createStaffAccount({
       name: String(formData.get("name") ?? ""),
       email: String(formData.get("email") ?? ""),
       serviceId: String(formData.get("serviceId") ?? ""),
       passwordHash: await hashPassword(password),
     });
-  } catch (error) {
-    redirect("/admin/employees?error=" + encodeURIComponent(error instanceof Error ? error.message : "No se pudo guardar el empleado."));
-  }
-  revalidatePath("/admin/employees");
-  redirect("/admin/employees");
+  }, "No se pudo guardar el empleado.");
 }
 
-export async function toggleDemoEmployeeAction(formData: FormData) {
-  await requireDemoRole("admin");
-  await setDemoEmployeeActive(String(formData.get("id") ?? ""), formData.get("isActive") === "true");
-  revalidatePath("/admin/employees");
-  revalidatePath("/employee");
-  revalidatePath("/scanner");
+export async function toggleEmployeeAction(formData: FormData) {
+  await requireRole("admin");
+  await run(() => setStaffActive(String(formData.get("id") ?? ""), formData.get("isActive") === "true"), "No se pudo cambiar el estado del empleado.");
 }
 
-export async function assignDemoEmployeeAction(formData: FormData) {
-  await requireDemoRole("admin");
-  await assignDemoEmployee(String(formData.get("id") ?? ""), String(formData.get("serviceId") ?? ""));
-  revalidatePath("/admin/employees");
-  revalidatePath("/scanner");
-  revalidatePath("/employee");
+export async function assignEmployeeAction(formData: FormData) {
+  await requireRole("admin");
+  await run(() => assignStaff(String(formData.get("id") ?? ""), String(formData.get("serviceId") ?? "")), "No se pudo reasignar el empleado.");
 }

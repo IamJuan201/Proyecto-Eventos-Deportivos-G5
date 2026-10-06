@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createReservationAction, loadAvailability } from "@/features/reservations/api/reservation.actions";
-import type { DemoService } from "@/shared/lib/demo-store";
+import type { Service } from "@/features/services/types/service.types";
 
 const money = (amount: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(amount);
 
@@ -12,7 +12,7 @@ function ReserveButton({ disabled }: { disabled: boolean }) {
   return <button className="club-button" type="submit" disabled={disabled || pending}>{pending ? "Guardando tu espacio…" : "Continuar al pago"} <span aria-hidden="true">→</span></button>;
 }
 
-export function BookingForm({ service, minDate, maxDate }: { service: DemoService; minDate: string; maxDate: string }) {
+export function BookingForm({ service, minDate, maxDate }: { service: Service; minDate: string; maxDate: string }) {
   const [state, action] = useActionState(createReservationAction, {});
   const [date, setDate] = useState(minDate);
   const [time, setTime] = useState("");

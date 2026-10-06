@@ -1,7 +1,7 @@
 import { categoryService } from "@/features/categories/services/category.service";
 import type { ServiceRepository } from "@/features/services/services/service.repository";
-import { mockServiceRepository } from "@/features/services/services/mock-service.repository";
-import { chargeTypes, qrTypes, type Service, type ServiceInput } from "@/features/services/types/service.types";
+import { prismaServiceRepository } from "@/features/services/services/prisma-service.repository";
+import { chargeTypes, qrTypes, serviceIcons, type Service, type ServiceInput } from "@/features/services/types/service.types";
 
 export class ServiceValidationError extends Error {}
 
@@ -12,6 +12,7 @@ export function createServiceService(repository: ServiceRepository) {
       name: input.name.trim(),
       description: input.description.trim(),
       imageUrl: input.imageUrl.trim(),
+      tag: input.tag.trim(),
     };
 
     if (data.name.length < 3 || data.name.length > 80) {
@@ -29,9 +30,6 @@ export function createServiceService(repository: ServiceRepository) {
     if (!Number.isFinite(data.price) || data.price < 0) {
       throw new ServiceValidationError("El precio debe ser mayor o igual a 0.");
     }
-    if (!Number.isInteger(data.durationMinutes) || data.durationMinutes < 15) {
-      throw new ServiceValidationError("La duración debe ser de al menos 15 minutos.");
-    }
     if (!Number.isInteger(data.capacity) || data.capacity < 1) {
       throw new ServiceValidationError("La capacidad debe ser un número entero mayor o igual a 1.");
     }
@@ -43,6 +41,12 @@ export function createServiceService(repository: ServiceRepository) {
     }
     if (!qrTypes.some((type) => type.value === data.qrType)) {
       throw new ServiceValidationError("Selecciona un tipo de QR válido.");
+    }
+    if (!serviceIcons.some((icon) => icon.value === data.icon)) {
+      throw new ServiceValidationError("Selecciona una ilustración válida.");
+    }
+    if (data.tag.length > 60) {
+      throw new ServiceValidationError("La etiqueta no puede superar los 60 caracteres.");
     }
     if (data.operatingDays.length === 0) {
       throw new ServiceValidationError("Selecciona al menos un día de operación.");
@@ -81,4 +85,4 @@ export function createServiceService(repository: ServiceRepository) {
   };
 }
 
-export const serviceService = createServiceService(mockServiceRepository);
+export const serviceService = createServiceService(prismaServiceRepository);

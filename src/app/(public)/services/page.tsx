@@ -1,8 +1,9 @@
 import { ServiceCard } from "@/shared/components/service-card";
-import { listDemoCategories, listDemoServices } from "@/shared/lib/demo-store";
+import { categoryService } from "@/features/categories/services/category.service";
+import { serviceService } from "@/features/services/services/service.service";
 
 export default async function ServicesPage() {
-  const [services, categories] = await Promise.all([listDemoServices(), listDemoCategories()]);
+  const [services, categories] = await Promise.all([serviceService.list(), categoryService.list()]);
   const activeCategories = categories.filter((category) => category.isActive);
   const availableServices = services.filter((service) => service.isActive);
 

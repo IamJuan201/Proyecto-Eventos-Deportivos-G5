@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { getJsonCurrentUser } from "@/features/auth/lib/json-auth";
+import { getCurrentUser } from "@/features/auth/lib/session";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 
 export async function SiteHeader() {
-  const user = await getJsonCurrentUser();
+  const user = await getCurrentUser();
   const accountName = user?.fullName ?? user?.email ?? "Mi cuenta";
   const accountPath = user?.role === "admin" ? "/admin/metrics" : user?.role === "empleado" ? "/employee" : "/my-reservations";
   return (
