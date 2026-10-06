@@ -5,7 +5,7 @@ import { readDemoDatabase } from "@/shared/lib/demo-store";
 export default async function HomePage() {
   const database = await readDemoDatabase();
   const categories = new Map(database.categories.map((category) => [category.id, category]));
-  const services = database.services.filter((service) => service.isActive);
+  const services = database.services.filter((service) => service.isActive && categories.get(service.categoryId)?.isActive);
   const activeBookings = database.reservations.filter((booking) => booking.status === "pagada").length;
 
   return (

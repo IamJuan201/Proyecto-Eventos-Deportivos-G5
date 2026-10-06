@@ -1,7 +1,7 @@
 import { categoryService } from "@/features/categories/services/category.service";
 import type { ServiceRepository } from "@/features/services/services/service.repository";
 import { mockServiceRepository } from "@/features/services/services/mock-service.repository";
-import type { Service, ServiceInput } from "@/features/services/types/service.types";
+import { chargeTypes, qrTypes, type Service, type ServiceInput } from "@/features/services/types/service.types";
 
 export class ServiceValidationError extends Error {}
 
@@ -34,6 +34,15 @@ export function createServiceService(repository: ServiceRepository) {
     }
     if (!Number.isInteger(data.capacity) || data.capacity < 1) {
       throw new ServiceValidationError("La capacidad debe ser un número entero mayor o igual a 1.");
+    }
+    if (!Number.isInteger(data.capacityPeople) || data.capacityPeople < 1) {
+      throw new ServiceValidationError("Las personas por reserva deben ser un número entero mayor o igual a 1.");
+    }
+    if (!chargeTypes.some((type) => type.value === data.chargeType)) {
+      throw new ServiceValidationError("Selecciona un tipo de cobro válido.");
+    }
+    if (!qrTypes.some((type) => type.value === data.qrType)) {
+      throw new ServiceValidationError("Selecciona un tipo de QR válido.");
     }
     if (data.operatingDays.length === 0) {
       throw new ServiceValidationError("Selecciona al menos un día de operación.");

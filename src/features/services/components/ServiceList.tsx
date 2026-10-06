@@ -12,59 +12,54 @@ interface ServiceListProps {
 }
 
 export function ServiceList({ services, categories }: ServiceListProps) {
-  if (services.length === 0) {
-    return <p className="text-sm text-gray-500">Aún no hay servicios registrados.</p>;
-  }
-
   const categoryNames = new Map(categories.map((category) => [category.id, category.name]));
 
   return (
-    <table className="w-full text-left text-sm">
-      <thead className="border-b">
-        <tr>
-          <th className="py-2">Nombre</th>
-          <th className="py-2">Categoría</th>
-          <th className="py-2">Precio</th>
-          <th className="py-2">Duración</th>
-          <th className="py-2">Capacidad</th>
-          <th className="py-2">Días</th>
-          <th className="py-2">Estado</th>
-          <th className="py-2">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {services.map((service) => (
-          <tr key={service.id} className="border-b">
-            <td className="py-2 font-medium">{service.name}</td>
-            <td className="py-2">{categoryNames.get(service.categoryId) ?? "Sin categoría"}</td>
-            <td className="py-2">{priceFormatter.format(service.price)}</td>
-            <td className="py-2">{service.durationMinutes} min</td>
-            <td className="py-2">{service.capacity === 1 ? "Individual" : `${service.capacity} cupos`}</td>
-            <td className="py-2">
-              {weekDays
-                .filter((day) => service.operatingDays.includes(day.value))
-                .map((day) => day.label.slice(0, 3))
-                .join(", ")}
-            </td>
-            <td className="py-2">
-              <span className={service.isActive ? "text-green-600" : "text-gray-400"}>
+    <section className="glass-panel admin-list">
+      <div className="admin-list-heading">
+        <div>
+          <h2>Servicios registrados</h2>
+          <p>{services.filter((service) => service.isActive).length} activos de {services.length}</p>
+        </div>
+      </div>
+
+      {services.length ? (
+        services.map((service) => {
+          const perPerson = service.chargeType === "por_persona";
+          const days = weekDays
+            .filter((day) => service.operatingDays.includes(day.value))
+            .map((day) => day.label.slice(0, 2))
+            .join(" · ");
+
+          return (
+            <article className="employee-row" key={service.id}>
+              <div className="employee-info">
+                <strong>{service.name}</strong>
+                <small>
+                  {categoryNames.get(service.categoryId) ?? "Sin categoría"} · {priceFormatter.format(service.price)} /{" "}
+                  {perPerson ? "persona" : "hora"} · {service.capacity} {perPerson ? "cupos" : "espacios"} por turno ·
+                  QR {service.qrType}
+                </small>
+                <small>{days}</small>
+              </div>
+              <span className={"booking-status " + (service.isActive ? "" : "status-expirada")}>
                 {service.isActive ? "Activo" : "Inactivo"}
               </span>
-            </td>
-            <td className="flex gap-3 py-2">
-              <Link href={`/admin/services?edit=${service.id}`} className="text-sm hover:underline">
+              <Link href={`/admin/services?edit=${service.id}`} className="small-link">
                 Editar
               </Link>
               <form action={toggleServiceStatus.bind(null, service.id, !service.isActive)}>
-                <button type="submit" className="text-sm hover:underline">
+                <button type="submit" className="small-link">
                   {service.isActive ? "Desactivar" : "Activar"}
                 </button>
               </form>
               <DeleteServiceButton id={service.id} name={service.name} />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+            </article>
+          );
+        })
+      ) : (
+        <div className="empty-state">Aún no hay servicios registrados.</div>
+      )}
+    </section>
   );
 }
