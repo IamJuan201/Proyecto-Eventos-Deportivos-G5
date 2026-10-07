@@ -18,7 +18,7 @@ Fuente de verdad del modelo de datos. Implementado en `prisma/schema.prisma`.
 
 **Categoria:** id pk, nombre varchar UNIQUE, descripcion varchar?, activa boolean
 
-**Servicio:** id pk, categoria_id fk→Categoria, nombre varchar, descripcion varchar, precio decimal, tipo_cobro TipoCobro, capacidad_por_hora int, capacidad_personas int (default 20), tipo_qr TipoQR, imagen_url varchar?, activo boolean
+**Servicio:** id pk, categoria_id fk→Categoria, nombre varchar, descripcion varchar, precio decimal, tipo_cobro TipoCobro, capacidad_por_hora int, capacidad_personas int (default 20), tipo_qr TipoQR, imagen_url varchar?, icono varchar?, etiqueta varchar?, activo boolean
 
 **HorarioServicio:** id pk, servicio_id fk→Servicio, dia_semana smallint, hora_inicio time, hora_fin time, activo boolean · UNIQUE(servicio_id, dia_semana, hora_inicio)
 
@@ -72,6 +72,7 @@ Wompi (Colombia: tarjetas, PSE, Nequi), modelada de forma genérica para poder c
 | `Pago`: `pasarela`, `referencia`, `transaccion_id`, `medio_pago?`; sin `stripe_payment_id`; varios pagos por reserva | Stripe no opera en Colombia; Wompi; webhook idempotente y reintentos. |
 | `Usuario.auth_id?` | Enlace futuro con Supabase Auth (correo confirmado y proveedores externos). |
 | `Categoria.descripcion?`, `Servicio.imagen_url?` | El catálogo público las muestra. |
+| `Servicio.icono?`, `Servicio.etiqueta?` (2026-10-06) | Ilustración y texto destacado de la tarjeta del catálogo. |
 | `CierreServicio.servicio_id?` | Cierres de todo el complejo en una sola fila. |
 | `RegistroAcceso.codigo_leido?` | Auditar qué se escaneó cuando el QR no existe. |
 | `TerminosAceptados.reserva_id` UNIQUE | Una aceptación por reserva. |

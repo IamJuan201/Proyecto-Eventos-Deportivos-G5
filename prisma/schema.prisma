@@ -111,6 +111,10 @@ model Servicio {
   capacidadPersonas Int               @default(20) @map("capacidad_personas")
   tipoQr            TipoQR            @map("tipo_qr")
   imagenUrl         String?           @map("imagen_url") @db.VarChar(500)
+  /// Ilustración de la tarjeta del catálogo (water, waves, court…); null = court.
+  icono             String?           @db.VarChar(20)
+  /// Texto corto destacado en la tarjeta, por ejemplo "Olas cada 30 min".
+  etiqueta          String?           @db.VarChar(60)
   activo            Boolean           @default(true)
   categoria         Categoria         @relation(fields: [categoriaId], references: [id], onDelete: Restrict)
   horarios          HorarioServicio[]

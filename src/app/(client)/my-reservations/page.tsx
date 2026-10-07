@@ -1,15 +1,15 @@
 import Link from "next/link";
-import { listDemoReservations } from "@/shared/lib/demo-store";
-import { getJsonCurrentUser } from "@/features/auth/lib/json-auth";
+import { getCurrentUser } from "@/features/auth/lib/session";
+import { listReservationsForUser } from "@/features/reservations/services/reservation.service";
 import { redirect } from "next/navigation";
 
 const dateText = (value: string) => new Intl.DateTimeFormat("es-CO", { dateStyle: "medium", timeZone: "America/Bogota" }).format(new Date(value + "T12:00:00-05:00"));
 
 export default async function MyReservationsPage() {
-  const user = await getJsonCurrentUser();
+  const user = await getCurrentUser();
   if (!user) redirect("/login?next=%2Fmy-reservations");
   if (user.role !== "cliente") redirect(user.role === "admin" ? "/admin/metrics" : "/employee");
-  const reservations = await listDemoReservations(user.email);
+  const reservations = await listReservationsForUser(user.id);
   return (
     <main className="club-container reservations-wrap">
       <section className="page-heading compact-page-heading"><span className="eyebrow">TU HISTORIAL EN ÉLITE CLUB</span><h1>Mis reservas.</h1><p>Consulta el estado de tus turnos y vuelve a abrir tus códigos QR.</p></section>

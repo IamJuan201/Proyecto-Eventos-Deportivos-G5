@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import type { Category } from "@/features/categories/types/category.types";
 import { saveService, type ServiceFormState } from "@/features/services/api/service.actions";
-import { chargeTypes, qrTypes, weekDays, type Service } from "@/features/services/types/service.types";
+import { chargeTypes, qrTypes, serviceIcons, weekDays, type Service } from "@/features/services/types/service.types";
 
 const initialState: ServiceFormState = {};
 
@@ -117,21 +117,30 @@ export function ServiceForm({ categories, service }: ServiceFormProps) {
           </select>
         </label>
         <label>
-          Duración (minutos)
-          <input
-            className="club-input"
-            name="durationMinutes"
-            type="number"
-            min={15}
-            step={1}
-            defaultValue={service?.durationMinutes ?? 60}
-            required
-          />
+          Ilustración
+          <select className="club-input" name="icon" defaultValue={service?.icon ?? "court"}>
+            {serviceIcons.map((icon) => (
+              <option key={icon.value} value={icon.value}>
+                {icon.label}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
       <small className="field-hint">
         Capacidad por turno: espacios simultáneos si se cobra por hora, o cupos si se cobra por persona.
       </small>
+
+      <label>
+        Etiqueta destacada
+        <input
+          className="club-input"
+          name="tag"
+          defaultValue={service?.tag}
+          maxLength={60}
+          placeholder="Hasta 20 jugadores"
+        />
+      </label>
 
       <label>
         URL de la imagen

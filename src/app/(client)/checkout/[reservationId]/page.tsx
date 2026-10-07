@@ -3,14 +3,16 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { DemoPaymentButton } from "@/features/reservations/components/demo-payment-button";
-import { getDemoReservation } from "@/shared/lib/demo-store";
+import { requireRole } from "@/features/auth/lib/session";
+import { getReservationForUser } from "@/features/reservations/services/reservation.service";
 
 const money = (value: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(value);
 const dateText = (value: string) => new Intl.DateTimeFormat("es-CO", { dateStyle: "full", timeZone: "America/Bogota" }).format(new Date(value + "T12:00:00-05:00"));
 
 export default async function CheckoutPage({ params }: { params: Promise<{ reservationId: string }> }) {
   const { reservationId } = await params;
-  const reservation = await getDemoReservation(reservationId);
+  const user = await requireRole("cliente");
+  const reservation = await getReservationForUser(reservationId, user.id);
   if (!reservation) notFound();
 
   const ticketImages = reservation.status === "pagada"
@@ -34,7 +36,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ reser
         <div className="checkout-total"><span><small>SUBTOTAL</small><strong>{money(reservation.subtotal)}</strong></span><span><small>TOTAL A PAGAR</small><strong>{money(reservation.total)}</strong></span></div>
 
         {reservation.status === "pendiente_pago" && <>
-          <div className="payment-deadline"><span>◷</span><p>Tu horario está bloqueado durante 10 minutos, hasta las <strong>{new Date(reservation.paymentExpiresAt).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", timeZone: "America/Bogota" })}</strong>.</p></div>
+          <div className="payment-deadline"><span>◷</span><p>Tu horario está bloqueado durante 10 minutos, hasta las <strong>{reservation.paymentExpiresAt && new Date(reservation.paymentExpiresAt).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", timeZone: "America/Bogota" })}</strong>.</p></div>
           <div className="notice-demo"><strong>Modo demostración:</strong> Stripe no está configurado para este sprint. El botón registra un pago de prueba y genera los QR, sin cobrar dinero real.</div>
           <DemoPaymentButton reservationId={reservation.id} />
         </>}

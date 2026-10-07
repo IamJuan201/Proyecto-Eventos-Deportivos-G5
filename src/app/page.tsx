@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { ServiceCard } from "@/shared/components/service-card";
-import { readDemoDatabase } from "@/shared/lib/demo-store";
+import { categoryService } from "@/features/categories/services/category.service";
+import { serviceService } from "@/features/services/services/service.service";
+import { getPrisma } from "@/shared/lib/prisma";
 
 export default async function HomePage() {
-  const database = await readDemoDatabase();
-  const categories = new Map(database.categories.map((category) => [category.id, category]));
-  const services = database.services.filter((service) => service.isActive && categories.get(service.categoryId)?.isActive);
-  const activeBookings = database.reservations.filter((booking) => booking.status === "pagada").length;
+  const [allCategories, allServices, activeBookings] = await Promise.all([
+    categoryService.list(),
+    serviceService.list(),
+    getPrisma().reserva.count({ where: { estado: "pagada" } }),
+  ]);
+  const categories = new Map(allCategories.map((category) => [category.id, category]));
+  const services = allServices.filter((service) => service.isActive && categories.get(service.categoryId)?.isActive);
 
   return (
     <main>

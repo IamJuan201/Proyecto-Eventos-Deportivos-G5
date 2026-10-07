@@ -2,17 +2,15 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { verifyDemoQrAction } from "@/features/reservations/api/reservation.actions";
-import type { DemoService } from "@/shared/lib/demo-store";
+import { verifyQrAction } from "@/features/reservations/api/reservation.actions";
 
 type ScanState = { result: string; message: string } | null;
 
-export default function ScanPage({ service, stats }: { service: DemoService; stats: { today: number; allowedToday: number; rejectedToday: number } }) {
+export default function ScanPage({ serviceName, isPoolService, stats }: { serviceName: string; isPoolService: boolean; stats: { today: number; allowedToday: number; rejectedToday: number } }) {
   const [code, setCode] = useState("");
   const [scanState, setScanState] = useState<ScanState>(null);
   const [cameraMessage, setCameraMessage] = useState("Permite el acceso a la cámara o escribe el código manualmente.");
   const [pending, startTransition] = useTransition();
-  const isPoolService = service.categoryId === "piscinas" || service.name.toLowerCase().includes("piscina");
 
   useEffect(() => {
     const element = document.getElementById("reader");
@@ -29,7 +27,7 @@ export default function ScanPage({ service, stats }: { service: DemoService; sta
   function submit(formData: FormData) {
     setScanState(null);
     startTransition(async () => {
-      const result = await verifyDemoQrAction(formData);
+      const result = await verifyQrAction(formData);
       setScanState(result);
     });
   }
@@ -39,10 +37,10 @@ export default function ScanPage({ service, stats }: { service: DemoService; sta
       <section className="page-heading compact-page-heading">
         <span className="eyebrow">CONTROL DE ACCESO · PERSONAL ÉLITE</span>
         <h1>Valida. Da la bienvenida.</h1>
-        <p>Escanea el QR o escribe el código. Tu cuenta solo puede validar ingresos para {service.name}; un QR de otro espacio no se consume.</p>
+        <p>Escanea el QR o escribe el código. Tu cuenta solo puede validar ingresos para {serviceName}; un QR de otro espacio no se consume.</p>
       </section>
       <section className="glass-panel scanner-card">
-        <div className="scanner-heading"><div><h2>Escáner · {service.name}</h2><p>{cameraMessage} Hoy: {stats.allowedToday} autorizados de {stats.today} lecturas.</p></div><span className="scanner-live"><i /> TU ESPACIO</span></div>
+        <div className="scanner-heading"><div><h2>Escáner · {serviceName}</h2><p>{cameraMessage} Hoy: {stats.allowedToday} autorizados de {stats.today} lecturas.</p></div><span className="scanner-live"><i /> TU ESPACIO</span></div>
         <div id="reader" />
         <form action={submit} className="scanner-form">
           <div className="booking-field"><label htmlFor="scan-code">Código de reserva</label><input className="club-input scan-code-input" name="code" id="scan-code" autoComplete="off" placeholder="ELITE-…" value={code} onChange={(event) => setCode(event.target.value)} required /></div>

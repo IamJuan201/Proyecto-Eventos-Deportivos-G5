@@ -3,15 +3,15 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { serviceService } from "@/features/services/services/service.service";
-import type { ChargeType, QrType, ServiceInput, WeekDay } from "@/features/services/types/service.types";
-import { requireDemoRole } from "@/features/auth/lib/json-auth";
+import type { ChargeType, QrType, ServiceIcon, ServiceInput, WeekDay } from "@/features/services/types/service.types";
+import { requireRole } from "@/features/auth/lib/session";
 
 const SERVICES_PATH = "/admin/services";
 
 export type ServiceFormState = { error?: string; success?: boolean };
 
 export async function saveService(_prevState: ServiceFormState, formData: FormData): Promise<ServiceFormState> {
-  await requireDemoRole("admin");
+  await requireRole("admin");
   const id = String(formData.get("id") ?? "");
   const input: ServiceInput = {
     categoryId: String(formData.get("categoryId") ?? ""),
@@ -19,12 +19,13 @@ export async function saveService(_prevState: ServiceFormState, formData: FormDa
     description: String(formData.get("description") ?? ""),
     imageUrl: String(formData.get("imageUrl") ?? ""),
     price: Number(formData.get("price")),
-    durationMinutes: Number(formData.get("durationMinutes")),
     capacity: Number(formData.get("capacity")),
     capacityPeople: Number(formData.get("capacityPeople")),
     chargeType: String(formData.get("chargeType") ?? "") as ChargeType,
     qrType: String(formData.get("qrType") ?? "") as QrType,
     operatingDays: formData.getAll("operatingDays").map((day) => Number(day) as WeekDay),
+    icon: String(formData.get("icon") ?? "court") as ServiceIcon,
+    tag: String(formData.get("tag") ?? ""),
   };
 
   try {
@@ -45,7 +46,7 @@ export async function saveService(_prevState: ServiceFormState, formData: FormDa
 }
 
 export async function toggleServiceStatus(id: string, isActive: boolean) {
-  await requireDemoRole("admin");
+  await requireRole("admin");
   try {
     await serviceService.setActive(id, isActive);
   } catch (error) {
@@ -55,7 +56,7 @@ export async function toggleServiceStatus(id: string, isActive: boolean) {
 }
 
 export async function deleteService(id: string) {
-  await requireDemoRole("admin");
+  await requireRole("admin");
   try {
     await serviceService.delete(id);
   } catch (error) {

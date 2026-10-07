@@ -1,11 +1,12 @@
 import Link from "next/link";
-import type { DemoCategory, DemoService } from "@/shared/lib/demo-store";
+import type { Category } from "@/features/categories/types/category.types";
+import type { Service } from "@/features/services/types/service.types";
 
 const symbols: Record<string, string> = { water: "〰", waves: "≈", slides: "↗", kids: "✦", fitness: "✣", wellness: "◌", football: "◈", micro: "▦", court: "⌗" };
 const money = (price: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(price);
 
-export function ServiceCard({ service, category }: { service: DemoService; category?: DemoCategory }) {
-  const art = service.artwork || category?.artwork || "court";
+export function ServiceCard({ service, category }: { service: Service; category?: Category }) {
+  const art = service.icon;
   return (
     <article className="glass-panel club-card-hover service-card">
       <Link href={"/services/" + service.id} className="service-card-link">

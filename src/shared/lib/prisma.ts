@@ -1,6 +1,6 @@
 import "server-only";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@/generated/prisma/client";
+import { Prisma, PrismaClient } from "@/generated/prisma/client";
 
 // One client per server process; globalThis keeps it across hot reloads in development.
 const globalForPrisma = globalThis as typeof globalThis & { prisma?: PrismaClient };
@@ -19,3 +19,11 @@ export function getPrisma(): PrismaClient {
   globalForPrisma.prisma = client;
   return client;
 }
+
+/** P2002 = unique value already exists; P2003 = foreign key still referenced. */
+export function isPrismaError(error: unknown, code: "P2002" | "P2003" | "P2025"): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === code;
+}
+
+/** Ids arrive from URLs and forms; PostgreSQL rejects a malformed uuid instead of returning no rows. */
+export const isUuid = (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);

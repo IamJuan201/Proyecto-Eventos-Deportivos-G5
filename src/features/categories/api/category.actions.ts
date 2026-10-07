@@ -3,14 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { categoryService } from "@/features/categories/services/category.service";
-import { requireDemoRole } from "@/features/auth/lib/json-auth";
+import { requireRole } from "@/features/auth/lib/session";
 
 const CATEGORIES_PATH = "/admin/categories";
 
 export type CategoryFormState = { error?: string; success?: boolean };
 
 export async function saveCategory(_prevState: CategoryFormState, formData: FormData): Promise<CategoryFormState> {
-  await requireDemoRole("admin");
+  await requireRole("admin");
   const id = String(formData.get("id") ?? "");
   const input = {
     name: String(formData.get("name") ?? ""),
@@ -35,7 +35,7 @@ export async function saveCategory(_prevState: CategoryFormState, formData: Form
 }
 
 export async function toggleCategoryStatus(id: string, isActive: boolean) {
-  await requireDemoRole("admin");
+  await requireRole("admin");
   try {
     await categoryService.setActive(id, isActive);
   } catch (error) {
@@ -45,7 +45,7 @@ export async function toggleCategoryStatus(id: string, isActive: boolean) {
 }
 
 export async function deleteCategory(id: string) {
-  await requireDemoRole("admin");
+  await requireRole("admin");
   try {
     await categoryService.delete(id);
   } catch (error) {

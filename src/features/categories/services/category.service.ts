@@ -1,5 +1,5 @@
 import type { CategoryRepository } from "@/features/categories/services/category.repository";
-import { mockCategoryRepository } from "@/features/categories/services/mock-category.repository";
+import { prismaCategoryRepository } from "@/features/categories/services/prisma-category.repository";
 import type { Category, CategoryInput } from "@/features/categories/types/category.types";
 
 export class CategoryValidationError extends Error {}
@@ -54,4 +54,4 @@ export function createCategoryService(repository: CategoryRepository) {
   };
 }
 
-export const categoryService = createCategoryService(mockCategoryRepository);
+export const categoryService = createCategoryService(prismaCategoryRepository);

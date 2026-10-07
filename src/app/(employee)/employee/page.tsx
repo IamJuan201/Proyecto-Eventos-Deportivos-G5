@@ -1,16 +1,15 @@
 import Link from 'next/link';
-import { getJsonCurrentUser } from '@/features/auth/lib/json-auth';
-import { getEmployeeAccessStats, listDemoEmployees, listDemoServices } from '@/shared/lib/demo-store';
+import { getAccessStats } from '@/features/access-control/services/access.service';
+import { getCurrentUser } from '@/features/auth/lib/session';
+import { getActiveStaffByUser } from '@/features/employees/services/staff.service';
 
 export default async function EmployeeHomePage() {
-  const user = await getJsonCurrentUser();
+  const user = await getCurrentUser();
   if (!user) return null;
-  const [employees, services] = await Promise.all([listDemoEmployees(), listDemoServices()]);
-  const employee = employees.find((item) => item.email.toLowerCase() === user.email.toLowerCase() && item.isActive);
-  const service = employee && services.find((item) => item.id === employee.serviceId);
-  const stats = employee ? await getEmployeeAccessStats(employee.id) : null;
+  const employee = await getActiveStaffByUser(user.id);
+  const stats = employee ? await getAccessStats(employee.id) : null;
   return <main className="club-container admin-wrap">
-    <section className="page-heading compact-page-heading"><span className="eyebrow">PANEL DEL EMPLEADO</span><h1>Hola, {user.fullName.split(' ')[0]}.</h1><p>Tu espacio asignado: <strong>{service?.name ?? 'Sin espacio asignado'}</strong>. Desde aquí puedes revisar tu actividad y validar ingresos.</p></section>
+    <section className="page-heading compact-page-heading"><span className="eyebrow">PANEL DEL EMPLEADO</span><h1>Hola, {user.fullName.split(' ')[0]}.</h1><p>Tu espacio asignado: <strong>{employee?.serviceName ?? 'Sin espacio asignado'}</strong>. Desde aquí puedes revisar tu actividad y validar ingresos.</p></section>
     <nav className="admin-tabs" aria-label="Secciones del empleado"><a href="/employee" aria-current="page">Mi actividad</a><a href="/scanner">Escanear QR</a></nav>
     <section className="metrics-grid">{[
       { label: 'Lecturas hoy', value: stats?.today ?? 0, detail: 'Códigos revisados en tu turno' },
