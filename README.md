@@ -4,9 +4,15 @@ Aplicación web para explorar espacios de un complejo deportivo, reservar turnos
 
 ## Estado del sprint
 
-La demo incluye lobby y catálogo con identidad visual Élite Club, autenticación email/password, disponibilidad y reserva, checkout/pago simulado, generación de QR, escáner de acceso y herramientas de operación. **Toda la persistencia está en PostgreSQL (Supabase) y se accede con Prisma**; el antiguo JSON de demo (`data/elite-club-demo.json`) fue retirado.
+La demo incluye lobby y catálogo con identidad visual Élite Club, autenticación email/password, disponibilidad y reserva, checkout/pago simulado, generación de QR, escáner de acceso y herramientas de operación. **Toda la persistencia está en PostgreSQL (Supabase) y se accede con Prisma.**
 
-El modelo sigue el DER v2 ([docs/DER.md](docs/DER.md)). Los pagos son demostrativos: no se realiza ningún cargo real (la integración con Wompi está pendiente).
+Los pagos son demostrativos: no se realiza ningún cargo real (la integración con Wompi está pendiente).
+
+| Documento | Contenido |
+| --- | --- |
+| [docs/BASE-DE-DATOS.md](docs/BASE-DE-DATOS.md) | Configuración, código por feature, sesión y Supabase Auth, migraciones, reglas, seguridad y pendientes. |
+| [docs/DER.md](docs/DER.md) | Modelo de datos (fuente de verdad). |
+| [GIT_WORKFLOW.md](GIT_WORKFLOW.md) | Ramas y Pull Requests. |
 
 ## Inicio rápido
 
@@ -30,10 +36,8 @@ La base compartida ya tiene las migraciones y el seed aplicados. Si trabajas con
 | `npm run lint` | ESLint. |
 | `npm run typecheck` | Verificación de tipos TypeScript. |
 | `npm run build` | `prisma generate` + compilación de producción. |
-| `npm run db:generate` | Genera el cliente Prisma en `src/generated/prisma` (ignorado por git). |
-| `npm run db:migrate` | Aplica migraciones pendientes (`prisma migrate deploy`). |
-| `npx prisma db seed` | Carga `prisma/seed/datos.json`; es idempotente. |
-| `npx prisma studio` | Explorar los datos. |
+| `npm run db:generate` | Genera el cliente Prisma. |
+| `npm run db:migrate` / `npx prisma db seed` | Migraciones y datos demo (ver [docs/BASE-DE-DATOS.md](docs/BASE-DE-DATOS.md)). |
 
 ## Funcionalidad implementada
 
@@ -63,33 +67,22 @@ La base compartida ya tiene las migraciones y el seed aplicados. Si trabajas con
 - El pago de prueba confirma y genera QR individual o grupal. Un QR solo se consume una vez, aunque se lea dos veces al mismo tiempo.
 - La membresía no aplica descuento aún: mantenerlo en 0 hasta acordar regla y escenarios con el cliente.
 
-## Registro, inicio de sesión y OAuth
+## Cuentas y roles
 
-- `/register` y `/login` llaman a `/api/auth/register`, `/api/auth/login` y `/api/auth/logout`. Los usuarios se guardan en la tabla `Usuario` con su `Rol`.
-- Las contraseñas se almacenan derivadas con `scrypt` (`src/features/auth/lib/password.ts`).
-- La sesión es una cookie `HttpOnly`, `SameSite=Lax`, de 14 días, **firmada con HMAC** (`SESSION_SECRET`); no hay tabla de sesiones. En cada request se vuelve a leer el usuario de la base, así una cuenta desactivada o un cambio de rol aplican de inmediato. Es un puente hasta Supabase Auth (`Usuario.auth_id`). Ver `src/features/auth/lib/session.ts`.
-- Cuentas listas para el demo (credenciales ficticias, no usar fuera de entornos de prueba):
+- Registro e inicio de sesión con correo y contraseña en `/register` y `/login`; también Google y GitHub cuando están configuradas las variables `NEXT_PUBLIC_SUPABASE_*`. Cómo funciona la sesión: [docs/BASE-DE-DATOS.md §4](docs/BASE-DE-DATOS.md#4-sesión-y-supabase-auth).
+- **Admin:** `/admin/metrics`, `/admin/categories`, `/admin/services`, `/admin/schedules`, `/admin/employees`.
+- **Empleado:** `/employee` (actividad) y `/scanner` (solo su espacio).
+- **Cliente:** `/services`, reserva, checkout y `/my-reservations`.
+- El admin crea empleados desde Operación → Empleados; el registro público crea clientes.
 
-  | Perfil | Correo | Contraseña |
-  | --- | --- | --- |
-  | Administrador | `admin@eliteclub.demo` | `Admin123!` |
-  | Cliente | `cliente@eliteclub.demo` | `Cliente123!` |
-  | Empleado (Piscina olímpica) | `empleado@eliteclub.demo` | `Empleado123!` |
-  | Empleado (Fútbol 11) | `mateo.vargas@eliteclub.demo` | `Empleado123!` |
+Cuentas demo (credenciales ficticias, solo para pruebas):
 
-- Admin (`admin`): `/admin/metrics`, `/admin/services`, `/admin/categories`, `/admin/schedules`, `/admin/employees`. Las rutas y acciones administrativas verifican el rol.
-- Empleado (`empleado`): `/employee` muestra lecturas diarias, autorizados, rechazos e historial reciente; `/scanner` valida QRs únicamente en su espacio activo.
-- Cliente (`cliente`): explora `/services`, reserva y consulta su historial en `/my-reservations` (filtrado por su id de usuario).
-- El admin crea empleados desde Operación → Empleados (crea `Usuario` + `Empleado` en una transacción). El alta pública crea usuarios cliente.
-- OAuth de Google y GitHub vía Supabase: los botones se muestran cuando `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` están configuradas. El callback crea o recupera el `Usuario` (sin contraseña, con `proveedor_auth` y `auth_id`) y abre la sesión.
-- Recuperación/restablecimiento de contraseña sigue dependiendo de Supabase Auth.
-
-## Base de datos
-
-- Guía completa, convenciones y reglas de migraciones: [docs/MIGRACION-DATOS.md](docs/MIGRACION-DATOS.md) y [prisma/migrations/README.md](prisma/migrations/README.md).
-- Cliente único: `getPrisma()` de `@/shared/lib/prisma`, solo en servidor. Las consultas viven en `src/features/<feature>/services/`; las páginas no llaman a Prisma directamente (excepto conteos simples).
-- Fechas y horas de negocio en `America/Bogota` con las utilidades de `src/shared/lib/bogota-time.ts`.
-- Las tablas están cerradas a la API pública de Supabase (RLS sin políticas). No usar `.from()` de Supabase para datos de dominio. No exponer nunca una service-role key en el navegador.
+| Perfil | Correo | Contraseña |
+| --- | --- | --- |
+| Administrador | `admin@eliteclub.demo` | `Admin123!` |
+| Cliente | `cliente@eliteclub.demo` | `Cliente123!` |
+| Empleado (Piscina olímpica) | `empleado@eliteclub.demo` | `Empleado123!` |
+| Empleado (Fútbol 11) | `mateo.vargas@eliteclub.demo` | `Empleado123!` |
 
 ## Mapa del repositorio
 
