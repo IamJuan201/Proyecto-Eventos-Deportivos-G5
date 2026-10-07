@@ -9,7 +9,7 @@ const money = (amount: number) => new Intl.NumberFormat("es-CO", { style: "curre
 
 function ReserveButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
-  return <button className="club-button" type="submit" disabled={disabled || pending}>{pending ? "Guardando tu espacio…" : "Continuar al pago"} <span aria-hidden="true">→</span></button>;
+  return <button className="club-button" type="submit" disabled={disabled || pending}>{pending ? "Guardando tu espacio…" : "Continuar al pago"}</button>;
 }
 
 export function BookingForm({ service, minDate, maxDate }: { service: DemoService; minDate: string; maxDate: string }) {

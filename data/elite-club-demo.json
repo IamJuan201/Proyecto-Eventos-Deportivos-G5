@@ -303,9 +303,107 @@
       "lastActivity": null
     }
   ],
-  "reservations": [],
-  "payments": [],
-  "qrs": [],
+  "reservations": [
+    {
+      "id": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "customerName": "Cliente Demo",
+      "customerEmail": "cliente@eliteclub.demo",
+      "customerIdNumber": "54498495",
+      "serviceId": "toboganes",
+      "serviceName": "Zona de toboganes",
+      "date": "2026-10-14",
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "quantity": 8,
+      "people": 8,
+      "status": "pagada",
+      "subtotal": 16000,
+      "discount": 0,
+      "total": 16000,
+      "paymentExpiresAt": "2026-10-07T17:53:41.106Z",
+      "createdAt": "2026-10-07T17:43:41.106Z",
+      "termsVersion": "2026-10-01",
+      "containsMinor": false,
+      "responsibleAdult": null
+    }
+  ],
+  "payments": [
+    {
+      "id": "60ddbefe-54ef-4b90-8cdd-93f2271c3a94",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "reference": "DEMO-5C000417",
+      "amount": 16000,
+      "method": "Tarjeta de prueba",
+      "status": "aprobado",
+      "paidAt": "2026-10-07T17:43:44.597Z"
+    }
+  ],
+  "qrs": [
+    {
+      "id": "6538008e-84cb-4d18-b037-d6f7d25912c8",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "code": "ELITE-FE47E0CA2FED4107A6",
+      "type": "individual",
+      "used": false,
+      "usedAt": null
+    },
+    {
+      "id": "f7015bc2-053e-4406-920e-cac2bf942afe",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "code": "ELITE-3C7D9600FADB43BD99",
+      "type": "individual",
+      "used": false,
+      "usedAt": null
+    },
+    {
+      "id": "f6d221b9-c0ea-47e3-af10-2b6c82c38060",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "code": "ELITE-17D32AEAF2894C4FA8",
+      "type": "individual",
+      "used": false,
+      "usedAt": null
+    },
+    {
+      "id": "ded9e701-fa31-4041-9fe9-0832bb22e31a",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "code": "ELITE-167D55176AF44ECC99",
+      "type": "individual",
+      "used": false,
+      "usedAt": null
+    },
+    {
+      "id": "02057dd2-1f90-431d-950d-58f07b64d942",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "code": "ELITE-6300083C36CD4188BF",
+      "type": "individual",
+      "used": false,
+      "usedAt": null
+    },
+    {
+      "id": "bac10762-37dd-4a54-9a52-cda345924432",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "code": "ELITE-7BFD781C6287436FB9",
+      "type": "individual",
+      "used": false,
+      "usedAt": null
+    },
+    {
+      "id": "9afe0eaa-14b3-4ea7-a785-f8d180513301",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "code": "ELITE-51DD7C890AEB4B8885",
+      "type": "individual",
+      "used": false,
+      "usedAt": null
+    },
+    {
+      "id": "057ff05e-0ee9-42e3-91e4-c8add2cdb41b",
+      "reservationId": "38d213fc-be9b-48c6-ab7a-73fcbcf90284",
+      "code": "ELITE-984375C7F9C2406180",
+      "type": "individual",
+      "used": false,
+      "usedAt": null
+    }
+  ],
   "accessLogs": [],
   "closures": [],
   "termsVersion": "2026-10-01",
@@ -335,5 +433,11 @@
       "createdAt": "2026-10-01T00:00:00.000Z"
     }
   ],
-  "sessions": []
+  "sessions": [
+    {
+      "token": "97346b78-83ea-4d1c-aa6e-4aa733aff3b89d3155da-b5d5-404c-8ad1-ead603c1aeae",
+      "userId": "5306d14e-95eb-420c-a028-34e476f027a0",
+      "expiresAt": "2026-10-21T17:42:55.861Z"
+    }
+  ]
 }

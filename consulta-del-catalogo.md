@@ -1,95 +1,143 @@
-# HU-20: Consulta del Catálogo de Servicios
+# Bitácora Técnica de Desarrollo: Proyecto Élite Club
 
-Documentación técnica de los cambios realizados en el marco de la historia de usuario **HU-20: Consulta del catálogo de servicios** (rama: `jonathan-feature/HU-20/Consulta-del-catalogo-de-servicios`).
-
----
-
-## 1. Resumen de Cambios
-
-Se realizó la configuración del sistema de diseño base en el archivo global de estilos (`src/app/globals.css`), estableciendo la paleta de colores corporativa, variables CSS personalizadas, utilidades de Glassmorphism, barra de navegación personalizada y transiciones suaves para la presentación del catálogo de servicios.
+Este documento registra de manera integral y cronológica todos los avances, refactorizaciones y características desarrolladas en el proyecto **Élite Club - Eventos Deportivos**, sirviendo como registro de cambios (Changelog) y guía técnica tanto de lo ejecutado previamente como de las sesiones presentes y futuras.
 
 ---
 
-## 2. Paleta de Colores y Variables de Diseño (`:root`)
-
-Se implementó la paleta **Elite Club - Grises Carbón y Azul Tecnológico**, diseñada para una interfaz oscura, moderna y deportiva de alto rendimiento:
-
-| Variable CSS | Valor | Propósito / Uso |
-| :--- | :--- | :--- |
-| `--bg-base` | `#141618` | Color de fondo principal de la aplicación (carbón oscuro). |
-| `--bg-surface` | `#1A1D20` | Superficies, tarjetas de servicios y contenedores secundarios. |
-| `--glass-bg` | `rgba(26, 29, 32, 0.75)` | Fondo translúcido para paneles con efecto de vidrio. |
-| `--glass-border` | `rgba(255, 255, 255, 0.08)` | Borde sutil para resaltar contenedores translúcidos. |
-| `--accent-blue` | `#0085FF` | Color de acento primario (botones, enlaces, tags destacados). |
-| `--accent-blue-hover`| `#006FCC` | Estado hover para elementos interactivos en azul. |
-| `--text-primary` | `#FFFFFF` | Texto principal de alto contraste y legibilidad. |
-| `--text-secondary` | `#94A3B8` | Texto secundario, descripciones breves, subtítulos y precios. |
-| `--transition-smooth`| `all 0.6s cubic-bezier(0.16, 1, 0.3, 1)` | Curva de animación suave para interacciones y scroll. |
+## 📌 Tabla de Contenidos
+1. [Visión General del Proyecto](#visión-general-del-proyecto)
+2. [Sprint 1: Base de Diseño y Catálogo de Servicios (HU-20)](#1-sprint-1-base-de-diseño-y-catálogo-de-servicios-hu-20)
+3. [Sprint 2: Hero Section, Identidad Visual y Responsive Navbar / Footer](#2-sprint-2-hero-section-identidad-visual-y-responsive-navbar--footer)
+4. [Sprint 3: Normalización de Botones y Paleta Azul Cielo](#3-sprint-3-normalización-de-botones-y-paleta-azul-cielo)
+5. [Sprint 4: Módulo de Autenticación, OAuth y Navbar de Usuario](#4-sprint-4-módulo-de-autenticación-oauth-y-navbar-de-usuario)
+6. [Resumen de Archivos y Componentes Clave](#5-resumen-de-archivos-y-componentes-clave)
+7. [Convención para Documentar Cambios Futuros](#6-convención-para-documentar-cambios-futuros)
 
 ---
 
-## 3. Estilos Globales Implementados (`src/app/globals.css`)
+## Visión General del Proyecto
+* **Framework:** Next.js 16 (App Router con Turbopack) & React 19.
+* **Lenguaje:** TypeScript (estricto).
+* **Estilos:** Tailwind CSS v4 con variables CSS personalizadas para tema oscuro atlético.
+* **Base de Datos / Persistencia:** Prisma ORM, Supabase Auth / SSR y tienda demo local para sprints ágiles.
+* **Identidad Visual:** Tema oscuro cinematográfico (`#0b0f15`, `#121824`), con acento corporativo **Azul Cielo** (`#0ea5e9` / `#38bdf8`), bordes sutiles y efectos Glassmorphism translúcidos.
 
-### 3.1 Estilos Base del `body`
-* **Fondo y Texto**: Se enlaza `--bg-base` y `--text-primary` por defecto.
-* **Tipografía**: Pila de fuentes del sistema moderna (`system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`).
-* **Control de desbordamiento**: `overflow-x: hidden` para evitar scroll horizontal no deseado.
+---
 
-### 3.2 Scrollbar Personalizada
-Barra de desplazamiento discreta y estilizada acorde al tema oscuro:
-* Ancho reducido a `6px`.
-* Fondo integrado con `--bg-base`.
-* Tirador (thumb) translúcido con bordes redondeados (`border-radius: 3px`).
-* Estado hover resaltado con el color de acento `--accent-blue`.
+## 1. Sprint 1: Base de Diseño y Catálogo de Servicios (HU-20)
+* **Objetivo:** Establecer el sistema de diseño base en `src/app/globals.css` y la navegación del catálogo de servicios deportivos.
+* **Cambios realizados:**
+  - Definición de tokens y variables `:root` (`--bg-base`, `--bg-surface`, `--glass-bg`, `--glass-border`, `--transition-smooth`).
+  - Creación de clases de utilidad para Glassmorphism (`.glass-panel`) con `backdrop-filter: blur(16px)`.
+  - Estructuración de tarjetas de servicios (`ServiceCard`) con tags de categoría, símbolos visuales deportivos (`〰`, `≈`, `≋`, `✦`, etc.), cálculo dinámico de precios (por persona / por hora) y modal/vista de detalle por servicio (`/services/[serviceId]`).
+  - Sistema de animaciones sutiles con `.club-card-hover` y scroll suave en el documento.
 
-### 3.3 Utilidad de Glassmorphism (`.glass-panel`)
-Clase utilitaria para contenedores flotantes, filtros y tarjetas de catálogo:
-```css
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-}
+---
+
+## 2. Sprint 2: Hero Section, Identidad Visual y Responsive Navbar / Footer
+* **Objetivo:** Crear un Hero impactante con imagen de fondo, optimizar la experiencia responsive y unificar la barra de navegación y el pie de página.
+* **Cambios realizados:**
+  - **Hero Banner Centrado:**
+    - Generación e integración de imagen de alta resolución de complejo deportivo nocturno (`/public/images/hero-bg.jpg`).
+    - Banner estructurado con pseudo-elementos `::before` y `::after` para aplicar un degradado oscuro semi-transparente que no opaque el texto.
+    - Tipografía grande y centrada con título: *"Tu próximo gran momento empieza aquí"*.
+  - **Nuevo Icono y Logo:**
+    - Integración del logotipo oficial del club (letra **E** estilizada con punto de acento en azul cielo) en `/public/images/logo.png` y favicon `/src/app/icon.png`.
+  - **Barra de Progreso de Lectura para PC (`ScrollProgressBar`):**
+    - Componente cliente en `src/shared/components/scroll-progress-bar.tsx`.
+    - Rastreo de scroll optimizado con `requestAnimationFrame` que llena una línea azul degradada en la parte inferior del navbar mientras se navega hacia abajo.
+  - **Navbar Sticky:**
+    - Cabecera fija (`position: sticky; top: 0; z-index: 50`) con efecto blur que acompaña al usuario durante todo el desplazamiento.
+  - **Barra Inferior Móvil (`MobileBottomNav`):**
+    - En pantallas celulares (`max-width: 640px`), las opciones de navegación principales se trasladan a una barra fija inferior ergonómica para pulgar.
+    - Opciones adaptativas según el rol del usuario (Cliente, Empleado o Administrador).
+  - **Depuración del Footer (`SiteFooter`):**
+    - Se eliminaron los enlaces duplicados que repetían la navegación del navbar.
+    - Reorganización en cuadrícula de 3 columnas: Marca/Identidad, Horarios del complejo e Información de contacto.
+
+---
+
+## 3. Sprint 3: Normalización de Botones y Paleta Azul Cielo
+* **Objetivo:** Refinar la interfaz eliminando flechas duras en botones y adoptando la paleta de color Azul Cielo (`sky blue`).
+* **Cambios realizados:**
+  - **Actualización de Paleta:**
+    - `--accent-blue`: Actualizado a `#0ea5e9` (Sky Blue 500).
+    - `--accent-blue-hover`: Actualizado a `#38bdf8` (Sky Blue 400).
+    - `--accent-sky`: Introducido con `#38bdf8`.
+  - **Rediseño de `.club-button`:**
+    - Eliminado `text-transform: uppercase` agresivo.
+    - Tipografía más suave (`font-weight: 600`, `letter-spacing: 0.02em`).
+    - Degradado moderno de azul cielo `linear-gradient(135deg, #0ea5e9, #0284c7)` con sombra difusa.
+    - Versión secundaria con vidrio esmerilado y borde celeste translúcido.
+  - **Limpieza de Caracteres Flecha:**
+    - Eliminadas las flechas `↗` y `→` de todos los botones de la interfaz:
+      - Botón del hero *"Explorar espacios"*.
+      - Botón de login en el header.
+      - Título de las tarjetas de servicio.
+      - Botón de submit en el formulario de reserva (`BookingForm`).
+      - Botón de confirmación de pago de prueba (`DemoPaymentButton`).
+      - Enlaces de estado en *"Mis reservas"*.
+
+---
+
+## 4. Sprint 4: Módulo de Autenticación, OAuth y Navbar de Usuario
+* **Objetivo:** Crear una pantalla de inicio de sesión premium, moderna y translúcida, junto con un sistema de usuario autenticado en la barra de navegación.
+* **Cambios realizados:**
+  - **Botones OAuth en la Parte Superior (`OAuthButtons.tsx`):**
+    - Botones dedicados para **Google** y **GitHub** ubicados al inicio del formulario.
+    - Iconos SVG limpios y fieles a las marcas oficiales (Google multicolor y GitHub vectorizado).
+    - Bordes sutiles `border-gray-300/25`, esquinas redondeadas `rounded-lg`, fondo translúcido y hover suave con halo azul cielo.
+    - Se eliminó el texto de advertencia inferior para una interfaz más despejada y minimalista.
+  - **Divisor Central con la Palabra `"or"`:**
+    - Separador visual estilizado con línea tenue y badge en píldora con `backdrop-blur`.
+  - **Campos del Formulario Tradicional:**
+    - Entradas de `Email o Username` y `Password`.
+    - Estilizado de inputs con fondo translúcido oscuro, bordes sutiles y anillo de enfoque en azul cielo.
+    - Enlace *"¿Olvidaste tu contraseña?"* en color blanco/slate suave con transición hover al azul cielo del club.
+  - **Tarjeta de Login Centrada y Fondo Cinematográfico:**
+    - Se centró la tarjeta de login en pantalla tanto para PC como para dispositivos móviles.
+    - Se eliminó el panel explicativo de la izquierda para lograr una vista limpia, enfocada y directa.
+    - Se eliminaron los textos de cuentas de prueba que sobrecargaban la vista.
+    - Enlace *"Regístrate aquí"* estilizado en blanco con efecto hover azul cielo.
+    - Fondo de pantalla utilizando la imagen nocturna del club (`hero-bg.jpg`) con capa translúcida oscura y efecto blur.
+  - **Header Dinámico (Estado de Sesión):**
+    - **Usuario No Logueado:** Muestra dos botones limpios en el navbar:
+      1. *"Iniciar sesión"* (texto sutil con hover celeste).
+      2. *"Registrarse"* (botón en píldora blanco de alto contraste con hover azul cielo).
+    - **Usuario Logueado (`UserMenuDropdown.tsx`):**
+      - Muestra el nombre del usuario en texto blanco legible.
+      - Avatar circular con la inicial del usuario sobre un gradiente azul cielo.
+      - Menú desplegable interactivo al hacer clic, con acceso directo a reservas/panel según rol y botón para **Cerrar sesión**.
+
+---
+
+## 5. Resumen de Archivos y Componentes Clave
+
+| Archivo / Componente | Propósito |
+| :--- | :--- |
+| `src/app/globals.css` | Variables de diseño, scroll progress, responsive queries y reglas maestras. |
+| `src/app/(auth)/login/page.tsx` | Página de login centrada con fondo hero-bg y tarjeta translúcida. |
+| `src/features/auth/components/auth-forms.tsx` | Componentes `LoginForm` y `RegisterForm` con lógica de envío y feedback. |
+| `src/features/auth/components/OAuthButtons.tsx` | Botones superiores OAuth para Google y GitHub. |
+| `src/shared/components/site-header.tsx` | Barra de navegación superior con soporte de sesión dinámica. |
+| `src/shared/components/user-menu-dropdown.tsx` | Componente de usuario autenticado con avatar y menú desplegable. |
+| `src/shared/components/scroll-progress-bar.tsx` | Barra de lectura animada en la parte superior. |
+| `src/shared/components/mobile-bottom-nav.tsx` | Barra de navegación fija inferior para dispositivos móviles. |
+| `src/shared/components/site-footer.tsx` | Pie de página depurado de tres columnas. |
+
+---
+
+## 6. Convención para Documentar Cambios Futuros
+
+Cada vez que se efectúe una modificación o nueva funcionalidad en el proyecto, se debe agregar una nueva sección bajo la siguiente estructura:
+
+```markdown
+### Sprint X: [Nombre de la Característica / Modificación]
+* **Fecha:** [DD/MM/AAAA]
+* **Objetivo:** [Breve descripción de la necesidad del usuario o requerimiento técnico]
+* **Cambios realizados:**
+  - [Detalle de cambios en componentes, estilos o lógica]
+* **Archivos afectados:**
+  - `ruta/al/archivo.tsx`
+* **Pruebas y Verificación:** [typecheck, lint, build, pruebas funcionales]
 ```
-
-### 3.4 Animación de Scroll Natural (`.scroll-reveal`)
-Efecto de aparición suave (fade-in y elevación) ideal para renderizar los elementos y tarjetas al navegar por el catálogo:
-```css
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: var(--transition-smooth);
-}
-
-.scroll-reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-```
-
----
-
-## 4. Guía de Uso en los Componentes del Catálogo
-
-### Ejemplo de Tarjeta de Servicio con Glassmorphism
-```tsx
-<div className="glass-panel rounded-xl p-5 hover:border-[var(--accent-blue)] transition-all">
-  <h3 className="text-[var(--text-primary)] font-semibold text-lg">Cancha Sintética de Fútbol 5</h3>
-  <p className="text-[var(--text-secondary)] text-sm mt-2">
-    Cancha de césped sintético de alta calidad con iluminación LED nocturna.
-  </p>
-  <div className="mt-4 flex justify-between items-center">
-    <span className="text-[var(--accent-blue)] font-bold">$70.000 / hora</span>
-    <button className="bg-[var(--accent-blue)] hover:bg-[var(--accent-blue-hover)] text-white px-4 py-2 rounded-lg text-sm transition-colors">
-      Reservar
-    </button>
-  </div>
-</div>
-```
-
----
-
-## 5. Archivos Afectados
-* `src/app/globals.css` (Modificado con paleta de colores y estilos globales).
-* `README.md` (Sin modificaciones, preservado intacto).

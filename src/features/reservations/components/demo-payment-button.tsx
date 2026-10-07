@@ -6,7 +6,7 @@ import { completeDemoPaymentAction } from "@/features/reservations/api/reservati
 
 function PayButton() {
   const { pending } = useFormStatus();
-  return <button className="club-button payment-button" type="submit" disabled={pending}>{pending ? "Procesando pago de prueba…" : "Confirmar pago de prueba"} <span aria-hidden="true">→</span></button>;
+  return <button className="club-button payment-button" type="submit" disabled={pending}>{pending ? "Procesando pago de prueba…" : "Confirmar pago de prueba"}</button>;
 }
 
 export function DemoPaymentButton({ reservationId }: { reservationId: string }) {

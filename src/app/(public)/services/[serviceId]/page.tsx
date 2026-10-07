@@ -4,7 +4,7 @@ import { BookingForm } from "@/features/reservations/components/booking-form";
 import { getDemoService, listDemoCategories, reservationDateBounds } from "@/shared/lib/demo-store";
 import { getJsonCurrentUser } from "@/features/auth/lib/json-auth";
 
-const symbols: Record<string, string> = { water: "〰", waves: "≈", slides: "↗", kids: "✦", fitness: "✣", wellness: "◌", football: "◈", micro: "▦", court: "⌗" };
+const symbols: Record<string, string> = { water: "〰", waves: "≈", slides: "≋", kids: "✦", fitness: "✣", wellness: "◌", football: "◈", micro: "▦", court: "⌗" };
 const money = (value: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(value);
 
 export default async function ServiceDetailPage({ params }: PageProps<"/services/[serviceId]">) {

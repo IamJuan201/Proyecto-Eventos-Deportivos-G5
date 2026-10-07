@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { DemoCategory, DemoService } from "@/shared/lib/demo-store";
 
-const symbols: Record<string, string> = { water: "〰", waves: "≈", slides: "↗", kids: "✦", fitness: "✣", wellness: "◌", football: "◈", micro: "▦", court: "⌗" };
+const symbols: Record<string, string> = { water: "〰", waves: "≈", slides: "≋", kids: "✦", fitness: "✣", wellness: "◌", football: "◈", micro: "▦", court: "⌗" };
 const money = (price: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(price);
 
 export function ServiceCard({ service, category }: { service: DemoService; category?: DemoCategory }) {
@@ -14,7 +14,7 @@ export function ServiceCard({ service, category }: { service: DemoService; categ
         </div>
         <div className="service-card-body">
           <span className="service-category">{category?.name ?? "Élite Club"}</span>
-          <div className="service-card-title"><h3>{service.name}</h3><span aria-hidden="true">↗</span></div>
+          <div className="service-card-title"><h3>{service.name}</h3></div>
           <p>{service.description}</p>
           <div className="service-card-price"><span><strong>{money(service.price)}</strong><small> / {service.chargeType === "por_persona" ? "persona" : "hora"}</small></span><small>{service.qrType === "individual" ? "QR individual" : "QR grupal"}</small></div>
         </div>

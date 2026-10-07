@@ -18,7 +18,7 @@ export default async function MyReservationsPage() {
         {reservations.map((reservation) => (
           <article className="glass-panel reservation-row" key={reservation.id}>
             <div><span className="service-category">{dateText(reservation.date)} · {reservation.startTime}—{reservation.endTime}</span><h3>{reservation.serviceName}</h3><p>{reservation.people} personas · {new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(reservation.total)}</p></div>
-            <div className="reservation-actions"><span className={"booking-status status-" + reservation.status}>{reservation.status.replace("_", " ")}</span><Link className="small-link" href={"/checkout/" + reservation.id}>{reservation.status === "pendiente_pago" ? "Completar pago →" : reservation.status === "pagada" ? "Ver reserva y QR →" : "Ver detalle →"}</Link></div>
+            <div className="reservation-actions"><span className={"booking-status status-" + reservation.status}>{reservation.status.replace("_", " ")}</span><Link className="small-link" href={"/checkout/" + reservation.id}>{reservation.status === "pendiente_pago" ? "Completar pago" : reservation.status === "pagada" ? "Ver reserva y QR" : "Ver detalle"}</Link></div>
           </article>
         ))}
       </section>}
