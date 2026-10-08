@@ -48,6 +48,12 @@ export async function isClosedOn(serviceId: string, date: string): Promise<boole
   return count > 0;
 }
 
+/** The complex does not open on holidays registered in Festivo. */
+export async function isHoliday(date: string): Promise<boolean> {
+  if (!DATE.test(date)) return false;
+  return (await getPrisma().festivo.count({ where: { fecha: toDbDate(date) } })) > 0;
+}
+
 export async function createClosure(input: { serviceId: string; from: string; to: string; reason: string; type: string; createdBy: string }) {
   const serviceId = input.serviceId === "*" ? null : input.serviceId;
   const prisma = getPrisma();

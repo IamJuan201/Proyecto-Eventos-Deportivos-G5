@@ -1,7 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import type { EstadoReserva, Prisma } from "@/generated/prisma/client";
-import { isClosedOn } from "@/features/schedules/services/closure.service";
+import { isClosedOn, isHoliday } from "@/features/schedules/services/closure.service";
 import { serviceService } from "@/features/services/services/service.service";
 import type { Service } from "@/features/services/types/service.types";
 import { bogotaHour, dayOfWeek, fromDbDate, fromDbTime, reservationDateBounds, toDbDate, toDbTime } from "@/shared/lib/bogota-time";
@@ -85,7 +85,7 @@ const opensOn = (service: Service, date: string) => {
 
 async function isBookableDay(service: Service, date: string) {
   const { min, max } = reservationDateBounds();
-  return date >= min && date <= max && opensOn(service, date) && !(await isClosedOn(service.id, date));
+  return date >= min && date <= max && opensOn(service, date) && !(await isHoliday(date)) && !(await isClosedOn(service.id, date));
 }
 
 export async function getAvailableSlots(serviceId: string, date: string) {
@@ -122,6 +122,7 @@ export async function createReservation(input: {
   const { min, max } = reservationDateBounds();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(input.date) || input.date < min || input.date > max) throw new Error("Elige una fecha entre hoy y los próximos 15 días.");
   if (!opensOn(service, input.date)) throw new Error("Este espacio está cerrado el día seleccionado.");
+  if (await isHoliday(input.date)) throw new Error("El complejo no abre en días festivos. Elige otra fecha.");
   if (await isClosedOn(service.id, input.date)) throw new Error("Este espacio tiene un cierre programado para esa fecha.");
   const start = Number(input.time.slice(0, 2));
   if (!/^\d{2}:00$/.test(input.time) || !SLOT_HOURS.includes(start)) throw new Error("El horario debe estar entre las 8:00 a. m. y las 5:00 p. m.");
