@@ -15,7 +15,8 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="club-container lobby-hero">
+      <section className="lobby-hero-banner">
+      <div className="club-container lobby-hero">
         <div className="lobby-copy">
           <div className="hero-overline"><span className="live-dot" /> SANTUARIO DEPORTE &amp; BIENESTAR</div>
           <h1>Tu próximo<br /><span>gran momento</span><br />empieza aquí.</h1>
@@ -43,6 +44,7 @@ export default async function HomePage() {
           <div className="visual-label visual-label-bottom"><strong>01 / 04</strong><span>ESPACIOS PARA TU PRÓXIMO PLAN</span></div>
           <div className="visual-stamp">EC<br /><small>PRIVÉ</small></div>
         </div>
+      </div>
       </section>
 
       <section className="club-container telemetry" aria-label="Estado del club">

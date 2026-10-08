@@ -19,14 +19,14 @@ export function OAuthButtons({ nextPath = '/' }: { nextPath?: string }) {
       <button
         type="button"
         onClick={() => void handleOAuthLogin('google')}
-        className="inline-flex w-full justify-center rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-2.5 text-sm font-medium text-sport-text hover:bg-sport-surface hover:border-sport-emerald transition-colors shadow-sm"
+        className="inline-flex w-full justify-center rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-2.5 text-sm font-medium text-sport-text hover:bg-sport-surface hover:border-sky-400 transition-colors shadow-sm"
       >
         <span>Google</span>
       </button>
       <button
         type="button"
         onClick={() => void handleOAuthLogin('github')}
-        className="inline-flex w-full justify-center rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-2.5 text-sm font-medium text-sport-text hover:bg-sport-surface hover:border-sport-emerald transition-colors shadow-sm"
+        className="inline-flex w-full justify-center rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-2.5 text-sm font-medium text-sport-text hover:bg-sport-surface hover:border-sky-400 transition-colors shadow-sm"
       >
         <span>GitHub</span>
       </button>

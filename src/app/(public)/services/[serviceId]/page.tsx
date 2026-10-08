@@ -6,7 +6,7 @@ import { categoryService } from "@/features/categories/services/category.service
 import { serviceService } from "@/features/services/services/service.service";
 import { reservationDateBounds } from "@/shared/lib/bogota-time";
 
-const symbols: Record<string, string> = { water: "〰", waves: "≈", slides: "↗", kids: "✦", fitness: "✣", wellness: "◌", football: "◈", micro: "▦", court: "⌗" };
+const symbols: Record<string, string> = { water: "〰", waves: "≈", slides: "≋", kids: "✦", fitness: "✣", wellness: "◌", football: "◈", micro: "▦", court: "⌗" };
 const money = (value: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(value);
 
 export default async function ServiceDetailPage({ params }: PageProps<"/services/[serviceId]">) {
@@ -35,7 +35,7 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
         <section className="glass-panel detail-panel booking-panel" aria-labelledby="booking-title">
           <div className="booking-heading"><span className="eyebrow">RESERVA TU TURNO</span><h2 id="booking-title">Arma tu plan.</h2></div>
           <p>Selecciona una fecha y revisa los turnos disponibles en tiempo real.</p>
-          {user?.role === "cliente" ? <BookingForm service={service} minDate={min} maxDate={max} /> : <div className="booking-login-prompt"><p>{user ? "La reserva está disponible desde una cuenta de cliente." : "Inicia sesión para reservar este espacio. Al entrar volverás aquí para elegir el horario y completar tu reserva."}</p><Link className="club-button" href={user ? (user.role === "admin" ? "/admin/metrics" : "/employee") : `/login?next=${encodeURIComponent(`/services/${service.id}`)}`}>{user ? "Ir a mi panel" : "Iniciar sesión para reservar"} <span aria-hidden="true">→</span></Link>{!user && <p className="field-hint">¿Primera vez en Élite Club? <Link href={`/register?next=${encodeURIComponent(`/services/${service.id}`)}`}>Crea tu cuenta</Link>.</p>}</div>}
+          {user?.role === "cliente" ? <BookingForm service={service} minDate={min} maxDate={max} /> : <div className="booking-login-prompt"><p>{user ? "La reserva está disponible desde una cuenta de cliente." : "Inicia sesión para reservar este espacio. Al entrar volverás aquí para elegir el horario y completar tu reserva."}</p><Link className="club-button" href={user ? (user.role === "admin" ? "/admin/metrics" : "/employee") : `/login?next=${encodeURIComponent(`/services/${service.id}`)}`}>{user ? "Ir a mi panel" : "Iniciar sesión para reservar"}</Link>{!user && <p className="field-hint">¿Primera vez en Élite Club? <Link href={`/register?next=${encodeURIComponent(`/services/${service.id}`)}`}>Crea tu cuenta</Link>.</p>}</div>}
         </section>
       </div>
     </main>

@@ -26,11 +26,11 @@ export function LoginForm({ nextPath = '/', oauthError = false }: { nextPath?: s
     catch (reason) { setError(reason instanceof Error ? reason.message : 'No se pudo iniciar sesión.'); }
   }
   return <div className="space-y-6"><form className="space-y-5" onSubmit={submit}>
-    <label className="block text-sm font-medium text-sport-text">Correo electrónico<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="email" type="email" autoComplete="email" required placeholder="ejemplo@correo.com" /></label>
-    <label className="block text-sm font-medium text-sport-text">Contraseña<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" /></label>
-    <div className="text-right text-sm"><Link href="/forgot-password" className="font-medium text-sport-emerald">¿Olvidaste tu contraseña?</Link></div>
+    <label className="block text-sm font-medium text-sport-text">Correo electrónico<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder="ejemplo@correo.com" /></label>
+    <label className="block text-sm font-medium text-sport-text">Contraseña<input className="club-input mt-2" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" /></label>
+    <div className="text-right text-sm"><Link href="/forgot-password" className="font-medium text-sky-300 hover:text-sky-200">¿Olvidaste tu contraseña?</Link></div>
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
-    <button className="flex w-full justify-center rounded-lg bg-sport-emerald px-4 py-3 font-semibold text-sport-bg" type="submit" disabled={pending}>{pending ? 'Ingresando…' : 'Iniciar sesión'}</button>
+    <button className="club-button w-full" type="submit" disabled={pending}>{pending ? 'Ingresando…' : 'Iniciar sesión'}</button>
   </form><OAuthDivider label="O continuar con" /><OAuthButtons nextPath={safeNextPath(nextPath)} /></div>;
 }
 
@@ -51,12 +51,12 @@ export function RegisterForm({ nextPath = '/' }: { nextPath?: string }) {
     } catch (reason) { setError(reason instanceof Error ? reason.message : 'No se pudo crear la cuenta.'); }
   }
   return <div className="space-y-6"><form className="space-y-4" onSubmit={submit}>
-    <label className="block text-sm font-medium text-sport-text">Nombre completo<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="name" autoComplete="name" required minLength={3} placeholder="Juan Pérez" /></label>
-    <label className="block text-sm font-medium text-sport-text">Correo electrónico<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="email" type="email" autoComplete="email" required placeholder="ejemplo@correo.com" /></label>
-    <label className="block text-sm font-medium text-sport-text">Contraseña<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="password" type="password" autoComplete="new-password" required minLength={8} placeholder="Mínimo 8 caracteres" /></label>
-    <label className="block text-sm font-medium text-sport-text">Confirmar contraseña<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="confirm-password" type="password" autoComplete="new-password" required minLength={8} /></label>
+    <label className="block text-sm font-medium text-sport-text">Nombre completo<input className="club-input mt-2" name="name" autoComplete="name" required minLength={3} placeholder="Juan Pérez" /></label>
+    <label className="block text-sm font-medium text-sport-text">Correo electrónico<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder="ejemplo@correo.com" /></label>
+    <label className="block text-sm font-medium text-sport-text">Contraseña<input className="club-input mt-2" name="password" type="password" autoComplete="new-password" required minLength={8} placeholder="Mínimo 8 caracteres" /></label>
+    <label className="block text-sm font-medium text-sport-text">Confirmar contraseña<input className="club-input mt-2" name="confirm-password" type="password" autoComplete="new-password" required minLength={8} /></label>
     <label className="flex items-start gap-3 text-sm text-sport-muted"><input className="mt-1 accent-sport-emerald" type="checkbox" required />Acepto los términos del servicio y la política de privacidad.</label>
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}{message && <p role="status" className="text-sm text-sport-emerald">{message} <Link className="underline" href="/login">Ir a iniciar sesión</Link></p>}
-    <button className="flex w-full justify-center rounded-lg bg-sport-emerald px-4 py-3 font-semibold text-sport-bg" type="submit" disabled={pending}>{pending ? 'Creando cuenta…' : 'Crear cuenta'}</button>
+    <button className="club-button w-full" type="submit" disabled={pending}>{pending ? 'Creando cuenta…' : 'Crear cuenta'}</button>
   </form><OAuthDivider label="O regístrate con" /><OAuthButtons nextPath={safeNextPath(nextPath)} /></div>;
 }
