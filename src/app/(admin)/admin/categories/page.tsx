@@ -27,7 +27,7 @@ export default async function CategoriesPage({ searchParams }: PageProps<"/admin
       {typeof error === "string" && <p className="booking-error">{t(error)}</p>}
       <div className="admin-layout">
         <CategoryForm key={editing?.id ?? "new"} category={editing ?? undefined} />
-        <CategoryList categories={categories} />
+        <CategoryList categories={categories} locale={locale} />
       </div>
     </main>
   );

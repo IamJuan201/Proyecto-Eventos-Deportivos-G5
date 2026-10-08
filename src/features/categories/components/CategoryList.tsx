@@ -2,10 +2,11 @@ import Link from "next/link";
 import { toggleCategoryStatus } from "@/features/categories/api/category.actions";
 import { DeleteCategoryButton } from "@/features/categories/components/DeleteCategoryButton";
 import type { Category } from "@/features/categories/types/category.types";
-import { useTranslate } from "@/shared/i18n/locale-provider";
+import type { Locale } from "@/shared/i18n/messages";
+import { translate } from "@/shared/i18n/messages";
 
-export function CategoryList({ categories }: { categories: Category[] }) {
-  const t = useTranslate();
+export function CategoryList({ categories, locale }: { categories: Category[]; locale: Locale }) {
+  const t = (text: string) => translate(text, locale);
   return (
     <section className="glass-panel admin-list">
       <div className="admin-list-heading">
