@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { buildCheckoutConfig, type WompiCheckoutConfig } from "@/shared/lib/wompi";
+import { buildCheckoutConfig, isWompiConfigured, type WompiCheckoutConfig } from "@/shared/lib/wompi";
 import { isPrismaError, isUuid } from "@/shared/lib/prisma";
 import { getPrisma } from "@/shared/lib/prisma";
 import { sendReservationQrEmail } from "@/features/payments/services/qr-mail.service";
@@ -123,6 +123,8 @@ export async function confirmWompiPayment(input: {
   reference: string;
   transactionId: string;
   status: string;
+  amountInCents: number;
+  currency: string;
   paymentMethod?: string | null;
 }): Promise<ConfirmWompiPaymentResult> {
   const outcome = normalizeStatus(input.status);
@@ -133,6 +135,10 @@ export async function confirmWompiPayment(input: {
     include: { reserva: { include: { servicio: true } } },
   });
   if (!payment) return { handled: false, status: "ignorado" };
+  if (input.currency !== "COP" || input.amountInCents !== Math.round(Number(payment.monto) * 100)) {
+    console.error(`[payments] Ignored Wompi transaction ${input.transactionId}: currency or amount does not match payment ${input.reference}.`);
+    return { handled: true, status: "ignorado", reservationId: payment.reservaId };
+  }
   if (payment.transaccionId && payment.transaccionId === input.transactionId && payment.estado !== "pendiente") {
     return { handled: true, status: payment.estado === "aprobado" ? "aprobado" : "fallido", reservationId: payment.reservaId };
   }
@@ -150,17 +156,26 @@ export async function confirmWompiPayment(input: {
     return { handled: true, status: "fallido", reservationId: payment.reservaId };
   }
   try {
-    await prisma.$transaction(async (tx) => {
+    const approved = await prisma.$transaction(async (tx) => {
       const booking = await tx.reserva.findUniqueOrThrow({ where: { id: payment.reservaId } });
       if (booking.estado !== "pendiente_pago" || !booking.bloqueoExpiraEn || booking.bloqueoExpiraEn <= new Date()) {
-        await tx.pago.update({ where: { id: payment.id }, data: { estado: "fallido", transaccionId: input.transactionId } });
-        throw new Error("HOLD_EXPIRED");
+        await tx.pago.updateMany({
+          where: { id: payment.id, estado: "pendiente" },
+          data: { estado: "fallido", transaccionId: input.transactionId },
+        });
+        return false;
       }
       const { count } = await tx.reserva.updateMany({
         where: { id: payment.reservaId, estado: "pendiente_pago", bloqueoExpiraEn: { gt: new Date() } },
         data: { estado: "pagada" },
       });
-      if (!count) throw new Error("HOLD_EXPIRED");
+      if (!count) {
+        await tx.pago.updateMany({
+          where: { id: payment.id, estado: "pendiente" },
+          data: { estado: "fallido", transaccionId: input.transactionId },
+        });
+        return false;
+      }
       await tx.pago.update({
         where: { id: payment.id },
         data: {
@@ -178,11 +193,10 @@ export async function confirmWompiPayment(input: {
           codigo: `ELITE-${randomUUID().replaceAll("-", "").slice(0, 18).toUpperCase()}`,
         })),
       });
+      return true;
     });
+    if (!approved) return { handled: true, status: "fallido", reservationId: payment.reservaId };
   } catch (error) {
-    if (error instanceof Error && error.message === "HOLD_EXPIRED") {
-      return { handled: true, status: "fallido", reservationId: payment.reservaId };
-    }
     if (isPrismaError(error, "P2002")) {
       return { handled: true, status: "ignorado", reservationId: payment.reservaId };
     }

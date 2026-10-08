@@ -117,6 +117,17 @@ export function toCents(total: number | string): number {
   return Math.round(Number(total) * 100);
 }
 
+/** Returns whether the Wompi public key and integrity secret are configured. */
+export function isWompiConfigured(): boolean {
+  const publicKey = process.env.WOMPI_PUBLIC_KEY ?? "";
+  const integritySecret = process.env.WOMPI_INTEGRITY_SECRET ?? "";
+  const eventsSecret = process.env.WOMPI_EVENTS_SECRET ?? "";
+  return Boolean(
+    publicKey && integritySecret && eventsSecret &&
+    !publicKey.includes("<") && !integritySecret.includes("<") && !eventsSecret.includes("<"),
+  );
+}
+
 /**
  * Builds the checkout configuration for a pending payment when keys exist.
  * The redirect URL is only included for public https app URLs; Wompi's
@@ -133,7 +144,7 @@ export function buildCheckoutConfig(args: {
   const publicKey = process.env.WOMPI_PUBLIC_KEY ?? "";
   const integritySecret = process.env.WOMPI_INTEGRITY_SECRET ?? "";
   const appUrl = (process.env.APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
-  if (!publicKey || !integritySecret || publicKey.includes("<") || integritySecret.includes("<")) return null;
+  if (!isWompiConfigured()) return null;
   const amountInCents = toCents(args.total);
   return {
     publicKey,

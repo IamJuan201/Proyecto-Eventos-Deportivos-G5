@@ -17,6 +17,12 @@ export interface SalesPeak {
   payments: number;
 }
 
+export interface RevenueMonth {
+  month: string;
+  revenue: number;
+  payments: number;
+}
+
 export interface DashboardMetrics {
   approvedIncome: number;
   paidBookings: number;
@@ -25,6 +31,9 @@ export interface DashboardMetrics {
   accessReads: number;
   activeEmployees: number;
   recentBookings: RecentBooking[];
+  revenueHistory: RevenueMonth[];
+  revenueTrend: RevenueMonth[];
+  bookingStates: { paid: number; pending: number; expired: number };
   salesPeaks: { day: SalesPeak | null; week: SalesPeak | null; month: SalesPeak | null };
 }
 
@@ -49,9 +58,11 @@ function topPeriod(payments: { date: string; amount: number }[], periodOf: (date
 
 export async function getDashboardMetrics(): Promise<DashboardMetrics> {
   const prisma = getPrisma();
-  const [income, paid, allowedAccesses, accessReads, activeEmployees, recent, approvedPayments] = await Promise.all([
+  const [income, paid, pendingBookings, expiredBookings, allowedAccesses, accessReads, activeEmployees, recent, approvedPayments] = await Promise.all([
     prisma.pago.aggregate({ where: { estado: "aprobado" }, _sum: { monto: true } }),
     prisma.reserva.aggregate({ where: { estado: "pagada" }, _count: true, _sum: { cantidadPersonas: true } }),
+    prisma.reserva.count({ where: { estado: "pendiente_pago" } }),
+    prisma.reserva.count({ where: { estado: "expirada" } }),
     prisma.registroAcceso.count({ where: { resultado: "permitido" } }),
     prisma.registroAcceso.count(),
     prisma.empleado.count({ where: { activo: true, eliminadoEn: null } }),
@@ -63,7 +74,46 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     }),
     prisma.pago.findMany({ where: { estado: "aprobado", fechaPago: { not: null } }, select: { fechaPago: true, monto: true }, orderBy: { fechaPago: "asc" } }),
   ]);
-  const payments = approvedPayments.map((payment) => ({ date: bogotaDate(payment.fechaPago!), amount: Number(payment.monto) }));
+  const currentDate = bogotaDate();
+  const currentMonth = currentDate.slice(0, 7);
+  const payments = approvedPayments
+    .map((payment) => ({ date: bogotaDate(payment.fechaPago!), amount: Number(payment.monto) }))
+    .filter((payment) => payment.date <= currentDate);
+  const firstMonth = new Date(`${currentMonth}-01T12:00:00Z`);
+  firstMonth.setUTCMonth(firstMonth.getUTCMonth() - 5);
+  const recentMonthKeys = Array.from({ length: 6 }, (_, index) => {
+    const date = new Date(firstMonth);
+    date.setUTCMonth(firstMonth.getUTCMonth() + index);
+    return date.toISOString().slice(0, 7);
+  });
+  const firstPaymentMonth = payments.reduce<string | null>((earliest, payment) => {
+    const paymentMonth = payment.date.slice(0, 7);
+    return earliest === null || paymentMonth < earliest ? paymentMonth : earliest;
+  }, null);
+  const historyMonthKeys: string[] = [];
+  if (payments.length) {
+    const minimumHistoryMonth = new Date(`${currentMonth}-01T12:00:00Z`);
+    minimumHistoryMonth.setUTCMonth(minimumHistoryMonth.getUTCMonth() - 11);
+    const minimumHistoryKey = minimumHistoryMonth.toISOString().slice(0, 7);
+    const historyStart = firstPaymentMonth && firstPaymentMonth < minimumHistoryKey ? firstPaymentMonth : minimumHistoryKey;
+    const cursor = new Date(`${historyStart}-01T12:00:00Z`);
+    const last = new Date(`${currentMonth}-01T12:00:00Z`);
+    while (cursor <= last) {
+      historyMonthKeys.push(cursor.toISOString().slice(0, 7));
+      cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+    }
+  }
+  const buildMonthlyTotals = (monthKeys: string[]) => {
+    const totals = new Map(monthKeys.map((month) => [month, { revenue: 0, payments: 0 }]));
+    for (const payment of payments) {
+      const total = totals.get(payment.date.slice(0, 7));
+      if (total) {
+        total.revenue += payment.amount;
+        total.payments += 1;
+      }
+    }
+    return monthKeys.map((month) => ({ month, ...totals.get(month)! }));
+  };
 
   return {
     approvedIncome: Number(income._sum.monto ?? 0),
@@ -72,6 +122,9 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     allowedAccesses,
     accessReads,
     activeEmployees,
+    bookingStates: { paid: paid._count, pending: pendingBookings, expired: expiredBookings },
+    revenueHistory: buildMonthlyTotals(historyMonthKeys),
+    revenueTrend: payments.length ? buildMonthlyTotals(recentMonthKeys) : [],
     recentBookings: recent.map((booking) => ({
       id: booking.id,
       serviceName: booking.servicio.nombre,

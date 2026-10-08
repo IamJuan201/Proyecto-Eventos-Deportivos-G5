@@ -35,7 +35,13 @@ export async function POST(request: Request) {
   const reference = typeof transaction?.reference === "string" ? transaction.reference : "";
   const transactionId = typeof transaction?.id === "string" ? transaction.id : "";
   const status = typeof transaction?.status === "string" ? transaction.status : "";
-  if (!reference || !transactionId || !status) {
+  const amountInCents = typeof transaction?.amountInCents === "number"
+    ? transaction.amountInCents
+    : typeof transaction?.amount_in_cents === "number"
+      ? transaction.amount_in_cents
+      : null;
+  const currency = typeof transaction?.currency === "string" ? transaction.currency : "";
+  if (!reference || !transactionId || !status || amountInCents === null || !currency) {
     return NextResponse.json({ received: true, ignored: true });
   }
   const method =
@@ -44,6 +50,6 @@ export async function POST(request: Request) {
       : typeof transaction?.payment_method_type === "string"
         ? transaction.payment_method_type
         : null;
-  const result = await confirmWompiPayment({ reference, transactionId, status, paymentMethod: method });
+  const result = await confirmWompiPayment({ reference, transactionId, status, amountInCents, currency, paymentMethod: method });
   return NextResponse.json({ received: true, status: result.status });
 }

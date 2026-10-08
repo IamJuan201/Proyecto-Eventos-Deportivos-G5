@@ -16,8 +16,7 @@ export async function POST(request: NextRequest) {
     const row = await findUserByEmail(input.email);
     if (!row || !row.activo) return NextResponse.json({ message: "No encontramos esa cuenta." }, { status: 404 });
     if (row.correoConfirmado) {
-      await startSession(row.id);
-      return NextResponse.json(toAppUser(row));
+      return NextResponse.json({ message: "Tu correo ya está confirmado. Inicia sesión." }, { status: 409 });
     }
     await verifyOtpCode(row.id, input.code);
     await startSession(row.id);
