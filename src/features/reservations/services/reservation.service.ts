@@ -75,8 +75,12 @@ const overlapping = (start: string, end: string): Prisma.ReservaWhereInput => ({
 
 /** Marks unpaid bookings whose hold ran out; availability does not depend on it. */
 async function expireStale(where: Prisma.ReservaWhereInput) {
-  await getPrisma().reserva.updateMany({ where: { ...where, estado: "pendiente_pago", bloqueoExpiraEn: { lte: new Date() } }, data: { estado: "expirada" } });
+  const { count } = await getPrisma().reserva.updateMany({ where: { ...where, estado: "pendiente_pago", bloqueoExpiraEn: { lte: new Date() } }, data: { estado: "expirada" } });
+  return count;
 }
+
+/** Periodic job (/api/cron/expire-reservations): marks every unpaid booking whose hold ran out. Idempotent. */
+export const expireStaleReservations = () => expireStale({});
 
 const opensOn = (service: Service, date: string) => {
   const day = dayOfWeek(date);
