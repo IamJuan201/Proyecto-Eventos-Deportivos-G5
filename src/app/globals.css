@@ -304,6 +304,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   padding-top: 36px;
 }
 
+body:has(.auth-page) .site-footer { margin-top: 0; }
+
 .site-footer-inner {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr;
