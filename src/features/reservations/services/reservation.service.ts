@@ -5,7 +5,6 @@ import { sendReservationQrEmail } from "@/features/payments/services/qr-mail.ser
 import { isClosedOn, isHoliday } from "@/features/schedules/services/closure.service";
 import { serviceService } from "@/features/services/services/service.service";
 import type { Service } from "@/features/services/types/service.types";
-import { isWompiConfigured } from "@/shared/lib/wompi";
 import { bogotaHour, dayOfWeek, fromDbDate, fromDbTime, reservationDateBounds, toDbDate, toDbTime } from "@/shared/lib/bogota-time";
 import { getPrisma, isPrismaError, isUuid } from "@/shared/lib/prisma";
 
@@ -184,7 +183,6 @@ export async function listReservationsForUser(userId: string): Promise<Reservati
 
 /** Demo checkout: approves a payment and issues the QR codes. Idempotent. */
 export async function completeDemoPayment(id: string, userId: string) {
-  if (isWompiConfigured()) throw new Error("Los pagos de prueba están deshabilitados cuando Wompi está configurado.");
   const prisma = getPrisma();
   const booking = isUuid(id) ? await prisma.reserva.findFirst({ where: { id, clienteId: userId }, include: { servicio: true, cliente: true } }) : null;
   if (!booking) throw new Error("No encontramos esta reserva.");
