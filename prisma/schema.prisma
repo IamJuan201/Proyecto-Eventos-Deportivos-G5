@@ -85,6 +85,7 @@ model Usuario {
   terminosAceptados TerminosAceptados[] @relation("ClienteTerminos")
   empleado          Empleado?           @relation("UsuarioEmpleado")
   cierresCreados    CierreServicio[]    @relation("CierreCreador")
+  codigoOtp         CodigoOtp?
 
   @@index([rolId, activo])
   @@map("Usuario")
@@ -289,4 +290,17 @@ model Festivo {
   nombre String   @db.VarChar(120)
 
   @@map("Festivo")
+}
+
+model CodigoOtp {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId     String   @unique @map("usuario_id") @db.Uuid
+  codigoHash    String   @map("codigo_hash") @db.VarChar(64)
+  expiraEn      DateTime @map("expira_en") @db.Timestamptz(6)
+  intentos      Int      @default(0)
+  ultimoEnvioEn DateTime @default(now()) @map("ultimo_envio_en") @db.Timestamptz(6)
+  creadoEn      DateTime @default(now()) @map("creado_en") @db.Timestamptz(6)
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("CodigoOtp")
 }
