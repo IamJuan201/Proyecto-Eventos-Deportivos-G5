@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { verifyPassword } from "@/features/auth/lib/password";
 import { startSession } from "@/features/auth/lib/session";
 import { getPrisma } from "@/shared/lib/prisma";
+import { isTurnstileEnforced, verifyTurnstileToken } from "@/shared/lib/turnstile";
 import { findUserByEmail, isActiveEmployee, toAppUser } from "@/features/auth/services/user.service";
 import { issueOtpCode } from "@/features/auth/services/otp.service";
 
@@ -16,8 +17,9 @@ import { issueOtpCode } from "@/features/auth/services/otp.service";
  */
 export async function POST(request: NextRequest) {
   try {
-    const input = await request.json() as { email?: string; password?: string };
+    const input = await request.json() as { email?: string; password?: string; turnstileToken?: string };
     if (!input.email || !input.password) return NextResponse.json({ message: "Escribe tu correo y contraseña." }, { status: 400 });
+    if (isTurnstileEnforced() && !(await verifyTurnstileToken(input.turnstileToken ?? ""))) return NextResponse.json({ message: "La verificación de seguridad falló. Inténtalo de nuevo." }, { status: 403 });
     const row = await findUserByEmail(input.email);
     if (!row || !row.activo || !(await verifyPassword(input.password, row.contrasenaHash))) return NextResponse.json({ message: "El correo o la contraseña no son correctos." }, { status: 401 });
     const user = toAppUser(row);
