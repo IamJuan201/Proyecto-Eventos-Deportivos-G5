@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition, type FormEvent } from 'react';
 import { authService, AuthError, safeNextPath } from '@/features/auth/services/auth.service';
 import { OAuthButtons } from '@/features/auth/components/OAuthButtons';
+import { TurnstileWidget, getTurnstileSiteKey, isTurnstileWidgetEnabled } from '@/features/auth/components/turnstile-widget';
 
 function OAuthDivider({ label }: { label: string }) {
   return <div className="relative"><div className="absolute inset-0 flex items-center"><div className="w-full border-t border-sport-border" /></div><div className="relative flex justify-center text-sm"><span className="bg-sport-bg px-3 text-sport-muted">{label}</span></div></div>;
@@ -14,11 +15,14 @@ export function LoginForm({ nextPath = '/', oauthError = false }: { nextPath?: s
   const router = useRouter();
   const [error, setError] = useState(oauthError ? 'No se pudo completar el acceso con el proveedor. Inténtalo de nuevo.' : '');
   const [pending, startTransition] = useTransition();
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const captchaEnabled = isTurnstileWidgetEnabled();
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError('');
     const form = new FormData(event.currentTarget);
+    if (captchaEnabled && !turnstileToken) { setError('Completa la verificación de seguridad.'); return; }
     try {
-      const user = await authService.login({ email: String(form.get('email')), password: String(form.get('password')) });
+      const user = await authService.login({ email: String(form.get('email')), password: String(form.get('password')), turnstileToken: turnstileToken || undefined });
       const roleHome = user.role === 'admin' ? '/admin/metrics' : user.role === 'empleado' ? '/employee' : '/';
       const destination = safeNextPath(nextPath) === '/' ? roleHome : safeNextPath(nextPath);
       startTransition(() => { router.replace(destination); router.refresh(); });
@@ -36,6 +40,7 @@ export function LoginForm({ nextPath = '/', oauthError = false }: { nextPath?: s
     <label className="block text-sm font-medium text-sport-text">Correo electrónico<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="email" type="email" autoComplete="email" required placeholder="ejemplo@correo.com" /></label>
     <label className="block text-sm font-medium text-sport-text">Contraseña<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" /></label>
     <div className="text-right text-sm"><Link href="/forgot-password" className="font-medium text-sport-emerald">¿Olvidaste tu contraseña?</Link></div>
+    {captchaEnabled && <TurnstileWidget siteKey={getTurnstileSiteKey()} onVerify={setTurnstileToken} onExpire={() => setTurnstileToken('')} />}
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
     <button className="flex w-full justify-center rounded-lg bg-sport-emerald px-4 py-3 font-semibold text-sport-bg" type="submit" disabled={pending}>{pending ? 'Ingresando…' : 'Iniciar sesión'}</button>
   </form><OAuthDivider label="O continuar con" /><OAuthButtons nextPath={safeNextPath(nextPath)} /></div>;
@@ -45,13 +50,16 @@ export function RegisterForm({ nextPath = '/' }: { nextPath?: string }) {
   const router = useRouter();
   const [error, setError] = useState('');
   const [pending, startTransition] = useTransition();
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const captchaEnabled = isTurnstileWidgetEnabled();
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError('');
     const form = new FormData(event.currentTarget);
     const password = String(form.get('password'));
     if (password !== String(form.get('confirm-password'))) { setError('Las contraseñas no coinciden.'); return; }
+    if (captchaEnabled && !turnstileToken) { setError('Completa la verificación de seguridad.'); return; }
     try {
-      const user = await authService.register({ fullName: String(form.get('name')), email: String(form.get('email')), password }, nextPath);
+      const user = await authService.register({ fullName: String(form.get('name')), email: String(form.get('email')), password, turnstileToken: turnstileToken || undefined }, nextPath);
       if (user.emailConfirmationRequired) {
         const destination = `/verify-email?email=${encodeURIComponent(user.email)}&reason=register&next=${encodeURIComponent(safeNextPath(nextPath))}`;
         startTransition(() => { router.replace(destination); });
@@ -66,6 +74,7 @@ export function RegisterForm({ nextPath = '/' }: { nextPath?: string }) {
     <label className="block text-sm font-medium text-sport-text">Contraseña<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="password" type="password" autoComplete="new-password" required minLength={8} placeholder="Mínimo 8 caracteres" /></label>
     <label className="block text-sm font-medium text-sport-text">Confirmar contraseña<input className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-sport-text" name="confirm-password" type="password" autoComplete="new-password" required minLength={8} /></label>
     <label className="flex items-start gap-3 text-sm text-sport-muted"><input className="mt-1 accent-sport-emerald" type="checkbox" required />Acepto los términos del servicio y la política de privacidad.</label>
+    {captchaEnabled && <TurnstileWidget siteKey={getTurnstileSiteKey()} onVerify={setTurnstileToken} onExpire={() => setTurnstileToken('')} />}
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
     <button className="flex w-full justify-center rounded-lg bg-sport-emerald px-4 py-3 font-semibold text-sport-bg" type="submit" disabled={pending}>{pending ? 'Creando cuenta…' : 'Crear cuenta'}</button>
   </form><OAuthDivider label="O regístrate con" /><OAuthButtons nextPath={safeNextPath(nextPath)} /></div>;
