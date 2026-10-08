@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
+import { WompiPaymentButton } from "@/features/payments/components/wompi-payment-button";
 import { DemoPaymentButton } from "@/features/reservations/components/demo-payment-button";
 import { requireRole } from "@/features/auth/lib/session";
 import { getReservationForUser } from "@/features/reservations/services/reservation.service";
@@ -37,14 +38,16 @@ export default async function CheckoutPage({ params }: { params: Promise<{ reser
 
         {reservation.status === "pendiente_pago" && <>
           <div className="payment-deadline"><span>◷</span><p>Tu horario está bloqueado durante 10 minutos, hasta las <strong>{reservation.paymentExpiresAt && new Date(reservation.paymentExpiresAt).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", timeZone: "America/Bogota" })}</strong>.</p></div>
-          <div className="notice-demo"><strong>Modo demostración:</strong> Stripe no está configurado para este sprint. El botón registra un pago de prueba y genera los QR, sin cobrar dinero real.</div>
+          <div className="notice-demo"><strong>Pago en línea (sandbox):</strong> paga con tarjeta, PSE o Nequi a través de Wompi. Recibirás tus QR en pantalla y por correo.</div>
+          <WompiPaymentButton reservationId={reservation.id} customerEmail={reservation.customerEmail} />
+          <div className="notice-demo"><strong>Respaldo para la demo:</strong> el botón de prueba registra un pago simulado y genera los QR sin cobrar dinero real.</div>
           <DemoPaymentButton reservationId={reservation.id} />
         </>}
 
         {reservation.status === "expirada" && <Link className="club-button" href={"/services/" + reservation.serviceId}>Elegir otro horario</Link>}
 
         {reservation.status === "pagada" && reservation.payment && <>
-          <div className="payment-confirmed"><span aria-hidden="true">✓</span><div><strong>Pago de prueba aprobado</strong><small>Referencia {reservation.payment.reference} · {new Date(reservation.payment.paidAt).toLocaleString("es-CO", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Bogota" })}</small></div></div>
+          <div className="payment-confirmed"><span aria-hidden="true">✓</span><div><strong>Pago aprobado</strong><small>Referencia {reservation.payment.reference} · {new Date(reservation.payment.paidAt).toLocaleString("es-CO", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Bogota" })}</small></div></div>
           <h2 className="tickets-title">Tus códigos de acceso <span>{reservation.qrs.length} QR</span></h2>
           <p className="tickets-hint">{reservation.qrs.length > 1 ? "Cada persona presenta su propio código al empleado del servicio." : "Presenta este código al empleado del servicio al llegar."}</p>
           <div className="qr-grid">
