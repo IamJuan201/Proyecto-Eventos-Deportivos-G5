@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { registerAccount } from "@/features/auth/lib/session";
+import { isTurnstileEnforced, verifyTurnstileToken } from "@/shared/lib/turnstile";
 import { issueOtpCode } from "@/features/auth/services/otp.service";
 
 /**
@@ -11,8 +12,9 @@ import { issueOtpCode } from "@/features/auth/services/otp.service";
  */
 export async function POST(request: NextRequest) {
   try {
-    const input = await request.json() as { fullName?: string; email?: string; password?: string; nextPath?: string };
+    const input = await request.json() as { fullName?: string; email?: string; password?: string; nextPath?: string; turnstileToken?: string };
     if (!input.fullName?.trim() || !input.email || !input.password) return NextResponse.json({ message: "Completa nombre, correo y contraseña." }, { status: 400 });
+    if (isTurnstileEnforced() && !(await verifyTurnstileToken(input.turnstileToken ?? ""))) return NextResponse.json({ message: "La verificación de seguridad falló. Inténtalo de nuevo." }, { status: 403 });
     const user = await registerAccount({ fullName: input.fullName, email: input.email, password: input.password });
     await issueOtpCode(user.id);
     return NextResponse.json({ ...user, emailConfirmationRequired: true }, { status: 201 });
