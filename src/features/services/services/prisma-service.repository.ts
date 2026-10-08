@@ -2,7 +2,7 @@ import "server-only";
 import type { HorarioServicio, Prisma, Servicio } from "@/generated/prisma/client";
 import type { ServiceRepository } from "@/features/services/services/service.repository";
 import type { Service, ServiceIcon, ServiceInput, WeekDay } from "@/features/services/types/service.types";
-import { toDbTime } from "@/shared/lib/bogota-time";
+import { bogotaDate, dayOfWeek, fromDbDate, toDbDate, toDbTime } from "@/shared/lib/bogota-time";
 import { getPrisma, isPrismaError, isUuid } from "@/shared/lib/prisma";
 
 /** The complex opens 08:00–17:00; every operating day is one HorarioServicio row. */
@@ -82,5 +82,18 @@ export const prismaServiceRepository: ServiceRepository = {
       }
       throw error;
     }
+  },
+  async bookedWeekDays(id) {
+    if (!isUuid(id)) return [];
+    const rows = await getPrisma().reserva.findMany({
+      where: {
+        servicioId: id,
+        fecha: { gte: toDbDate(bogotaDate()) },
+        OR: [{ estado: "pagada" }, { estado: "pendiente_pago", bloqueoExpiraEn: { gt: new Date() } }],
+      },
+      select: { fecha: true },
+      distinct: ["fecha"],
+    });
+    return [...new Set(rows.map((row) => dayOfWeek(fromDbDate(row.fecha)) as WeekDay))];
   },
 };
