@@ -1,12 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { RegisterForm } from '@/features/auth/components/auth-forms';
+import { getLocale } from '@/shared/i18n/locale.server';
+import { translate } from '@/shared/i18n/messages';
 
 const safeNextPath = (value: string | undefined) =>
   value?.startsWith('/') && !value.startsWith('//') ? value : '/';
 
 export default async function RegisterPage({ searchParams }: PageProps<'/register'>) {
   const query = await searchParams;
+  const locale = await getLocale();
+  const t = (text: string) => translate(text, locale);
   const nextPath = safeNextPath(typeof query.next === 'string' ? query.next : '/');
 
   return (
@@ -33,7 +37,7 @@ export default async function RegisterPage({ searchParams }: PageProps<'/registe
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-sky-400/20 bg-sky-500/10 backdrop-blur-md w-fit">
             <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
             <span className="text-xs font-semibold tracking-widest uppercase text-sky-300">
-              Comunidad Atlética
+              {t('Comunidad Atlética')}
             </span>
           </div>
 
@@ -43,30 +47,30 @@ export default async function RegisterPage({ searchParams }: PageProps<'/registe
                 <Image src="/images/logo.png" alt="Élite Club" width={40} height={40} className="object-cover rounded-xl" />
               </div>
               <h1 className="text-3xl font-black text-white tracking-tight">
-                Únete a <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-300">Élite Club</span>
+                {t('Únete a')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-300">Élite Club</span>
               </h1>
             </div>
 
             <p className="text-2xl font-bold text-slate-100 leading-snug">
-              Crea tu cuenta y reserva <br />
-              <span className="text-sky-400">en solo unos pasos.</span>
+              {t('Crea tu cuenta y reserva')} <br />
+              <span className="text-sky-400">{t('en solo unos pasos.')}</span>
             </p>
 
             <p className="text-sm text-slate-300/80 leading-relaxed max-w-md pt-1">
-              Disfruta de canchas de fútbol, piscinas olímpicas, zonas fitness y eventos exclusivos con reservas digitales inmediatas.
+              {t('Disfruta de canchas de fútbol, piscinas olímpicas, zonas fitness y eventos exclusivos con reservas digitales inmediatas.')}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="rounded-xl border border-white/10 bg-slate-900/50 p-3.5 backdrop-blur-md">
               <span className="text-sky-400 font-bold text-lg">✓</span>
-              <p className="text-xs font-semibold text-slate-200 mt-1">Sin costos ocultos</p>
-              <p className="text-[11px] text-slate-400">Tarifas transparentes</p>
+              <p className="text-xs font-semibold text-slate-200 mt-1">{t('Sin costos ocultos')}</p>
+              <p className="text-[11px] text-slate-400">{t('Tarifas transparentes')}</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-slate-900/50 p-3.5 backdrop-blur-md">
               <span className="text-cyan-400 font-bold text-lg">✓</span>
-              <p className="text-xs font-semibold text-slate-200 mt-1">Gestión inmediata</p>
-              <p className="text-[11px] text-slate-400">Tus reservas siempre a mano</p>
+              <p className="text-xs font-semibold text-slate-200 mt-1">{t('Gestión inmediata')}</p>
+              <p className="text-[11px] text-slate-400">{t('Tus reservas siempre a mano')}</p>
             </div>
           </div>
         </div>
@@ -82,22 +86,22 @@ export default async function RegisterPage({ searchParams }: PageProps<'/registe
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                Crea tu cuenta
+                {t('Crea tu cuenta')}
               </h2>
               <p className="text-xs sm:text-sm text-slate-400">
-                ¿Ya tienes una cuenta?{' '}
+                {t('¿Ya tienes una cuenta?')}{' '}
                 <Link
                   href={`/login?next=${encodeURIComponent(nextPath)}`}
                   className="font-semibold text-sky-400 hover:text-sky-300 hover:underline transition-colors ml-1"
                 >
-                  Inicia sesión
+                  {t('Iniciar sesión')}
                 </Link>
               </p>
             </div>
 
             {nextPath !== '/' && (
               <div className="mb-5 rounded-xl border border-sky-500/30 bg-sky-950/40 p-3 text-xs text-sky-200 backdrop-blur-md">
-                Al crear tu cuenta podrás continuar con tu reserva de inmediato.
+                {t('Al crear tu cuenta podrás continuar con tu reserva de inmediato.')}
               </div>
             )}
 

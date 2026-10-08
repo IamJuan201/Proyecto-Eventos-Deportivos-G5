@@ -2,16 +2,18 @@
 
 import React, { useState } from 'react';
 import { authService } from '../services/auth.service';
+import { useTranslate } from '@/shared/i18n/locale-provider';
 
 export function OAuthButtons({ nextPath = '/' }: { nextPath?: string }) {
+  const t = useTranslate();
   const [error, setError] = useState('');
   const handleOAuthLogin = async (provider: 'google' | 'github') => {
     setError('');
     try { await authService.loginWithOAuth(provider, nextPath); }
-    catch (reason) { setError(reason instanceof Error ? reason.message : 'No se pudo iniciar con OAuth.'); }
+    catch (reason) { setError(reason instanceof Error ? t(reason.message) : t('No se pudo iniciar con OAuth.')); }
   };
 
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) return <p className="text-center text-xs text-sport-muted">Google y GitHub se habilitan al configurar Supabase. Puedes registrarte con tu correo para probar el sprint.</p>;
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) return <p className="text-center text-xs text-sport-muted">{t('Google y GitHub se habilitan al configurar Supabase. Puedes registrarte con tu correo para probar el sprint.')}</p>;
   return (
     <div className="space-y-3">
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}

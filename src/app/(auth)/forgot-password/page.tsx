@@ -1,8 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { PasswordResetForm } from "@/features/auth/components/password-reset-form";
+import { getLocale } from "@/shared/i18n/locale.server";
+import { translate } from "@/shared/i18n/messages";
 
-export default function ForgotPasswordPage() {
+export default async function ForgotPasswordPage() {
+  const locale = await getLocale();
+  const t = (text: string) => translate(text, locale);
   return (
     <div className="relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-8 sm:px-6">
       <div className="absolute inset-0 z-0">
@@ -19,14 +23,12 @@ export default function ForgotPasswordPage() {
 
       <div className="relative z-10 w-full max-w-md">
         <section className="rounded-2xl border border-white/15 bg-slate-900/60 p-6 sm:p-8 shadow-2xl shadow-black/80 backdrop-blur-2xl">
-          <span className="inline-block text-xs font-bold uppercase tracking-wider text-sky-400 mb-2">
-            RECUPERA TU ACCESO
-          </span>
+          <span className="inline-block text-xs font-bold uppercase tracking-wider text-sky-400 mb-2">{t("RECUPERA TU ACCESO")}</span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
-            Volvamos a entrar.
+            {t("Volvamos a entrar.")}
           </h1>
           <p className="text-xs sm:text-sm text-slate-300 mb-6">
-            Te enviaremos un enlace para crear una contraseña nueva.
+            {t("Te enviaremos un enlace para crear una contraseña nueva.")}
           </p>
 
           <PasswordResetForm mode="request" />
@@ -36,7 +38,7 @@ export default function ForgotPasswordPage() {
               className="inline-flex items-center text-xs font-semibold text-sky-400 hover:text-sky-300 transition-colors"
               href="/login"
             >
-              Volver a iniciar sesión
+              {t("Volver a iniciar sesión")}
             </Link>
           </div>
         </section>

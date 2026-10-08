@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslate } from "@/shared/i18n/locale-provider";
 
 interface MobileBottomNavProps {
   userRole?: string | null;
@@ -11,6 +12,7 @@ interface MobileBottomNavProps {
 
 export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileBottomNavProps) {
   const pathname = usePathname();
+  const t = useTranslate();
 
   const isHome = pathname === "/";
   const isServices = pathname.startsWith("/services");
@@ -27,7 +29,7 @@ export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileB
           <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
           <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
-        <span>Inicio</span>
+        <span>{t("Inicio")}</span>
       </Link>
 
       {userRole === "empleado" ? (
@@ -38,7 +40,7 @@ export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileB
               <circle cx="9" cy="7" r="4" />
               <polyline points="16 11 18 13 22 9" />
             </svg>
-            <span>Actividad</span>
+            <span>{t("Mi actividad")}</span>
           </Link>
           <Link href="/scanner" className={`mobile-nav-item ${isScanner ? "active" : ""}`}>
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -48,7 +50,7 @@ export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileB
               <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
               <rect x="7" y="7" width="10" height="10" rx="1" />
             </svg>
-            <span>Escanear</span>
+            <span>{t("Escanear QR")}</span>
           </Link>
         </>
       ) : userRole === "admin" ? (
@@ -59,7 +61,7 @@ export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileB
               <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
               <path d="M2 12h20" />
             </svg>
-            <span>Espacios</span>
+            <span>{t("Espacios")}</span>
           </Link>
           <Link href="/admin/metrics" className={`mobile-nav-item ${isAdmin ? "active" : ""}`}>
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -67,7 +69,7 @@ export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileB
               <line x1="12" y1="20" x2="12" y2="4" />
               <line x1="6" y1="20" x2="6" y2="14" />
             </svg>
-            <span>Métricas</span>
+            <span>{t("Métricas operativas")}</span>
           </Link>
         </>
       ) : (
@@ -81,7 +83,7 @@ export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileB
               <path d="m9.17 14.83-4.24 4.24" />
               <circle cx="12" cy="12" r="4" />
             </svg>
-            <span>Espacios</span>
+            <span>{t("Espacios")}</span>
           </Link>
           <Link href="/my-reservations" className={`mobile-nav-item ${isReservations ? "active" : ""}`}>
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -90,7 +92,7 @@ export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileB
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
-            <span>Reservas</span>
+            <span>{t("Mis reservas")}</span>
           </Link>
         </>
       )}
@@ -103,7 +105,7 @@ export function MobileBottomNav({ userRole, accountPath, accountLabel }: MobileB
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
-        <span>{accountLabel}</span>
+        <span>{t(accountLabel)}</span>
       </Link>
     </nav>
   );

@@ -3,10 +3,12 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { completeDemoPaymentAction } from "@/features/reservations/api/reservation.actions";
+import { useTranslate } from "@/shared/i18n/locale-provider";
 
 function PayButton() {
   const { pending } = useFormStatus();
-  return <button className="club-button payment-button" type="submit" disabled={pending}>{pending ? "Procesando pago de prueba…" : "Confirmar pago de prueba"}</button>;
+  const t = useTranslate();
+  return <button className="club-button payment-button" type="submit" disabled={pending}>{pending ? t("Procesando pago de prueba…") : t("Confirmar pago de prueba")}</button>;
 }
 
 export function DemoPaymentButton({ reservationId }: { reservationId: string }) {
