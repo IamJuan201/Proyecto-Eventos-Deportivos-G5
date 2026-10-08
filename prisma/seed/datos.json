@@ -968,6 +968,96 @@
       "id": "536d0609-797a-57bf-81a5-c7fded554ac3",
       "fecha": "2026-12-25",
       "nombre": "Navidad"
+    },
+    {
+      "id": "cb376725-354a-5e8d-a2c7-daebbf42a9b8",
+      "fecha": "2027-01-01",
+      "nombre": "Año Nuevo"
+    },
+    {
+      "id": "6df2daed-01f5-5f72-8528-7a452b090bf2",
+      "fecha": "2027-01-11",
+      "nombre": "Reyes Magos"
+    },
+    {
+      "id": "770d6480-f6f3-5372-bb5b-17cc987c6236",
+      "fecha": "2027-03-22",
+      "nombre": "San José"
+    },
+    {
+      "id": "6e4e5fc8-c623-592d-8fd4-8a96dca04440",
+      "fecha": "2027-03-25",
+      "nombre": "Jueves Santo"
+    },
+    {
+      "id": "4aee409b-4489-58d8-a5f4-2f73228a7b4b",
+      "fecha": "2027-03-26",
+      "nombre": "Viernes Santo"
+    },
+    {
+      "id": "49201504-6b51-559f-99ee-d2568b21b17a",
+      "fecha": "2027-05-01",
+      "nombre": "Día del Trabajo"
+    },
+    {
+      "id": "f1b51d3a-981b-5cd3-a677-d6e75b9463d6",
+      "fecha": "2027-05-10",
+      "nombre": "Ascensión del Señor"
+    },
+    {
+      "id": "d3f9aa3a-0401-565b-89d0-99538591f95f",
+      "fecha": "2027-05-31",
+      "nombre": "Corpus Christi"
+    },
+    {
+      "id": "a4360a03-75c4-5488-9306-01fab37f33fc",
+      "fecha": "2027-06-07",
+      "nombre": "Sagrado Corazón"
+    },
+    {
+      "id": "cbba1b5c-055e-53d4-8874-a3f498455a7a",
+      "fecha": "2027-07-05",
+      "nombre": "San Pedro y San Pablo"
+    },
+    {
+      "id": "632eb85f-e872-585d-9d5f-9047d9e0f53c",
+      "fecha": "2027-07-20",
+      "nombre": "Día de la Independencia"
+    },
+    {
+      "id": "34b1f464-fa85-53c1-8793-4060f3da5a30",
+      "fecha": "2027-08-07",
+      "nombre": "Batalla de Boyacá"
+    },
+    {
+      "id": "abfa81f5-301a-520f-bce5-b5cb9e681201",
+      "fecha": "2027-08-16",
+      "nombre": "Asunción de la Virgen"
+    },
+    {
+      "id": "b8ac0b8d-bf7a-56ca-9c76-8d47127513b9",
+      "fecha": "2027-10-18",
+      "nombre": "Día de la Raza"
+    },
+    {
+      "id": "6aa4e0ab-8d04-589f-918d-0fa53fcb61a2",
+      "fecha": "2027-11-01",
+      "nombre": "Todos los Santos"
+    },
+    {
+      "id": "7e542178-446e-58cc-91a3-aa8cba51ffd4",
+      "fecha": "2027-11-15",
+      "nombre": "Independencia de Cartagena"
+    },
+    {
+      "id": "55e8e61d-7dd0-56fd-a72f-d0cb528a3bcb",
+      "fecha": "2027-12-08",
+      "nombre": "Inmaculada Concepción"
+    },
+    {
+      "id": "db029ee1-a946-5aa9-b159-832ad1d99d18",
+      "fecha": "2027-12-25",
+      "nombre": "Navidad"
     }
   ],
   "TerminosAceptados": [
