@@ -1,7 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import type { EstadoReserva, Prisma } from "@/generated/prisma/client";
-import { isClosedOn } from "@/features/schedules/services/closure.service";
+import { isClosedOn, isHoliday } from "@/features/schedules/services/closure.service";
 import { serviceService } from "@/features/services/services/service.service";
 import type { Service } from "@/features/services/types/service.types";
 import { bogotaHour, dayOfWeek, fromDbDate, fromDbTime, reservationDateBounds, toDbDate, toDbTime } from "@/shared/lib/bogota-time";
@@ -75,8 +75,12 @@ const overlapping = (start: string, end: string): Prisma.ReservaWhereInput => ({
 
 /** Marks unpaid bookings whose hold ran out; availability does not depend on it. */
 async function expireStale(where: Prisma.ReservaWhereInput) {
-  await getPrisma().reserva.updateMany({ where: { ...where, estado: "pendiente_pago", bloqueoExpiraEn: { lte: new Date() } }, data: { estado: "expirada" } });
+  const { count } = await getPrisma().reserva.updateMany({ where: { ...where, estado: "pendiente_pago", bloqueoExpiraEn: { lte: new Date() } }, data: { estado: "expirada" } });
+  return count;
 }
+
+/** Periodic job (/api/cron/expire-reservations): marks every unpaid booking whose hold ran out. Idempotent. */
+export const expireStaleReservations = () => expireStale({});
 
 const opensOn = (service: Service, date: string) => {
   const day = dayOfWeek(date);
@@ -85,7 +89,7 @@ const opensOn = (service: Service, date: string) => {
 
 async function isBookableDay(service: Service, date: string) {
   const { min, max } = reservationDateBounds();
-  return date >= min && date <= max && opensOn(service, date) && !(await isClosedOn(service.id, date));
+  return date >= min && date <= max && opensOn(service, date) && !(await isHoliday(date)) && !(await isClosedOn(service.id, date));
 }
 
 export async function getAvailableSlots(serviceId: string, date: string) {
@@ -122,6 +126,7 @@ export async function createReservation(input: {
   const { min, max } = reservationDateBounds();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(input.date) || input.date < min || input.date > max) throw new Error("Elige una fecha entre hoy y los próximos 15 días.");
   if (!opensOn(service, input.date)) throw new Error("Este espacio está cerrado el día seleccionado.");
+  if (await isHoliday(input.date)) throw new Error("El complejo no abre en días festivos. Elige otra fecha.");
   if (await isClosedOn(service.id, input.date)) throw new Error("Este espacio tiene un cierre programado para esa fecha.");
   const start = Number(input.time.slice(0, 2));
   if (!/^\d{2}:00$/.test(input.time) || !SLOT_HOURS.includes(start)) throw new Error("El horario debe estar entre las 8:00 a. m. y las 5:00 p. m.");
@@ -186,8 +191,13 @@ export async function completeDemoPayment(id: string, userId: string) {
     throw new Error("El bloqueo venció. Vuelve a elegir tu horario.");
   }
   await prisma.$transaction(async (tx) => {
-    const { count } = await tx.reserva.updateMany({ where: { id, estado: "pendiente_pago" }, data: { estado: "pagada" } });
-    if (!count) return; // Another request already paid it.
+    const { count } = await tx.reserva.updateMany({ where: { id, estado: "pendiente_pago", bloqueoExpiraEn: { gt: new Date() } }, data: { estado: "pagada" } });
+    if (!count) {
+      // Either another request already paid it, or the hold expired (e.g. the cron) after the check above.
+      const current = await tx.reserva.findUniqueOrThrow({ where: { id }, select: { estado: true } });
+      if (current.estado === "pagada") return;
+      throw new Error("El bloqueo venció. Vuelve a elegir tu horario.");
+    }
     await tx.pago.create({
       data: {
         reservaId: id, pasarela: "demo", referencia: "DEMO-" + randomUUID().slice(0, 8).toUpperCase(), monto: booking.total,

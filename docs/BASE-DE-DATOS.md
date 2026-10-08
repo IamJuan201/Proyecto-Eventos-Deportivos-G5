@@ -117,7 +117,7 @@ Recomendado:
 |---|---|
 | `SESSION_SECRET` y `DATABASE_URL` en Vercel | Antes de desplegar |
 | Un empleado activo por servicio | Confirmar con el equipo; si cambia, migración que quite el índice |
-| `employee.service.ts` y `supabase-employee.repository.ts` (HU-32) | Usan la API de Supabase, cerrada por RLS; decidir con Isai si se reemplazan por `staff.service.ts` |
+| `employee.service.ts` y `supabase-employee.repository.ts` (HU-32) | Resuelto en PEDG-31: se retiraron; todo pasa por `staff.service.ts` |
 | Supabase Auth | Sección 4 |
 | Wompi (checkout + webhook firmado) | Modelo listo |
 | Job que marque bloqueos vencidos como `expirada` | La disponibilidad ya los ignora |

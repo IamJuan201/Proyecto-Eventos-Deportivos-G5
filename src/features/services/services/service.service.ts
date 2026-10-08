@@ -1,7 +1,7 @@
 import { categoryService } from "@/features/categories/services/category.service";
 import type { ServiceRepository } from "@/features/services/services/service.repository";
 import { prismaServiceRepository } from "@/features/services/services/prisma-service.repository";
-import { chargeTypes, qrTypes, serviceIcons, type Service, type ServiceInput } from "@/features/services/types/service.types";
+import { chargeTypes, qrTypes, serviceIcons, weekDays, type Service, type ServiceInput } from "@/features/services/types/service.types";
 
 export class ServiceValidationError extends Error {}
 
@@ -74,7 +74,22 @@ export function createServiceService(repository: ServiceRepository) {
       return repository.create(await validate(input));
     },
     async update(id: string, input: ServiceInput): Promise<Service> {
-      return repository.update(id, await validate(input, id));
+      const data = await validate(input, id);
+      const current = await repository.getById(id);
+      const removedDays = (current?.operatingDays ?? []).filter((day) => !data.operatingDays.includes(day));
+      if (removedDays.length) {
+        const bookedDays = await repository.bookedWeekDays(id);
+        const blocked = weekDays.filter((day) => removedDays.includes(day.value) && bookedDays.includes(day.value));
+        if (blocked.length) {
+          const names = blocked.map((day) => "el " + day.label.toLowerCase());
+          const list = names.length > 1 ? names.slice(0, -1).join(", ") + " y " + names.at(-1) : names[0];
+          const plural = names.length > 1;
+          throw new ServiceValidationError(
+            "No puedes quitar " + list + ": hay reservas activas " + (plural ? "esos días" : "ese día") + " desde hoy en adelante. Podrás " + (plural ? "quitarlos" : "quitarlo") + " cuando esas reservas pasen.",
+          );
+        }
+      }
+      return repository.update(id, data);
     },
     setActive(id: string, isActive: boolean): Promise<Service> {
       return repository.setActive(id, isActive);

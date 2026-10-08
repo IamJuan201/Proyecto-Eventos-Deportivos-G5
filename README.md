@@ -92,7 +92,7 @@ Cuentas demo (credenciales ficticias, solo para pruebas):
 | `src/features/auth/` | Formularios, rutas de login/register, hash, sesión firmada (`lib/session.ts`), usuarios (`services/user.service.ts`), OAuth. |
 | `src/features/reservations/` | Disponibilidad, reserva, pago demo y QR (`services/reservation.service.ts`). |
 | `src/features/categories/`, `src/features/services/` | Catálogo y administración (`prisma-*.repository.ts`). |
-| `src/features/employees/` | Empleados (`services/staff.service.ts`). `employee.service.ts` y `supabase-employee.repository.ts` son de la HU-32 y no están conectados a ninguna pantalla. |
+| `src/features/employees/` | Empleados: alta, cambio de contraseña, activación y asignación de servicio (`services/staff.service.ts`). |
 | `src/features/schedules/` | Cierres de operación (`services/closure.service.ts`). |
 | `src/features/access-control/` | Escáner y registro de acceso (`services/access.service.ts`). |
 | `src/features/metrics/` | Métricas del panel admin. |
