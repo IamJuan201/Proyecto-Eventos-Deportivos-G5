@@ -3,12 +3,14 @@ import { createSupabaseBrowserClient } from "@/shared/lib/supabase/client";
 export type LoginCredentials = {
   email: string;
   password: string;
+  turnstileToken?: string;
 };
 
 export type RegisterData = {
   fullName: string;
   email: string;
   password: string;
+  turnstileToken?: string;
 };
 
 export type AuthUser = {
