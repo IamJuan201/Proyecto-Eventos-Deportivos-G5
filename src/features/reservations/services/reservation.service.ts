@@ -75,8 +75,12 @@ const overlapping = (start: string, end: string): Prisma.ReservaWhereInput => ({
 
 /** Marks unpaid bookings whose hold ran out; availability does not depend on it. */
 async function expireStale(where: Prisma.ReservaWhereInput) {
-  await getPrisma().reserva.updateMany({ where: { ...where, estado: "pendiente_pago", bloqueoExpiraEn: { lte: new Date() } }, data: { estado: "expirada" } });
+  const { count } = await getPrisma().reserva.updateMany({ where: { ...where, estado: "pendiente_pago", bloqueoExpiraEn: { lte: new Date() } }, data: { estado: "expirada" } });
+  return count;
 }
+
+/** Periodic job (/api/cron/expire-reservations): marks every unpaid booking whose hold ran out. Idempotent. */
+export const expireStaleReservations = () => expireStale({});
 
 const opensOn = (service: Service, date: string) => {
   const day = dayOfWeek(date);
@@ -186,8 +190,13 @@ export async function completeDemoPayment(id: string, userId: string) {
     throw new Error("El bloqueo venció. Vuelve a elegir tu horario.");
   }
   await prisma.$transaction(async (tx) => {
-    const { count } = await tx.reserva.updateMany({ where: { id, estado: "pendiente_pago" }, data: { estado: "pagada" } });
-    if (!count) return; // Another request already paid it.
+    const { count } = await tx.reserva.updateMany({ where: { id, estado: "pendiente_pago", bloqueoExpiraEn: { gt: new Date() } }, data: { estado: "pagada" } });
+    if (!count) {
+      // Either another request already paid it, or the hold expired (e.g. the cron) after the check above.
+      const current = await tx.reserva.findUniqueOrThrow({ where: { id }, select: { estado: true } });
+      if (current.estado === "pagada") return;
+      throw new Error("El bloqueo venció. Vuelve a elegir tu horario.");
+    }
     await tx.pago.create({
       data: {
         reservaId: id, pasarela: "demo", referencia: "DEMO-" + randomUUID().slice(0, 8).toUpperCase(), monto: booking.total,
