@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { createReservationAction, loadAvailability } from "@/features/reservations/api/reservation.actions";
 import type { Service } from "@/features/services/types/service.types";
 
+const AVAILABILITY_REFRESH_MS = 30_000;
 const money = (amount: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(amount);
 
 function ReserveButton({ disabled }: { disabled: boolean }) {
@@ -23,15 +24,22 @@ export function BookingForm({ service, minDate, maxDate }: { service: Service; m
 
   useEffect(() => {
     let active = true;
-    loadAvailability(service.id, date).then((result) => {
+    const refresh = (isFirstLoad: boolean) => loadAvailability(service.id, date).then((result) => {
       if (!active) return;
       const available = result.filter((slot) => slot.remaining > 0);
       setAvailability({ date, slots: available });
-      setTime((current) => available.some((slot) => slot.time === current) ? current : available[0]?.time ?? "");
+      // A background refresh never swaps the chosen slot for another one: if it sold out, the client picks again.
+      setTime((current) => available.some((slot) => slot.time === current) ? current : isFirstLoad ? available[0]?.time ?? "" : "");
     }).catch(() => {
-      if (active) { setAvailability({ date, slots: [] }); setTime(""); }
+      // A failed background refresh keeps the last good availability.
+      if (active && isFirstLoad) { setAvailability({ date, slots: [] }); setTime(""); }
     });
-    return () => { active = false; };
+    refresh(true);
+    // Spots change while the page is open (other clients book, holds expire): re-check while the tab is visible.
+    const refreshIfVisible = () => { if (document.visibilityState === "visible") refresh(false); };
+    const timer = setInterval(refreshIfVisible, AVAILABILITY_REFRESH_MS);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    return () => { active = false; clearInterval(timer); document.removeEventListener("visibilitychange", refreshIfVisible); };
   }, [date, service.id]);
 
   const slots = availability?.date === date ? availability.slots : [];
