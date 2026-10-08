@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { buildCheckoutConfig, isWompiConfigured, type WompiCheckoutConfig } from "@/shared/lib/wompi";
+import { buildCheckoutConfig, type WompiCheckoutConfig } from "@/shared/lib/wompi";
 import { isPrismaError, isUuid } from "@/shared/lib/prisma";
 import { getPrisma } from "@/shared/lib/prisma";
 import { sendReservationQrEmail } from "@/features/payments/services/qr-mail.service";
