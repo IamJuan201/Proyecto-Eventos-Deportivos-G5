@@ -14,7 +14,7 @@ export default async function RegisterPage({ searchParams }: PageProps<'/registe
   const nextPath = safeNextPath(typeof query.next === 'string' ? query.next : '/');
 
   return (
-    <div className="relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="auth-page relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-8 sm:px-6 lg:px-8">
       {/* Fondo con la imagen del home (hero-bg.jpg) + overlay degradado translúcido moderno */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -77,7 +77,7 @@ export default async function RegisterPage({ searchParams }: PageProps<'/registe
 
         {/* Lado derecho: Tarjeta de Registro translúcida */}
         <div className="w-full lg:col-span-6 flex justify-center">
-          <div className="w-full max-w-md rounded-2xl border border-white/15 bg-slate-900/60 p-6 sm:p-8 shadow-2xl shadow-black/80 backdrop-blur-2xl transition-all duration-300 hover:border-sky-500/30">
+          <div className="auth-card w-full max-w-md rounded-2xl border border-white/15 bg-slate-900/60 p-6 sm:p-8 shadow-2xl shadow-black/80 backdrop-blur-2xl transition-all duration-300 hover:border-sky-500/30">
             <div className="text-center space-y-2 mb-6">
               <div className="lg:hidden flex justify-center mb-3">
                 <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-slate-900/80 p-1 flex items-center justify-center">
@@ -88,11 +88,11 @@ export default async function RegisterPage({ searchParams }: PageProps<'/registe
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
                 {t('Crea tu cuenta')}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-400">
+              <p className="auth-switch-prompt text-xs sm:text-sm text-slate-400">
                 {t('¿Ya tienes una cuenta?')}{' '}
                 <Link
                   href={`/login?next=${encodeURIComponent(nextPath)}`}
-                  className="font-semibold text-sky-400 hover:text-sky-300 hover:underline transition-colors ml-1"
+                  className="auth-prompt-link ml-1"
                 >
                   {t('Iniciar sesión')}
                 </Link>

@@ -8,7 +8,7 @@ import { OAuthButtons } from '@/features/auth/components/OAuthButtons';
 import { useTranslate } from '@/shared/i18n/locale-provider';
 
 function OAuthDivider({ label }: { label: string }) {
-  return <div className="relative"><div className="absolute inset-0 flex items-center"><div className="w-full border-t border-sport-border" /></div><div className="relative flex justify-center text-sm"><span className="bg-sport-bg px-3 text-sport-muted">{label}</span></div></div>;
+  return <div className="flex items-center gap-3 text-sm"><span className="h-px flex-1 bg-sport-border" /><span className="whitespace-nowrap text-sport-muted">{label}</span><span className="h-px flex-1 bg-sport-border" /></div>;
 }
 
 export function LoginForm({ nextPath = '/', oauthError = false }: { nextPath?: string; oauthError?: boolean }) {
@@ -30,7 +30,7 @@ export function LoginForm({ nextPath = '/', oauthError = false }: { nextPath?: s
   return <div className="space-y-6"><form className="space-y-5" onSubmit={submit}>
     <label className="block text-sm font-medium text-sport-text">{t('Correo electrónico')}<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder="ejemplo@correo.com" /></label>
     <label className="block text-sm font-medium text-sport-text">{t('Contraseña')}<input className="club-input mt-2" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" /></label>
-    <div className="text-right text-sm"><Link href="/forgot-password" className="font-medium text-sky-300 hover:text-sky-200">{t('¿Olvidaste tu contraseña?')}</Link></div>
+    <div className="auth-forgot-row"><Link href="/forgot-password" className="auth-forgot-link">{t('¿Olvidaste tu contraseña?')} <span aria-hidden="true">→</span></Link></div>
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
     <button className="club-button w-full" type="submit" disabled={pending}>{pending ? t('Ingresando…') : t('Iniciar sesión')}</button>
   </form><OAuthDivider label={t('O continuar con')} /><OAuthButtons nextPath={safeNextPath(nextPath)} /></div>;

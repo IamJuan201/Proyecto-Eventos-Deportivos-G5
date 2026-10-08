@@ -14,7 +14,7 @@ export default async function LoginPage({ searchParams }: PageProps<'/login'>) {
   const nextPath = safeNextPath(typeof query.next === 'string' ? query.next : '/');
 
   return (
-    <div className="relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-10 sm:px-6">
+    <div className="auth-page relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-10 sm:px-6">
       {/* Fondo con la imagen del home (hero-bg.jpg) + overlay degradado translúcido moderno */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -32,17 +32,17 @@ export default async function LoginPage({ searchParams }: PageProps<'/login'>) {
 
       {/* Tarjeta de Login centrada */}
       <div className="relative z-10 w-full max-w-md mx-auto">
-        <div className="w-full rounded-2xl border border-white/15 bg-slate-900/65 p-6 sm:p-8 shadow-2xl shadow-black/80 backdrop-blur-2xl transition-all duration-300 hover:border-sky-500/30">
+        <div className="auth-card w-full rounded-2xl border border-white/15 bg-slate-900/65 p-6 sm:p-8 shadow-2xl shadow-black/80 backdrop-blur-2xl transition-all duration-300 hover:border-sky-500/30">
           {/* Cabecera */}
           <div className="text-center space-y-2 mb-6">
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
               {t('Iniciar sesión')}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
+            <p className="auth-switch-prompt text-xs sm:text-sm text-slate-400">
               {t('¿No tienes una cuenta?')}{' '}
               <Link
                 href={`/register?next=${encodeURIComponent(nextPath)}`}
-                className="font-medium text-white hover:text-sky-400 transition-colors ml-1"
+                className="auth-prompt-link ml-1"
               >
                 {t('Regístrate aquí')}
               </Link>

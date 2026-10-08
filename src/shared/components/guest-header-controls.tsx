@@ -20,7 +20,7 @@ export function GuestHeaderControls() {
 
   return (
     <div className="guest-header-controls">
-      <div className={`auth-switch ${isRegister ? 'is-register' : 'is-login'}`} aria-label="Acceso a la cuenta">
+      <nav className={`auth-switch ${isRegister ? 'is-register' : 'is-login'}`} aria-label="Acceso a la cuenta">
         <span className="auth-switch-indicator" aria-hidden="true" />
         <Link
           href="/login"
@@ -38,7 +38,7 @@ export function GuestHeaderControls() {
         >
           {t('Registrarse')}
         </Link>
-      </div>
+      </nav>
       <LanguageSwitcher />
     </div>
   );

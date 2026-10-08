@@ -31,23 +31,6 @@ export default async function HomePage() {
           </div>
           <div className="hero-trust"><span>◉</span> {t("Reserva en línea")} <i /> {t("Pago de prueba")} <i /> {t("Acceso QR")}</div>
         </div>
-        <div className="hero-visual" aria-label="Ilustración de una cancha iluminada al anochecer">
-          <div className="hero-glow" />
-          <div className="court-illustration">
-            <svg viewBox="0 0 600 560" role="img" aria-label="Cancha deportiva iluminada">
-              <defs><linearGradient id="court" x1="0" x2="1" y1="0" y2="1"><stop stopColor="#163a4d" /><stop offset="1" stopColor="#101923" /></linearGradient><linearGradient id="light" x1="0" x2="1"><stop stopColor="#80d0ff" stopOpacity=".7" /><stop offset="1" stopColor="#138dff" stopOpacity=".06" /></linearGradient></defs>
-              <path d="M76 540 191 84 519 12 448 540Z" fill="url(#court)" stroke="#6fc5ff" strokeOpacity=".35" />
-              <path d="m191 84 257 456M76 540 519 12M134 313l354-169M169 174l334 190" fill="none" stroke="#a9dbff" strokeOpacity=".34" strokeWidth="2" />
-              <path d="M270 67 342 0M465 123l112-79" stroke="url(#light)" strokeWidth="12" />
-              <path d="M289 24 79 535M515 16 448 539" stroke="url(#light)" strokeWidth="24" opacity=".28" />
-              <circle cx="303" cy="312" r="65" fill="none" stroke="#b9e2ff" strokeOpacity=".25" strokeWidth="2" />
-              <path d="M106 430h372M148 252h357" stroke="#b9e2ff" strokeOpacity=".2" strokeDasharray="4 8" />
-            </svg>
-          </div>
-          <div className="visual-label visual-label-top"><span className="live-dot" /> CLUB STATUS <b>OPERATIVO</b></div>
-          <div className="visual-label visual-label-bottom"><strong>01 / 04</strong><span>ESPACIOS PARA TU PRÓXIMO PLAN</span></div>
-          <div className="visual-stamp">EC<br /><small>PRIVÉ</small></div>
-        </div>
       </div>
       </section>
 

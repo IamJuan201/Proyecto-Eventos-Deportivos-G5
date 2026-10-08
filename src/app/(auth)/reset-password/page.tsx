@@ -8,7 +8,7 @@ export default async function ResetPasswordPage() {
   const locale = await getLocale();
   const t = (text: string) => translate(text, locale);
   return (
-    <div className="relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-8 sm:px-6">
+    <div className="auth-page relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-8 sm:px-6">
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/hero-bg.jpg"
@@ -22,7 +22,7 @@ export default async function ResetPasswordPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        <section className="rounded-2xl border border-white/15 bg-slate-900/60 p-6 sm:p-8 shadow-2xl shadow-black/80 backdrop-blur-2xl">
+        <section className="auth-card rounded-2xl border border-white/15 bg-slate-900/60 p-6 sm:p-8 shadow-2xl shadow-black/80 backdrop-blur-2xl">
           <span className="inline-block text-xs font-bold uppercase tracking-wider text-sky-400 mb-2">
             {t("ACTUALIZA TU ACCESO")}
           </span>
