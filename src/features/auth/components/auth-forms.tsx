@@ -28,7 +28,7 @@ export function LoginForm({ nextPath = '/', oauthError = false }: { nextPath?: s
     catch (reason) { setError(reason instanceof Error ? t(reason.message) : t('No se pudo iniciar sesión.')); }
   }
   return <div className="space-y-6"><form className="space-y-5" onSubmit={submit}>
-    <label className="block text-sm font-medium text-sport-text">{t('Correo electrónico')}<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder="ejemplo@correo.com" /></label>
+    <label className="block text-sm font-medium text-sport-text">{t('Correo electrónico')}<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder={t('ejemplo@correo.com')} /></label>
     <label className="block text-sm font-medium text-sport-text">{t('Contraseña')}<input className="club-input mt-2" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" /></label>
     <div className="auth-forgot-row"><Link href="/forgot-password" className="auth-forgot-link">{t('¿Olvidaste tu contraseña?')} <span aria-hidden="true">→</span></Link></div>
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
@@ -54,8 +54,8 @@ export function RegisterForm({ nextPath = '/' }: { nextPath?: string }) {
     } catch (reason) { setError(reason instanceof Error ? t(reason.message) : t('No se pudo crear la cuenta.')); }
   }
   return <div className="space-y-6"><form className="space-y-4" onSubmit={submit}>
-    <label className="block text-sm font-medium text-sport-text">{t('Nombre completo')}<input className="club-input mt-2" name="name" autoComplete="name" required minLength={3} placeholder="Juan Pérez" /></label>
-    <label className="block text-sm font-medium text-sport-text">{t('Correo electrónico')}<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder="ejemplo@correo.com" /></label>
+    <label className="block text-sm font-medium text-sport-text">{t('Nombre completo')}<input className="club-input mt-2" name="name" autoComplete="name" required minLength={3} placeholder={t('Juan Pérez')} /></label>
+    <label className="block text-sm font-medium text-sport-text">{t('Correo electrónico')}<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder={t('ejemplo@correo.com')} /></label>
     <label className="block text-sm font-medium text-sport-text">{t('Contraseña')}<input className="club-input mt-2" name="password" type="password" autoComplete="new-password" required minLength={8} placeholder={t('Mínimo 8 caracteres')} /></label>
     <label className="block text-sm font-medium text-sport-text">{t('Confirmar contraseña')}<input className="club-input mt-2" name="confirm-password" type="password" autoComplete="new-password" required minLength={8} /></label>
     <label className="flex items-start gap-3 text-sm text-sport-muted"><input className="mt-1 accent-sport-emerald" type="checkbox" required />{t('Acepto los términos del servicio y la política de privacidad.')}</label>

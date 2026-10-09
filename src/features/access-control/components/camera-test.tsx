@@ -8,7 +8,7 @@ export function CameraTest() {
   const t = useTranslate();
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [active, setActive] = useState(false);
-  const [message, setMessage] = useState('Pulsa “Probar cámara” y permite el acceso en el navegador.');
+  const [message, setMessage] = useState('Activa la cámara para leer un código QR.');
   const [decodedValue, setDecodedValue] = useState('');
 
   async function startCamera() {
@@ -22,7 +22,7 @@ export function CameraTest() {
         { fps: 10, qrbox: { width: 240, height: 240 } },
         (value) => {
           setDecodedValue(value);
-          setMessage(t('La cámara y el lector QR están funcionando. El código se queda en esta página de prueba.'));
+          setMessage(t('Código QR leído correctamente.'));
         },
         () => undefined,
       );
@@ -49,15 +49,15 @@ export function CameraTest() {
   return (
     <main className="club-container scanner-wrap">
       <section className="page-heading compact-page-heading">
-        <span className="eyebrow">{t('PRUEBA DE DISPOSITIVO')}</span>
-        <h1>{t('Prueba la cámara.')}</h1>
-        <p>{t('Esta página solo comprueba que el celular pueda abrir la cámara y leer un QR. No inicia sesión ni envía o guarda el contenido escaneado.')}</p>
+        <span className="eyebrow">{t('LECTOR QR')}</span>
+        <h1>{t('Diagnóstico del escáner.')}</h1>
+        <p>{t('Verifica el acceso a la cámara y la lectura de códigos QR. El código leído se muestra solo en esta página.')}</p>
       </section>
       <section className="glass-panel scanner-card">
-        <div className="scanner-heading"><div><h2>{t('Cámara trasera')}</h2><p>{t(message)}</p></div><span className="scanner-live"><i /> {active ? t('ACTIVA') : t('LISTA PARA PROBAR')}</span></div>
+        <div className="scanner-heading"><div><h2>{t('Cámara trasera')}</h2><p>{t(message)}</p></div><span className="scanner-live"><i /> {active ? t('ACTIVA') : t('LISTA')}</span></div>
         <div id="camera-test-reader" className="camera-test-reader" />
         <div className="camera-test-actions">
-          {!active ? <button className="club-button" type="button" onClick={() => void startCamera()}>{t('Probar cámara')}</button> : <button className="club-button" type="button" onClick={() => void stopCamera()}>{t('Apagar cámara')}</button>}
+          {!active ? <button className="club-button" type="button" onClick={() => void startCamera()}>{t('Activar cámara')}</button> : <button className="club-button" type="button" onClick={() => void stopCamera()}>{t('Apagar cámara')}</button>}
         </div>
         {decodedValue && <div role="status" className="scanner-result result-permitido"><strong>{t('QR LEÍDO')}</strong><p className="camera-test-code">{decodedValue}</p></div>}
       </section>

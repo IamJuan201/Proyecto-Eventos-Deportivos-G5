@@ -44,7 +44,7 @@ export async function completeDemoPaymentAction(_previous: PaymentFormState, for
   try {
     await completeDemoPayment(reservationId, user.id);
   } catch (error) {
-    return { error: error instanceof Error ? error.message : "No se pudo completar el pago de prueba." };
+    return { error: error instanceof Error ? error.message : "No se pudo confirmar la reserva." };
   }
   redirect("/checkout/" + reservationId);
 }

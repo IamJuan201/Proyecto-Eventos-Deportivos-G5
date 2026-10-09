@@ -29,7 +29,7 @@ export default async function HomePage() {
             <Link href="/services" className="club-button">{t("Explorar espacios")} <span aria-hidden="true">↗</span></Link>
             <Link href="/my-reservations" className="club-button club-button-secondary">{t("Consultar mi reserva")}</Link>
           </div>
-          <div className="hero-trust"><span>◉</span> {t("Reserva en línea")} <i /> {t("Pago de prueba")} <i /> {t("Acceso QR")}</div>
+          <div className="hero-trust"><span>◉</span> {t("Reserva en línea")} <i /> {t("Confirmación inmediata")} <i /> {t("Acceso QR")}</div>
         </div>
       </div>
       </section>
@@ -39,7 +39,7 @@ export default async function HomePage() {
         <div className="telemetry-grid">
           <article className="glass-panel telemetry-card"><span className="telemetry-icon">⌖</span><span className="telemetry-label">{t("Espacios listos")}</span><strong>{services.length.toString().padStart(2, "0")}<small> {t("opciones")}</small></strong><span className="telemetry-detail">{t("Deporte para cada momento")}</span></article>
           <article className="glass-panel telemetry-card"><span className="telemetry-icon cyan">◷</span><span className="telemetry-label">{t("Horario del complejo")}</span><strong>08—17<small> h</small></strong><span className="telemetry-detail">{t("Martes a domingo")}</span></article>
-          <article className="glass-panel telemetry-card"><span className="telemetry-icon green">✳</span><span className="telemetry-label">{t("Reservas confirmadas")}</span><strong>{activeBookings.toString().padStart(2, "0")}<small> {t("este demo")}</small></strong><span className="telemetry-detail">{t("Pago seguro de prueba")}</span></article>
+          <article className="glass-panel telemetry-card"><span className="telemetry-icon green">✳</span><span className="telemetry-label">{t("Reservas confirmadas")}</span><strong>{activeBookings.toString().padStart(2, "0")}</strong><span className="telemetry-detail">{t("Acceso con código QR")}</span></article>
         </div>
       </section>
 
@@ -54,7 +54,7 @@ export default async function HomePage() {
         <div><span className="eyebrow">{t("SIN FILAS, SIN VUELTAS")}</span><h2>{t("De tu pantalla")}<br />{t("a la cancha.")}</h2></div>
         <div className="flow-steps">
           <div><span>01</span><strong>{t("Elige tu espacio")}</strong><small>{t("Fecha, turno y cupos.")}</small></div><i>→</i>
-          <div><span>02</span><strong>{t("Confirma tu reserva")}</strong><small>{t("Paga en nuestro demo.")}</small></div><i>→</i>
+          <div><span>02</span><strong>{t("Confirma tu reserva")}</strong><small>{t("Completa la reserva.")}</small></div><i>→</i>
           <div><span>03</span><strong>{t("Entra con tu QR")}</strong><small>{t("Listo para disfrutar.")}</small></div>
         </div>
       </section>
