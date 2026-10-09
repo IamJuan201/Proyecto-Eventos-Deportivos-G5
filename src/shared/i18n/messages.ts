@@ -492,6 +492,20 @@ const featureEnglish: Record<string, string> = {
   'Respaldo para la demo:': 'Demo fallback:',
   'El botón de prueba registra un pago simulado y genera los QR sin cobrar dinero real.': 'The test button records a simulated payment and issues the QR codes without charging real money.',
   'Completa la verificación de seguridad.': 'Complete the security check.',
+  'Completa nombre, correo y contraseña.': 'Enter your name, email and password.',
+  'Escribe tu correo y contraseña.': 'Enter your email and password.',
+  'El correo o la contraseña no son correctos.': 'The email or password is incorrect.',
+  'No se pudo iniciar sesión. Inténtalo de nuevo.': 'Could not sign in. Please try again.',
+  'La verificación de seguridad falló. Inténtalo de nuevo.': 'The security check failed. Please try again.',
+  'Tu cuenta de empleado está inactiva. Contacta al administrador.': 'Your staff account is inactive. Contact the administrator.',
+  'Tu correo aún no está confirmado. Revisa tu correo e ingresa el código.': 'Your email is not confirmed yet. Check your inbox and enter the code.',
+  'Tu correo ya está confirmado. Inicia sesión.': 'Your email is already confirmed. Please sign in.',
+  'Escribe tu correo.': 'Enter your email.', 'Escribe tu correo y el código.': 'Enter your email and the code.',
+  'Escribe el código de 8 dígitos.': 'Enter the 8-digit code.',
+  'No encontramos esa cuenta.': 'We could not find that account.',
+  'No hay un código activo. Solicita uno nuevo.': 'There is no active code. Request a new one.',
+  'El código venció. Solicita uno nuevo.': 'The code expired. Request a new one.',
+  'Demasiados intentos. Solicita un código nuevo.': 'Too many attempts. Request a new code.',
 };
 
 export function translate(text: string, locale: Locale): string {
