@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
+import { WompiPaymentButton } from "@/features/payments/components/wompi-payment-button";
 import { DemoPaymentButton } from "@/features/reservations/components/demo-payment-button";
 import { DownloadQrPdfButton } from "@/features/reservations/components/download-qr-pdf-button";
 import { requireRole } from "@/features/auth/lib/session";
@@ -42,14 +43,16 @@ export default async function CheckoutPage({ params }: { params: Promise<{ reser
 
         {reservation.status === "pendiente_pago" && <>
           <div className="payment-deadline"><span>◷</span><p>{t("Tu horario está bloqueado durante 10 minutos, hasta las")} <strong>{reservation.paymentExpiresAt && new Date(reservation.paymentExpiresAt).toLocaleTimeString(locale === "en" ? "en-US" : "es-CO", { hour: "2-digit", minute: "2-digit", timeZone: "America/Bogota" })}</strong>.</p></div>
-          <div className="notice-demo"><strong>{t("Pago en línea no disponible:")}</strong> {t("Puedes confirmar la reserva, pero esta acción no procesará un cobro.")}</div>
+          <div className="notice-demo"><strong>{t("Pago en línea (sandbox):")}</strong> {t("Paga con tarjeta, PSE o Nequi a través de Wompi. Recibirás tus QR en pantalla y por correo.")}</div>
+          <WompiPaymentButton reservationId={reservation.id} customerEmail={reservation.customerEmail} />
+          <div className="notice-demo"><strong>{t("Respaldo para la demo:")}</strong> {t("El botón de prueba registra un pago simulado y genera los QR sin cobrar dinero real.")}</div>
           <DemoPaymentButton reservationId={reservation.id} />
         </>}
 
         {reservation.status === "expirada" && <Link className="club-button" href={"/services/" + reservation.serviceId}>{t("Elegir otro horario")}</Link>}
 
         {reservation.status === "pagada" && reservation.payment && <>
-          <div className="payment-confirmed"><span aria-hidden="true">✓</span><div><strong>{t("Reserva confirmada")}</strong><small>{t("Registro")} {reservation.payment.reference} · {new Date(reservation.payment.paidAt).toLocaleString(locale === "en" ? "en-US" : "es-CO", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Bogota" })} · {t("Sin cobro procesado")}</small></div></div>
+          <div className="payment-confirmed"><span aria-hidden="true">✓</span><div><strong>{t("Pago aprobado")}</strong><small>{t("Referencia")} {reservation.payment.reference} · {new Date(reservation.payment.paidAt).toLocaleString(locale === "en" ? "en-US" : "es-CO", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Bogota" })}{reservation.payment.reference.startsWith("DEMO-") && <> · {t("Sin cobro procesado")}</>}</small></div></div>
           <h2 className="tickets-title">{t("Tus códigos de acceso")} <span>{reservation.qrs.length} QR</span></h2>
           <p className="tickets-hint">{t(reservation.qrs.length > 1 ? "Cada persona presenta su propio código al empleado del servicio." : "Presenta este código al empleado del servicio al llegar.")}</p>
           <div className="qr-grid">

@@ -487,6 +487,11 @@ const featureEnglish: Record<string, string> = {
   'Se produjo un error. Inténtalo de nuevo.': 'Something went wrong. Please try again.',
   'El precio debe ser mayor o igual a cero.': 'Price must be zero or greater.', 'La capacidad debe ser mayor que cero.': 'Capacity must be greater than zero.',
   'Quitar filtros': 'Clear filters', 'Filtrar': 'Filter', 'Buscar': 'Search',
+  'Pago en línea (sandbox):': 'Online payment (sandbox):',
+  'Paga con tarjeta, PSE o Nequi a través de Wompi. Recibirás tus QR en pantalla y por correo.': 'Pay by card, PSE or Nequi through Wompi. You will get your QR codes on screen and by email.',
+  'Respaldo para la demo:': 'Demo fallback:',
+  'El botón de prueba registra un pago simulado y genera los QR sin cobrar dinero real.': 'The test button records a simulated payment and issues the QR codes without charging real money.',
+  'Completa la verificación de seguridad.': 'Complete the security check.',
 };
 
 export function translate(text: string, locale: Locale): string {
