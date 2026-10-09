@@ -52,7 +52,7 @@ export default function ScanPage({ serviceName, isPoolService, stats }: { servic
         {scanState && <div role="status" className={"scanner-result " + (scanState.result === "permitido" ? "result-permitido" : "result-error")}><strong>{t(scanState.result.replaceAll("_", " ")).toUpperCase()}</strong><p>{t(scanState.message)}</p></div>}
         <div className="scanner-rules"><strong>{t("Validaciones activas")}</strong><span>{t("Pago aprobado")}</span><span>{t("Servicio correcto")}</span><span>{t("Fecha y turno vigentes")}</span><span>{t("QR sin usos previos")}</span></div>
       </section>
-      <p className="scanner-footnote">{t("La cámara necesita permiso del navegador. Para la presentación también puedes pegar un código QR emitido por una reserva de prueba.")}</p>
+      <p className="scanner-footnote">{t("La cámara necesita permiso del navegador. También puedes ingresar el código alfanumérico de una reserva.")}</p>
     </main>
   );
 }

@@ -8,7 +8,7 @@ import { useTranslate } from "@/shared/i18n/locale-provider";
 function PayButton() {
   const { pending } = useFormStatus();
   const t = useTranslate();
-  return <button className="club-button payment-button" type="submit" disabled={pending}>{pending ? t("Procesando pago de prueba…") : t("Confirmar pago de prueba")}</button>;
+  return <button className="club-button payment-button" type="submit" disabled={pending}>{pending ? t("Confirmando reserva…") : t("Confirmar reserva")}</button>;
 }
 
 export function DemoPaymentButton({ reservationId }: { reservationId: string }) {

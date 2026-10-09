@@ -50,7 +50,6 @@ export async function SiteFooter() {
 
       <div className="club-container footer-bottom-bar">
         <p>© 2026 Élite Club. {t("Todos los derechos reservados.")}</p>
-        <span className="demo-note">{t("Plataforma demostrativa · Pagos simulados de prueba")}</span>
       </div>
     </footer>
   );

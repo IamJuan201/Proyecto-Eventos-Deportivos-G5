@@ -13,7 +13,7 @@ export function OAuthButtons({ nextPath = '/' }: { nextPath?: string }) {
     catch (reason) { setError(reason instanceof Error ? t(reason.message) : t('No se pudo iniciar con OAuth.')); }
   };
 
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) return <p className="text-center text-xs text-sport-muted">{t('Google y GitHub se habilitan al configurar Supabase. Puedes registrarte con tu correo para probar el sprint.')}</p>;
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) return <p className="text-center text-xs text-sport-muted">{t('El acceso con Google y GitHub no está disponible. Puedes registrarte con tu correo.')}</p>;
   return (
     <div className="space-y-3">
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}

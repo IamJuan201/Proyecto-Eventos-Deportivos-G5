@@ -13,11 +13,15 @@
     "postinstall": "prisma skills sync || exit 0"
   },
   "dependencies": {
+    "@office-kit/xlsx": "^0.24.1",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",
+    "canvg": "^3.0.11",
     "html5-qrcode": "^2.3.8",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "next": "16.3.6",
     "pg": "^8.23.1",
     "qrcode": "^1.5.4",

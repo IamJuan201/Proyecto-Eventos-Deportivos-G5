@@ -110,7 +110,7 @@ export function BookingForm({ service, minDate, maxDate }: { service: Service; m
       <label className="terms-label"><input type="checkbox" name="acceptedTerms" required /><span>{t("Acepto los términos de reserva, incluyendo el plazo de 10 minutos para completar el pago y la política de no devolución.")}</span></label>
       {state.error && <p role="alert" className="booking-error">{state.error}</p>}
       <ReserveButton disabled={!time || loadingSlots || !slots.length} />
-      <p className="field-hint center-note">{t("Demo de sprint: el cobro se simula y no se realiza ningún cargo.")}</p>
+      <p className="field-hint center-note">{t("El pago en línea aún no está habilitado. La confirmación no realizará ningún cobro.")}</p>
     </form>
   );
 }

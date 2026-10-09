@@ -20,10 +20,10 @@ export default async function MyReservationsPage() {
       {!reservations.length && <div className="empty-state reservations-empty">{t("Todavía no tienes reservas.")} <Link href="/services">{t("Explora los espacios disponibles.")}</Link></div>}
       {!!reservations.length && <section className="reservation-list" aria-label={t("Resultados de búsqueda")}>
         {reservations.map((reservation) => (
-          <article className="glass-panel reservation-row" key={reservation.id}>
+          <Link className="glass-panel reservation-row reservation-row-link" key={reservation.id} href={"/checkout/" + reservation.id} aria-label={`${t(reservation.serviceName)} · ${dateText(reservation.date, locale)} · ${t(reservation.status.replace("_", " "))}`}>
             <div><span className="service-category">{dateText(reservation.date, locale)} · {reservation.startTime}—{reservation.endTime}</span><h3>{t(reservation.serviceName)}</h3><p>{reservation.people} {t("personas")} · {new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(reservation.total)}</p></div>
-            <div className="reservation-actions"><span className={"booking-status status-" + reservation.status}>{t(reservation.status.replace("_", " "))}</span><Link className="small-link" href={"/checkout/" + reservation.id}>{t(reservation.status === "pendiente_pago" ? "Completar pago" : reservation.status === "pagada" ? "Ver reserva y QR" : "Ver detalle")}</Link></div>
-          </article>
+            <div className="reservation-actions"><span className={"booking-status status-" + reservation.status}>{t(reservation.status.replace("_", " "))}</span><span className="reservation-cta">{t(reservation.status === "pendiente_pago" ? "Completar pago" : reservation.status === "pagada" ? "Ver reserva y QR" : "Ver detalle")} <span aria-hidden="true">→</span></span></div>
+          </Link>
         ))}
       </section>}
     </main>
