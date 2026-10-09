@@ -394,7 +394,6 @@ body:has(.auth-page) .site-footer { margin-top: 0; }
   color: #64748b;
   font-size: 11px;
 }
-.demo-note { color: #5e6a7b; font-size: 10px; }
 .lobby-hero-banner {
   position: relative;
   isolation: isolate;
@@ -753,6 +752,24 @@ body:has(.auth-page) .site-footer { margin-top: 0; }
 .revenue-line-path { fill: none; stroke: #38bdf8; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; filter: drop-shadow(0 0 5px rgb(56 189 248 / 45%)); }
 .revenue-line-point { fill: #eafaff; stroke: #0ea5e9; stroke-width: 3; }
 .booking-status-panel { display: flex; flex-direction: column; }
+.metrics-export-actions { display: flex; justify-content: flex-end; gap: 9px; margin: 12px 0; }
+.metrics-export-button { min-height: 38px; padding: 0 15px; cursor: pointer; }
+.qr-download-button { border: 1px solid rgb(0 133 255 / 24%); border-radius: 7px; background: rgb(0 133 255 / 8%); color: #0875bd; cursor: pointer; font: inherit; font-size: 10px; font-weight: 700; padding: 7px 11px; text-decoration: none; }
+.qr-download-button:hover { background: rgb(0 133 255 / 16%); }
+@media print {
+  body { background: #fff !important; color: #111827 !important; }
+  .site-header, .site-footer, .mobile-bottom-nav, .admin-tabs, .metrics-export-actions { display: none !important; }
+  .admin-wrap { width: 100% !important; max-width: none !important; padding: 0 !important; color: #111827 !important; }
+  .admin-wrap .page-heading, .admin-wrap h1, .admin-wrap h2, .admin-wrap strong, .admin-wrap small, .admin-wrap p, .admin-wrap th, .admin-wrap td, .admin-wrap .chart-axis-label, .admin-wrap .chart-month-label { color: #111827 !important; }
+  .admin-wrap .glass-panel { break-inside: avoid; border: 1px solid #d1d5db !important; background: #fff !important; box-shadow: none !important; }
+  .admin-dashboard-charts { grid-template-columns: 1fr 1fr !important; }
+  .revenue-line-chart-scroll { overflow: visible !important; }
+  .revenue-line-chart { min-width: 0 !important; }
+  .admin-table-wrap { overflow: visible !important; }
+  .admin-data-table { color: #111827 !important; }
+  a { color: #111827 !important; text-decoration: none !important; }
+  @page { margin: 14mm; size: landscape; }
+}
 .status-total { color: #e4f2ff; font-size: 22px; }
 .booking-status-list { display: grid; gap: 17px; margin-top: auto; padding-top: 20px; }
 .booking-status-row { display: grid; grid-template-columns: 1fr auto; gap: 8px 10px; align-items: center; }
