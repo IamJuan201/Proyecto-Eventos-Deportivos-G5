@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { DemoPaymentButton } from "@/features/reservations/components/demo-payment-button";
+import { DownloadQrPdfButton } from "@/features/reservations/components/download-qr-pdf-button";
 import { requireRole } from "@/features/auth/lib/session";
 import { getReservationForUser } from "@/features/reservations/services/reservation.service";
 import { getLocale } from "@/shared/i18n/locale.server";
@@ -41,20 +42,22 @@ export default async function CheckoutPage({ params }: { params: Promise<{ reser
 
         {reservation.status === "pendiente_pago" && <>
           <div className="payment-deadline"><span>◷</span><p>{t("Tu horario está bloqueado durante 10 minutos, hasta las")} <strong>{reservation.paymentExpiresAt && new Date(reservation.paymentExpiresAt).toLocaleTimeString(locale === "en" ? "en-US" : "es-CO", { hour: "2-digit", minute: "2-digit", timeZone: "America/Bogota" })}</strong>.</p></div>
-          <div className="notice-demo"><strong>{t("Modo demostración:")}</strong> {t("Stripe no está configurado para este sprint. El botón registra un pago de prueba y genera los QR, sin cobrar dinero real.")}</div>
+          <div className="notice-demo"><strong>{t("Pago en línea no disponible:")}</strong> {t("Puedes confirmar la reserva, pero esta acción no procesará un cobro.")}</div>
           <DemoPaymentButton reservationId={reservation.id} />
         </>}
 
         {reservation.status === "expirada" && <Link className="club-button" href={"/services/" + reservation.serviceId}>{t("Elegir otro horario")}</Link>}
 
         {reservation.status === "pagada" && reservation.payment && <>
-          <div className="payment-confirmed"><span aria-hidden="true">✓</span><div><strong>{t("Pago de prueba aprobado")}</strong><small>{t("Referencia")} {reservation.payment.reference} · {new Date(reservation.payment.paidAt).toLocaleString(locale === "en" ? "en-US" : "es-CO", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Bogota" })}</small></div></div>
+          <div className="payment-confirmed"><span aria-hidden="true">✓</span><div><strong>{t("Reserva confirmada")}</strong><small>{t("Registro")} {reservation.payment.reference} · {new Date(reservation.payment.paidAt).toLocaleString(locale === "en" ? "en-US" : "es-CO", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Bogota" })} · {t("Sin cobro procesado")}</small></div></div>
           <h2 className="tickets-title">{t("Tus códigos de acceso")} <span>{reservation.qrs.length} QR</span></h2>
           <p className="tickets-hint">{t(reservation.qrs.length > 1 ? "Cada persona presenta su propio código al empleado del servicio." : "Presenta este código al empleado del servicio al llegar.")}</p>
           <div className="qr-grid">
-            {reservation.qrs.map((qr, index) => <article className="qr-ticket" key={qr.id}><span>ÉLITE CLUB · {reservation.qrs.length > 1 ? t("INVITADO") + " " + (index + 1) : t("ACCESO")}</span><Image src={ticketImages[index]} alt={t("Código QR de acceso") + " " + (index + 1)} width={132} height={132} unoptimized /><code>{qr.code}</code><small>{reservation.date} · {reservation.startTime}—{reservation.endTime}</small></article>)}
+            {reservation.qrs.map((qr, index) => {
+              const guest = reservation.qrs.length > 1 ? `${t("INVITADO")} ${index + 1}` : t("ACCESO");
+              return <article className="qr-ticket" key={qr.id}><span>ÉLITE CLUB · {guest}</span><Image src={ticketImages[index]} alt={t("Código QR de acceso") + " " + (index + 1)} width={132} height={132} unoptimized /><code>{qr.code}</code><small>{reservation.date} · {reservation.startTime}—{reservation.endTime}</small><DownloadQrPdfButton qrDataUrl={ticketImages[index]} ticketLabel={`ÉLITE CLUB · ${guest}`} serviceLabel={t("Espacio")} serviceName={t(reservation.serviceName)} reservationCode={qr.code} dateTime={`${reservation.date} · ${reservation.startTime} - ${reservation.endTime}`} fileName={`elite-club-qr-${reservation.id.slice(0, 8)}-${index + 1}.pdf`} buttonLabel={t("Descargar PDF")} pendingLabel={t("Preparando PDF…")} errorLabel={t("No se pudo generar el archivo. Inténtalo de nuevo.")} /></article>;
+            })}
           </div>
-          <div className="notice-demo ticket-notice">{t("El QR estará activo solo en la fecha y turno de tu reserva. Para probar el escáner, ingresa con la cámara o el código alfanumérico en la sección")} <Link href="/scanner">{t("Acceso empleados")}</Link>.</div>
         </>}
       </section>
     </main>
