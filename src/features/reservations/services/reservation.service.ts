@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import type { EstadoReserva, Prisma } from "@/generated/prisma/client";
+import { sendReservationQrEmail } from "@/features/payments/services/qr-mail.service";
 import { isClosedOn, isHoliday } from "@/features/schedules/services/closure.service";
 import { serviceService } from "@/features/services/services/service.service";
 import type { Service } from "@/features/services/types/service.types";
@@ -209,5 +210,8 @@ export async function completeDemoPayment(id: string, userId: string) {
     await tx.codigoQR.createMany({
       data: Array.from({ length: tickets }, () => ({ reservaId: id, tipo: booking.servicio.tipoQr, codigo: "ELITE-" + randomUUID().replaceAll("-", "").slice(0, 18).toUpperCase() })),
     });
+  });
+  sendReservationQrEmail(id).catch((error) => {
+    console.error(`[payments] QR email failed for reservation ${id}:`, error);
   });
 }

@@ -74,7 +74,5 @@ export async function requireRole(role: UserRole): Promise<AppUser> {
 
 export async function registerAccount(input: { fullName: string; email: string; password: string }) {
   if (input.password.length < 8) throw new Error("La contraseña debe tener al menos 8 caracteres.");
-  const user = await createUser({ fullName: input.fullName, email: input.email, passwordHash: await hashPassword(input.password) });
-  await startSession(user.id);
-  return user;
+  return createUser({ fullName: input.fullName, email: input.email, passwordHash: await hashPassword(input.password) });
 }
