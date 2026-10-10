@@ -1,5 +1,5 @@
 import "server-only";
-import { randomUUID, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
+import { createHash, randomUUID, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 
 const scrypt = promisify(scryptCallback);
@@ -18,3 +18,6 @@ export async function verifyPassword(password: string, stored: string | null) {
   const actual = (await scrypt(password, salt, expected.length)) as Buffer;
   return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
+
+/** Short, non-reversible fingerprint of the stored hash: changes whenever the password changes. */
+export const passwordFingerprint = (stored: string | null) => createHash("sha256").update(stored ?? "none").digest("hex").slice(0, 16);

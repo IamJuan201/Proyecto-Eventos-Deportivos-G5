@@ -6,6 +6,7 @@ import { useState, useTransition, type FormEvent } from 'react';
 import { authService, AuthError, safeNextPath } from '@/features/auth/services/auth.service';
 import { OAuthButtons } from '@/features/auth/components/OAuthButtons';
 import { useTranslate } from '@/shared/i18n/locale-provider';
+import { PasswordInput } from '@/shared/components/password-input';
 import { TurnstileWidget, getTurnstileSiteKey, isTurnstileWidgetEnabled } from '@/features/auth/components/turnstile-widget';
 
 function OAuthDivider({ label }: { label: string }) {
@@ -40,7 +41,7 @@ export function LoginForm({ nextPath = '/', oauthError = false }: { nextPath?: s
   }
   return <div className="space-y-6"><form className="space-y-5" onSubmit={submit}>
     <label className="block text-sm font-medium text-sport-text">{t('Correo electrónico')}<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder={t('ejemplo@correo.com')} /></label>
-    <label className="block text-sm font-medium text-sport-text">{t('Contraseña')}<input className="club-input mt-2" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" /></label>
+    <label className="block text-sm font-medium text-sport-text">{t('Contraseña')}<PasswordInput className="club-input" wrapperClassName="mt-2" name="password" autoComplete="current-password" required placeholder="••••••••" /></label>
     <div className="auth-forgot-row"><Link href="/forgot-password" className="auth-forgot-link">{t('¿Olvidaste tu contraseña?')} <span aria-hidden="true">→</span></Link></div>
     {captchaEnabled && <TurnstileWidget siteKey={getTurnstileSiteKey()} onVerify={setTurnstileToken} onExpire={() => setTurnstileToken('')} />}
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
@@ -74,8 +75,8 @@ export function RegisterForm({ nextPath = '/' }: { nextPath?: string }) {
   return <div className="space-y-6"><form className="space-y-4" onSubmit={submit}>
     <label className="block text-sm font-medium text-sport-text">{t('Nombre completo')}<input className="club-input mt-2" name="name" autoComplete="name" required minLength={3} placeholder={t('Juan Pérez')} /></label>
     <label className="block text-sm font-medium text-sport-text">{t('Correo electrónico')}<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder={t('ejemplo@correo.com')} /></label>
-    <label className="block text-sm font-medium text-sport-text">{t('Contraseña')}<input className="club-input mt-2" name="password" type="password" autoComplete="new-password" required minLength={8} placeholder={t('Mínimo 8 caracteres')} /></label>
-    <label className="block text-sm font-medium text-sport-text">{t('Confirmar contraseña')}<input className="club-input mt-2" name="confirm-password" type="password" autoComplete="new-password" required minLength={8} /></label>
+    <label className="block text-sm font-medium text-sport-text">{t('Contraseña')}<PasswordInput className="club-input" wrapperClassName="mt-2" name="password" autoComplete="new-password" required minLength={8} placeholder={t('Mínimo 8 caracteres')} /></label>
+    <label className="block text-sm font-medium text-sport-text">{t('Confirmar contraseña')}<PasswordInput className="club-input" wrapperClassName="mt-2" name="confirm-password" autoComplete="new-password" required minLength={8} /></label>
     <label className="flex items-start gap-3 text-sm text-sport-muted"><input className="mt-1 accent-sport-emerald" type="checkbox" required />{t('Acepto los términos del servicio y la política de privacidad.')}</label>
     {captchaEnabled && <TurnstileWidget siteKey={getTurnstileSiteKey()} onVerify={setTurnstileToken} onExpire={() => setTurnstileToken('')} />}
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
