@@ -487,9 +487,6 @@ const featureEnglish: Record<string, string> = {
   'Se produjo un error. Inténtalo de nuevo.': 'Something went wrong. Please try again.',
   'El precio debe ser mayor o igual a cero.': 'Price must be zero or greater.', 'La capacidad debe ser mayor que cero.': 'Capacity must be greater than zero.',
   'Quitar filtros': 'Clear filters', 'Filtrar': 'Filter', 'Buscar': 'Search',
-  'Pago en línea (sandbox):': 'Online payment (sandbox):',
-  'Paga con tarjeta, PSE o Nequi a través de Wompi. Recibirás tus QR en pantalla y por correo.': 'Pay by card, PSE or Nequi through Wompi. You will get your QR codes on screen and by email.',
-  'Respaldo para la demo:': 'Demo fallback:',
   'El botón de prueba registra un pago simulado y genera los QR sin cobrar dinero real.': 'The test button records a simulated payment and issues the QR codes without charging real money.',
   'Completa la verificación de seguridad.': 'Complete the security check.',
   'Completa nombre, correo y contraseña.': 'Enter your name, email and password.',
@@ -507,6 +504,16 @@ const featureEnglish: Record<string, string> = {
   'El código venció. Solicita uno nuevo.': 'The code expired. Request a new one.',
   'Demasiados intentos. Solicita un código nuevo.': 'Too many attempts. Request a new code.',
   'Mostrar contraseña': 'Show password', 'Ocultar contraseña': 'Hide password',
+  'Pagar con Wompi': 'Pay with Wompi', 'Conectando con Wompi…': 'Connecting to Wompi…',
+  'Tarjeta, PSE o Nequi a través del checkout seguro de Wompi (entorno de pruebas).': 'Card, PSE or Nequi through the secure Wompi checkout (test environment).',
+  'Wompi aún no está configurado en este entorno. Puedes confirmar con el pago de prueba mientras tanto.': 'Wompi is not configured in this environment yet. You can confirm with the test payment meanwhile.',
+  'Te estamos llevando al checkout seguro de Wompi.': 'Taking you to the secure Wompi checkout.',
+  'Si no se abre, continúa aquí': 'If it does not open, continue here',
+  '¿Problemas con Wompi? Usar el pago de prueba': 'Trouble with Wompi? Use the test payment',
+  'No encontramos esta reserva.': 'We could not find this booking.',
+  'Esta reserva ya esta pagada.': 'This booking is already paid.',
+  'El bloqueo vencio. Vuelve a elegir tu horario.': 'The hold expired. Choose your time slot again.',
+  'No se pudo iniciar el pago con Wompi.': 'Could not start the Wompi payment.',
 };
 
 export function translate(text: string, locale: Locale): string {
