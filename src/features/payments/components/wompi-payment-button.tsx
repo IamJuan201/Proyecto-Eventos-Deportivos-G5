@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createWompiPaymentAction } from "@/features/payments/api/payment.actions";
 import { useTranslate } from "@/shared/i18n/locale-provider";
@@ -10,10 +10,10 @@ import { useTranslate } from "@/shared/i18n/locale-provider";
  *
  * @returns Button element with a pending-aware label.
  */
-function WompiPayButton() {
+function WompiPayButton({ redirecting }: { redirecting: boolean }) {
   const { pending } = useFormStatus();
   const t = useTranslate();
-  const busy = pending;
+  const busy = pending || redirecting;
   return (
     <button className="club-button payment-button" type="submit" disabled={busy}>
       {busy ? t("Conectando con Wompi…") : t("Pagar con Wompi")} <span aria-hidden="true">→</span>
@@ -35,6 +35,15 @@ export function WompiPaymentButton({ reservationId, customerEmail }: { reservati
   const [state, action] = useActionState(createWompiPaymentAction, {});
   const checkoutFormRef = useRef<HTMLFormElement>(null);
   const checkout = state.checkout;
+  // Locked while the browser leaves for Wompi; unlocked if the page comes back from the back/forward cache.
+  const [restoredFrom, setRestoredFrom] = useState<typeof checkout>(undefined);
+  const redirecting = Boolean(checkout) && restoredFrom !== checkout;
+
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => { if (event.persisted) setRestoredFrom(checkout); };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, [checkout]);
 
   useEffect(() => {
     const form = checkoutFormRef.current;
@@ -52,7 +61,7 @@ export function WompiPaymentButton({ reservationId, customerEmail }: { reservati
             {t(state.error)}
           </p>
         )}
-        <WompiPayButton />
+        <WompiPayButton redirecting={redirecting} />
         <small className="payment-hint">{t("Tarjeta, PSE o Nequi a través del checkout seguro de Wompi (entorno de pruebas).")}</small>
       </form>
       {state.reference && !checkout && (
