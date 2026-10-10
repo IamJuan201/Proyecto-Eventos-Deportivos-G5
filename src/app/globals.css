@@ -3,15 +3,24 @@
 :root {
   color-scheme: dark;
   --site-header-height: 71px;
+  /* Dark theme kept; surfaces lifted so panels read clearly against the base (contrast AA checked). */
   --bg-base: #0b0f15;
-  --bg-surface: #121824;
-  --glass-bg: rgb(18 24 36 / 78%);
-  --glass-border: rgb(255 255 255 / 9%);
+  --bg-surface: #1a2232;
+  --surface-raised: #222c3f;
+  --surface-header: rgb(20 27 39 / 90%);
+  --surface-input: rgb(13 18 27 / 85%);
+  --glass-bg: rgb(30 39 56 / 84%);
+  --glass-border: rgb(255 255 255 / 13%);
   --accent-blue: #0ea5e9;
   --accent-blue-hover: #38bdf8;
   --accent-sky: #38bdf8;
+  /* Secondary accent and state colors, so blue is reserved for primary actions. */
+  --accent-secondary: #2dd4bf;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
   --text-primary: #f7f9fc;
-  --text-secondary: #94a3b8;
+  --text-secondary: #a9b6c8;
   --transition-smooth: 220ms ease;
 }
 
@@ -64,7 +73,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   width: 100%;
   border: 1px solid rgb(255 255 255 / 12%);
   border-radius: 10px;
-  background: rgb(8 12 18 / 78%);
+  background: var(--surface-input);
   color: white;
   outline: none;
   padding: 0.8rem 0.9rem;
@@ -178,7 +187,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   top: 0;
   width: 100%;
   border-bottom: 1px solid rgb(255 255 255 / 8%);
-  background: rgb(9 13 20 / 88%);
+  background: var(--surface-header);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
@@ -264,7 +273,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   align-items: center;
   justify-content: space-around;
   height: 62px;
-  background: rgb(9 13 20 / 98%);
+  background: var(--surface-header);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid rgb(255 255 255 / 10%);
@@ -497,7 +506,7 @@ body:has(.auth-page) .site-footer { margin-top: 0; }
   letter-spacing: 0.17em;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgb(18 24 36 / 75%);
+  background: var(--glass-bg);
   border: 1px solid rgb(255 255 255 / 10%);
 }
 
