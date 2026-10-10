@@ -107,6 +107,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .profile-hint { margin: 0; color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
 .profile-logout { width: 100%; }
 .profile-password-form { display: grid; gap: 14px; }
+.reset-success { border: 1px solid rgb(52 211 153 / 30%); border-radius: 9px; background: rgb(6 78 59 / 25%); color: #a7f3d0; font-size: 12px; padding: 10px; }
 .profile-password-form label { display: grid; gap: 6px; }
 @media (max-width: 760px) {
   .profile-wrap { padding-block: 26px 16px; }
@@ -748,8 +749,8 @@ body:has(.auth-page) .site-footer { margin-top: 0; }
 }
 
 @media (max-width: 340px) {
-  .auth-switch { width: 108px; }
-  .auth-switch-link { font-size: 10px; }
+  .auth-switch { width: 132px; }
+  .auth-switch-link { font-size: 9px; letter-spacing: 0; }
   .language-trigger { gap: 2px; padding-inline: 2px; }
   .brand-copy strong { font-size: 10px; letter-spacing: .04em; }
   .hero-trust i { display: none; }
@@ -866,7 +867,7 @@ body:has(.auth-page) .site-footer { margin-top: 0; }
   .admin-dashboard-charts { grid-template-columns: 1fr; }
   .admin-chart-panel { padding: 14px; }
   .revenue-chart { gap: 5px; }
-  .revenue-chart-value { font-size: 10px; }
+  .revenue-chart-value { font-size: 8px; }
   .revenue-line-chart { min-height: 150px; }
   .booking-pie-layout { grid-template-columns: minmax(120px,160px) minmax(0,1fr); gap: 8px; }
   .booking-count-grid { grid-template-columns: 1fr; }.checkout-title h1 { font-size: 26px; }.reservation-actions { justify-items: start; }.detail-back span { font-size: 10px; }
