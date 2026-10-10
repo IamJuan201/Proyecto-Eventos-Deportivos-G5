@@ -85,7 +85,7 @@ export async function assignStaff(id: string, serviceId: string) {
 
 /**
  * Replaces the employee's password (already hashed by the caller): the old one stops working for new logins.
- * Open sessions are not closed (the session cookie only carries the user id); deactivating the employee does revoke access at once.
+ * The session cookie carries a password fingerprint, so the employee's open sessions end as well.
  */
 export async function setStaffPassword(id: string, passwordHash: string) {
   const employee = isUuid(id) ? await getPrisma().empleado.findFirst({ where: { id, eliminadoEn: null }, select: { usuarioId: true } }) : null;
