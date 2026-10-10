@@ -506,6 +506,7 @@ const featureEnglish: Record<string, string> = {
   'No hay un código activo. Solicita uno nuevo.': 'There is no active code. Request a new one.',
   'El código venció. Solicita uno nuevo.': 'The code expired. Request a new one.',
   'Demasiados intentos. Solicita un código nuevo.': 'Too many attempts. Request a new code.',
+  'Mostrar contraseña': 'Show password', 'Ocultar contraseña': 'Hide password',
 };
 
 export function translate(text: string, locale: Locale): string {

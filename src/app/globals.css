@@ -74,6 +74,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .club-input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgb(14 165 233 / 18%); }
 .club-input::placeholder { color: #69768a; }
 
+/* Password field with show/hide toggle (PasswordInput). */
+.password-field { position: relative; display: block; }
+.password-field > input { padding-right: 46px; }
+.password-toggle { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: var(--text-secondary); cursor: pointer; transition: color var(--transition-smooth), background var(--transition-smooth); }
+.password-toggle:hover { color: var(--text-primary); background: rgb(255 255 255 / 7%); }
+.password-toggle:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 1px; }
+.employee-assignment .password-field > input { padding-right: 34px; }
+.employee-assignment .password-toggle { width: 28px; height: 28px; right: 3px; }
+
 .club-button {
   display: inline-flex;
   align-items: center;
