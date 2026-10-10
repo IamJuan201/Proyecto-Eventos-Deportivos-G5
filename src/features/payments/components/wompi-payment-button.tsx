@@ -8,13 +8,12 @@ import { useTranslate } from "@/shared/i18n/locale-provider";
 /**
  * Submit button for the Wompi payment form.
  *
- * @param props Whether the browser is already being sent to Wompi.
  * @returns Button element with a pending-aware label.
  */
-function WompiPayButton({ redirecting }: { redirecting: boolean }) {
+function WompiPayButton() {
   const { pending } = useFormStatus();
   const t = useTranslate();
-  const busy = pending || redirecting;
+  const busy = pending;
   return (
     <button className="club-button payment-button" type="submit" disabled={busy}>
       {busy ? t("Conectando con Wompi…") : t("Pagar con Wompi")} <span aria-hidden="true">→</span>
@@ -38,7 +37,10 @@ export function WompiPaymentButton({ reservationId, customerEmail }: { reservati
   const checkout = state.checkout;
 
   useEffect(() => {
-    if (checkout) checkoutFormRef.current?.requestSubmit();
+    const form = checkoutFormRef.current;
+    if (!checkout || !form) return;
+    if (typeof form.requestSubmit === "function") form.requestSubmit();
+    else form.submit();
   }, [checkout]);
 
   return (
@@ -50,7 +52,7 @@ export function WompiPaymentButton({ reservationId, customerEmail }: { reservati
             {t(state.error)}
           </p>
         )}
-        <WompiPayButton redirecting={Boolean(checkout)} />
+        <WompiPayButton />
         <small className="payment-hint">{t("Tarjeta, PSE o Nequi a través del checkout seguro de Wompi (entorno de pruebas).")}</small>
       </form>
       {state.reference && !checkout && (
