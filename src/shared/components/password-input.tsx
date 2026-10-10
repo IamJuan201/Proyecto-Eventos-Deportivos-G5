@@ -12,7 +12,7 @@ type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & 
 export function PasswordInput({ wrapperClassName, ...props }: PasswordInputProps) {
   const t = useTranslate();
   const [visible, setVisible] = useState(false);
-  const label = t(visible ? 'Ocultar contraseña' : 'Mostrar contraseña');
+  const label = t('Mostrar contraseña');
   return (
     <span className={'password-field' + (wrapperClassName ? ' ' + wrapperClassName : '')}>
       <input {...props} type={visible ? 'text' : 'password'} />
