@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/shared/lib/supabase/client";
 import { useTranslate } from "@/shared/i18n/locale-provider";
+import { PasswordInput } from "@/shared/components/password-input";
 
 export function PasswordResetForm({ mode }: { mode: "request" | "update" }) {
   const t = useTranslate();
@@ -40,7 +41,7 @@ export function PasswordResetForm({ mode }: { mode: "request" | "update" }) {
 
   return (
     <form className="auth-reset-form" onSubmit={submit}>
-      {mode === "request" ? <label>{t("Correo electrónico")}<input className="club-input" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@correo.com" required /></label> : <label>{t("Nueva contraseña")}<input className="club-input" type="password" autoComplete="new-password" minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("Mínimo 8 caracteres")} required /></label>}
+      {mode === "request" ? <label>{t("Correo electrónico")}<input className="club-input" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@correo.com" required /></label> : <label>{t("Nueva contraseña")}<PasswordInput className="club-input" autoComplete="new-password" minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("Mínimo 8 caracteres")} required /></label>}
       {error && <p className="booking-error" role="alert">{error}</p>}
       {message && <p className="reset-success" role="status">{message}</p>}
       <button className="club-button" type="submit" disabled={pending}>{pending ? t("Un momento…") : mode === "request" ? t("Enviar instrucciones") : t("Guardar contraseña")}</button>
