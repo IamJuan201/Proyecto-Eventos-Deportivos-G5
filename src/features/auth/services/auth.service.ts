@@ -158,6 +158,30 @@ export const authService = {
     }
   },
 
+  async requestPasswordReset(email: string): Promise<void> {
+    const response = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      throw await toAuthError(response, 'No se pudo completar la solicitud.');
+    }
+  },
+
+  async resetPassword(token: string, password: string): Promise<void> {
+    const response = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, password }),
+    });
+
+    if (!response.ok) {
+      throw await toAuthError(response, 'No se pudo completar la solicitud.');
+    }
+  },
+
   async logout(): Promise<void> {
     const response = await fetch('/api/auth/logout', {
       method: 'POST',
