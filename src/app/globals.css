@@ -92,6 +92,26 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .employee-assignment .password-field > input { padding-right: 34px; }
 .employee-assignment .password-toggle { width: 28px; height: 28px; right: 3px; }
 
+/* Profile (/profile): two cards on desktop, one column on phones. */
+.profile-wrap { padding-block: 43px 24px; }
+.profile-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.profile-card { display: grid; gap: 16px; border-radius: 16px; padding: 22px; }
+.profile-card h2 { margin: 0; font-size: 18px; }
+.profile-identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.profile-identity small { display: block; overflow: hidden; text-overflow: ellipsis; color: var(--text-secondary); }
+.profile-avatar { display: grid; flex: none; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-sky), #0284c7); color: white; font-size: 20px; font-weight: 700; }
+.profile-data { display: grid; gap: 10px; margin: 0; }
+.profile-data > div { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--glass-border); padding-top: 10px; }
+.profile-data dt { color: var(--text-secondary); font-size: 13px; }
+.profile-data dd { margin: 0; overflow-wrap: anywhere; text-align: right; font-size: 13px; font-weight: 600; }
+.profile-hint { margin: 0; color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+.profile-logout { width: 100%; }
+@media (max-width: 760px) {
+  .profile-wrap { padding-block: 26px 16px; }
+  .profile-layout { grid-template-columns: 1fr; }
+  .profile-card { padding: 18px; }
+}
+
 /* Checkout: single Wompi button with the demo payment as a discreet fallback. */
 .payment-action-form { display: grid; gap: 8px; width: 100%; }
 .payment-hint { color: var(--text-secondary); font-size: 11px; line-height: 1.5; }

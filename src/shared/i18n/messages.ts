@@ -517,6 +517,21 @@ const featureEnglish: Record<string, string> = {
   'El enlace no es válido o ya venció. Solicita uno nuevo.': 'This link is invalid or has expired. Request a new one.',
   'Pedir otro enlace': 'Request another link',
   'La contraseña debe tener entre 8 y 128 caracteres.': 'Password must be between 8 and 128 characters.',
+  'Mi perfil': 'My profile', 'Menú de cuenta': 'Account menu', 'Navegación móvil inferior': 'Bottom navigation',
+  'Navegación principal': 'Main navigation', 'Ver catálogo': 'View catalog',
+  'Reservas': 'Bookings', 'Perfil': 'Profile', 'Actividad': 'Activity', 'Escanear': 'Scan',
+  'Panel': 'Dashboard', 'Catálogo': 'Catalog', 'Agenda': 'Schedule', 'Equipo': 'Team',
+  'TU CUENTA': 'YOUR ACCOUNT', 'Mi perfil.': 'My profile.',
+  'Consulta tus datos, cambia tu contraseña o cierra tu sesión.': 'Review your details, change your password or sign out.',
+  'Rol': 'Role', 'Servicio asignado': 'Assigned service', 'Acceso con': 'Signs in with', 'Correo confirmado': 'Email confirmed',
+  'Miembro desde': 'Member since', 'Sí': 'Yes', 'No': 'No', 'Administrador': 'Administrator', 'Empleado': 'Staff',
+  'Correo y contraseña': 'Email and password', 'Crear una contraseña': 'Create a password', 'Contraseña actual': 'Current password',
+  'Por seguridad, al cambiarla se cierran tus sesiones en otros dispositivos.': 'For security, changing it signs you out on other devices.',
+  'Tu cuenta entra con Google o GitHub. Puedes crear una contraseña para entrar también con tu correo.': 'Your account signs in with Google or GitHub. You can create a password to also sign in with your email.',
+  'Tu contraseña se actualizó. Cerramos tus otras sesiones abiertas.': 'Your password was updated. We signed out your other sessions.',
+  'La contraseña actual no es correcta.': 'The current password is incorrect.',
+  'La nueva contraseña debe ser distinta de la actual.': 'The new password must be different from the current one.',
+  'No encontramos tu cuenta.': 'We could not find your account.', 'Inicia sesión para continuar.': 'Sign in to continue.',
 };
 
 export function translate(text: string, locale: Locale): string {
