@@ -83,6 +83,18 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .employee-assignment .password-field > input { padding-right: 34px; }
 .employee-assignment .password-toggle { width: 28px; height: 28px; right: 3px; }
 
+/* Checkout: single Wompi button with the demo payment as a discreet fallback. */
+.payment-action-form { display: grid; gap: 8px; width: 100%; }
+.payment-hint { color: var(--text-secondary); font-size: 11px; line-height: 1.5; }
+.payment-redirect { width: 100%; }
+.demo-payment { width: 100%; margin-top: 14px; border-top: 1px solid var(--glass-border); padding-top: 12px; }
+.demo-payment > summary { cursor: pointer; color: var(--text-secondary); font-size: 12px; list-style: none; }
+.demo-payment > summary::-webkit-details-marker { display: none; }
+.demo-payment > summary::before { content: "▸ "; }
+.demo-payment[open] > summary::before { content: "▾ "; }
+.demo-payment > summary:hover { color: var(--text-primary); }
+.demo-payment[open] > .notice-demo { margin-top: 10px; }
+
 .club-button {
   display: inline-flex;
   align-items: center;
