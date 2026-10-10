@@ -8,14 +8,12 @@ import { useTranslate } from '@/shared/i18n/locale-provider';
 
 interface UserMenuDropdownProps {
   accountName: string;
-  accountPath: string;
   role?: string;
   email?: string;
 }
 
 export function UserMenuDropdown({
   accountName,
-  accountPath,
   role,
   email,
 }: UserMenuDropdownProps) {
@@ -50,6 +48,7 @@ export function UserMenuDropdown({
 
   // Obtener inicial para el avatar
   const initial = accountName ? accountName.trim().charAt(0).toUpperCase() : 'U';
+  const homePath = role === 'admin' ? '/admin/metrics' : role === 'empleado' ? '/employee' : '/my-reservations';
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -58,10 +57,11 @@ export function UserMenuDropdown({
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-haspopup="true"
+        aria-label={t('Menú de cuenta')}
         className="group flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-sky-400/50 transition-all duration-200 cursor-pointer"
       >
         {/* Texto blanco con el nombre del usuario */}
-        <span className="text-sm font-medium text-white tracking-wide group-hover:text-sky-300 transition-colors max-w-[140px] truncate">
+        <span className="hidden sm:inline text-sm font-medium text-white tracking-wide group-hover:text-sky-300 transition-colors max-w-[140px] truncate">
           {accountName}
         </span>
 
@@ -86,13 +86,27 @@ export function UserMenuDropdown({
 
           <div className="space-y-0.5">
             <Link
-              href={accountPath}
+              href="/profile"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
             >
-              <svg className="w-4 h-4 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-4 h-4 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>{t('Mi perfil')}</span>
+            </Link>
+
+            <Link
+              href={homePath}
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <svg className="w-4 h-4 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
               </svg>
               <span>{t(role === 'admin' ? 'Panel de administración' : role === 'empleado' ? 'Mi actividad' : 'Mis reservas')}</span>
             </Link>
