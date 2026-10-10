@@ -514,6 +514,9 @@ const featureEnglish: Record<string, string> = {
   'Esta reserva ya esta pagada.': 'This booking is already paid.',
   'El bloqueo vencio. Vuelve a elegir tu horario.': 'The hold expired. Choose your time slot again.',
   'No se pudo iniciar el pago con Wompi.': 'Could not start the Wompi payment.',
+  'El enlace no es válido o ya venció. Solicita uno nuevo.': 'This link is invalid or has expired. Request a new one.',
+  'Pedir otro enlace': 'Request another link',
+  'La contraseña debe tener entre 8 y 128 caracteres.': 'Password must be between 8 and 128 characters.',
 };
 
 export function translate(text: string, locale: Locale): string {
