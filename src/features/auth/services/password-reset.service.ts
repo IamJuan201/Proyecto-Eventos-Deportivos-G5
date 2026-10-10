@@ -1,6 +1,6 @@
 import "server-only";
-import { createHash, createHmac, timingSafeEqual } from "node:crypto";
-import { hashPassword } from "@/features/auth/lib/password";
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { hashPassword, passwordFingerprint as fingerprint } from "@/features/auth/lib/password";
 import { findUserByEmail } from "@/features/auth/services/user.service";
 import { sendEmail } from "@/shared/lib/email";
 import { getPrisma, isUuid } from "@/shared/lib/prisma";
@@ -27,8 +27,6 @@ function secret() {
 
 /** Domain-separated from the session signature so a reset token never works as a session. */
 const sign = (data: string) => createHmac("sha256", secret()).update("password-reset:" + data).digest("base64url");
-
-const fingerprint = (passwordHash: string | null) => createHash("sha256").update(passwordHash ?? "none").digest("hex").slice(0, 16);
 
 function encode(payload: ResetPayload) {
   const data = Buffer.from(JSON.stringify(payload)).toString("base64url");
@@ -105,6 +103,8 @@ export async function resetPassword(token: string, password: string): Promise<vo
     data: { contrasenaHash: await hashPassword(password), correoConfirmado: true },
   });
   if (!count) throw invalid; // Used concurrently by another request.
+  // The email is confirmed now, so a pending verification code is no longer needed.
+  await prisma.codigoOtp.deleteMany({ where: { usuarioId: payload.uid } });
 }
 
 /** True when a reset link can still be used (for the reset page to show the form or an error). */
