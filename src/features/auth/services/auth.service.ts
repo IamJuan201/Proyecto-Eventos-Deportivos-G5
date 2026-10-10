@@ -158,11 +158,11 @@ export const authService = {
     }
   },
 
-  async requestPasswordReset(email: string): Promise<void> {
+  async requestPasswordReset(email: string, turnstileToken?: string): Promise<void> {
     const response = await fetch('/api/auth/forgot-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, turnstileToken }),
     });
 
     if (!response.ok) {
