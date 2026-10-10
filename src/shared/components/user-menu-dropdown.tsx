@@ -57,7 +57,7 @@ export function UserMenuDropdown({
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-haspopup="true"
-        aria-label={t('Menú de cuenta')}
+        aria-label={`${accountName}, ${t('Menú de cuenta')}`}
         className="group flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-sky-400/50 transition-all duration-200 cursor-pointer"
       >
         {/* Texto blanco con el nombre del usuario */}
