@@ -1,4 +1,5 @@
 import { assignEmployeeAction, changeEmployeePasswordAction, createEmployeeAction, toggleEmployeeAction } from "@/features/employees/api/employee.actions";
+import { AdminTabs } from "@/shared/components/admin-tabs";
 import { listStaff } from "@/features/employees/services/staff.service";
 import { serviceService } from "@/features/services/services/service.service";
 import { PasswordInput } from "@/shared/components/password-input";
@@ -13,7 +14,7 @@ export default async function EmployeesPage({ searchParams }: { searchParams: Pr
   return (
     <main className="club-container admin-wrap">
       <section className="page-heading compact-page-heading"><span className="eyebrow">{t("OPERACIÓN DEL COMPLEJO")}</span><h1>{t("Equipo de acceso.")}</h1><p>{t("Asigna un empleado activo a cada servicio. El escáner registra lecturas a nombre del servicio seleccionado.")}</p></section>
-      <nav className="admin-tabs" aria-label={t("Secciones de operación")}><a href="/admin/categories">{t("Categorías")}</a><a href="/admin/services">{t("Servicios")}</a><a href="/admin/schedules">{t("Horarios")}</a><a href="/admin/employees" aria-current="page">{t("Empleados")}</a><a href="/admin/metrics">{t("Métricas")}</a></nav>
+      <AdminTabs active="/admin/employees" />
       {error && <p className="booking-error">{t(error)}</p>}
       <div className="admin-layout">
         <form action={createEmployeeAction} className="glass-panel admin-form">
