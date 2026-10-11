@@ -78,7 +78,7 @@ export function UserMenuDropdown({
         </span>
 
         {/* Círculo avatar en azul / cian */}
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-sky-500/30 group-hover:scale-105 transition-transform">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 text-white flex items-center justify-center font-bold text-xs shadow-none sm:shadow-md sm:shadow-sky-500/30 group-hover:scale-105 transition-transform">
           {initial}
         </div>
       </button>
