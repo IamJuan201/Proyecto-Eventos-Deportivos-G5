@@ -12,9 +12,9 @@ export async function SiteFooter() {
         <div className="footer-brand-column">
           <div className="brand-lockup">
             <Image
-              src="/images/logo.png"
+              src="/images/elite-emblem.png"
               alt="Élite Club Logo"
-              width={34}
+              width={40}
               height={34}
               className="brand-logo-img"
             />

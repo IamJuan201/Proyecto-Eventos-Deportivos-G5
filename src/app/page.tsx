@@ -5,6 +5,7 @@ import { serviceService } from "@/features/services/services/service.service";
 import { getPrisma } from "@/shared/lib/prisma";
 import { getLocale } from "@/shared/i18n/locale.server";
 import { translate } from "@/shared/i18n/messages";
+import { LobbyHeroCarousel } from "@/features/home/components/lobby-hero-carousel";
 
 export default async function HomePage() {
   const locale = await getLocale();
@@ -20,21 +21,26 @@ export default async function HomePage() {
   return (
     <main>
       <section className="lobby-hero-banner">
+      <LobbyHeroCarousel />
       <div className="club-container lobby-hero">
         <div className="lobby-copy">
-          <div className="hero-overline"><span className="live-dot" /> {t("SANTUARIO DEPORTE & BIENESTAR")}</div>
           <h1>{t("Tu próximo")}<br /><span>{t("gran momento")}</span><br />{t("empieza aquí.")}</h1>
           <p>{t("Entrena, compite y desconecta. Encuentra el espacio que va contigo en Élite Club.")}</p>
           <div className="hero-actions">
             <Link href="/services" className="club-button">{t("Explorar espacios")} <span aria-hidden="true">↗</span></Link>
             <Link href="/my-reservations" className="club-button club-button-secondary">{t("Consultar mi reserva")}</Link>
           </div>
-          <div className="hero-trust"><span>◉</span> {t("Reserva en línea")} <i /> {t("Confirmación inmediata")} <i /> {t("Acceso QR")}</div>
         </div>
       </div>
+      <a className="hero-scroll-cue" href="#club-home-content" aria-label={t("Desplazarse para descubrir el club")}>
+        <span>{t("Descubre el club")}</span>
+        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+          <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </a>
       </section>
 
-      <section className="club-container telemetry" aria-label="Estado del club">
+      <section id="club-home-content" className="club-container telemetry" aria-label="Estado del club">
         <div className="section-heading compact-heading"><div><span className="eyebrow">{t("A TU RITMO")}</span><h2>{t("El club, en movimiento.")}</h2></div><span className="sync-label"><span className="live-dot" /> {t("DISPONIBLE HOY")}</span></div>
         <div className="telemetry-grid">
           <article className="glass-panel telemetry-card"><span className="telemetry-icon">⌖</span><span className="telemetry-label">{t("Espacios listos")}</span><strong>{services.length.toString().padStart(2, "0")}<small> {t("opciones")}</small></strong><span className="telemetry-detail">{t("Deporte para cada momento")}</span></article>

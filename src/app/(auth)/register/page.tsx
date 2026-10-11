@@ -44,7 +44,7 @@ export default async function RegisterPage({ searchParams }: PageProps<'/registe
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="relative w-12 h-12 rounded-2xl overflow-hidden border border-white/10 shadow-lg shadow-sky-500/20 bg-slate-900/80 p-1 flex items-center justify-center">
-                <Image src="/images/logo.png" alt="Élite Club" width={40} height={40} className="object-cover rounded-xl" />
+                <Image src="/images/elite-emblem.png" alt="Élite Club" width={44} height={38} className="object-contain" />
               </div>
               <h1 className="text-3xl font-black text-white tracking-tight">
                 {t('Únete a')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-300">Élite Club</span>
@@ -81,7 +81,7 @@ export default async function RegisterPage({ searchParams }: PageProps<'/registe
             <div className="text-center space-y-2 mb-6">
               <div className="lg:hidden flex justify-center mb-3">
                 <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-slate-900/80 p-1 flex items-center justify-center">
-                  <Image src="/images/logo.png" alt="Élite Club" width={38} height={38} className="object-cover rounded-lg" />
+                  <Image src="/images/elite-emblem.png" alt="Élite Club" width={42} height={36} className="object-contain" />
                 </div>
               </div>
 
