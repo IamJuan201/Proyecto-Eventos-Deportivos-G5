@@ -3,8 +3,9 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { hashPassword } from "@/features/auth/lib/password";
-import { createUser, findActiveUserById, type AppUser, type UserRole } from "@/features/auth/services/user.service";
+import { hashPassword, passwordFingerprint } from "@/features/auth/lib/password";
+import { createUser, toAppUser, type AppUser, type UserRole } from "@/features/auth/services/user.service";
+import { getPrisma } from "@/shared/lib/prisma";
 
 /**
  * Signed cookie session: `<base64url payload>.<HMAC-SHA256>`, no session table.
@@ -14,7 +15,8 @@ import { createUser, findActiveUserById, type AppUser, type UserRole } from "@/f
 export const SESSION_COOKIE = "elite_club_session";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 14;
 
-type SessionPayload = { uid: string; exp: number };
+/** `pv` = password fingerprint at sign-in; a password change ends every older session. Cookies without it (pre-PEDG-23) stay valid until they expire. */
+type SessionPayload = { uid: string; exp: number; pv?: string };
 
 function secret() {
   const value = process.env.SESSION_SECRET;
@@ -45,7 +47,8 @@ function decode(token: string): SessionPayload | null {
 
 /** Only callable from Route Handlers and Server Functions (sets a cookie). */
 export async function startSession(userId: string) {
-  const token = encode({ uid: userId, exp: Date.now() + SESSION_MAX_AGE * 1000 });
+  const row = await getPrisma().usuario.findUnique({ where: { id: userId }, select: { contrasenaHash: true } });
+  const token = encode({ uid: userId, exp: Date.now() + SESSION_MAX_AGE * 1000, pv: passwordFingerprint(row?.contrasenaHash ?? null) });
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: SESSION_MAX_AGE });
 }
@@ -60,7 +63,10 @@ export const getCurrentUser = cache(async (): Promise<AppUser | null> => {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   const payload = token ? decode(token) : null;
-  return payload ? findActiveUserById(payload.uid) : null;
+  if (!payload) return null;
+  const row = await getPrisma().usuario.findFirst({ where: { id: payload.uid, activo: true }, include: { rol: true } });
+  if (!row || (payload.pv !== undefined && payload.pv !== passwordFingerprint(row.contrasenaHash))) return null;
+  return toAppUser(row);
 });
 
 export async function requireRole(role: UserRole): Promise<AppUser> {

@@ -27,11 +27,6 @@ export async function findUserByEmail(email: string): Promise<UserRow | null> {
   return getPrisma().usuario.findUnique({ where: { correo: normalizeEmail(email) }, include: { rol: true } });
 }
 
-export async function findActiveUserById(id: string): Promise<AppUser | null> {
-  const row = await getPrisma().usuario.findFirst({ where: { id, activo: true }, include: { rol: true } });
-  return row && toAppUser(row);
-}
-
 /** An employee can sign in only while their Empleado record is active. */
 export async function isActiveEmployee(userId: string): Promise<boolean> {
   const count = await getPrisma().empleado.count({ where: { usuarioId: userId, activo: true, eliminadoEn: null } });

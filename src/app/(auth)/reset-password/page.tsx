@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { PasswordResetForm } from "@/features/auth/components/password-reset-form";
+import { isResetTokenUsable } from "@/features/auth/services/password-reset.service";
 import { getLocale } from "@/shared/i18n/locale.server";
 import { translate } from "@/shared/i18n/messages";
 
-export default async function ResetPasswordPage() {
-  const locale = await getLocale();
+export default async function ResetPasswordPage({ searchParams }: PageProps<"/reset-password">) {
+  const query = await searchParams;
+  const token = typeof query.token === "string" ? query.token : "";
+  const [locale, usable] = await Promise.all([getLocale(), token ? isResetTokenUsable(token) : Promise.resolve(false)]);
   const t = (text: string) => translate(text, locale);
   return (
     <div className="auth-page relative min-h-[calc(100vh-70px)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-8 sm:px-6">
@@ -33,7 +36,12 @@ export default async function ResetPasswordPage() {
             {t("Elige una contraseña de al menos ocho caracteres.")}
           </p>
 
-          <PasswordResetForm mode="update" />
+          {usable
+            ? <PasswordResetForm mode="update" token={token} />
+            : <div className="booking-error" role="alert">
+              {t("El enlace no es válido o ya venció. Solicita uno nuevo.")}{" "}
+              <Link className="underline" href="/forgot-password">{t("Pedir otro enlace")}</Link>
+            </div>}
 
           <div className="mt-6 pt-4 border-t border-white/10 text-center">
             <Link

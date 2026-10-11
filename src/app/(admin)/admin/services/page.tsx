@@ -1,4 +1,5 @@
 import { categoryService } from "@/features/categories/services/category.service";
+import { AdminTabs } from "@/shared/components/admin-tabs";
 import { ServiceForm } from "@/features/services/components/ServiceForm";
 import { ServiceList } from "@/features/services/components/ServiceList";
 import { serviceService } from "@/features/services/services/service.service";
@@ -18,13 +19,7 @@ export default async function ServicesPage({ searchParams }: PageProps<"/admin/s
         <h1>{t("Servicios y espacios.")}</h1>
         <p>{t("Configura precio, capacidad, tipo de QR y días de operación de cada espacio reservable.")}</p>
       </section>
-      <nav className="admin-tabs" aria-label="Secciones de operación">
-        <a href="/admin/categories">{t("Categorías")}</a>
-        <a href="/admin/services" aria-current="page">{t("Servicios")}</a>
-        <a href="/admin/schedules">{t("Horarios")}</a>
-        <a href="/admin/employees">{t("Empleados")}</a>
-        <a href="/admin/metrics">{t("Métricas")}</a>
-      </nav>
+      <AdminTabs active="/admin/services" />
       {typeof error === "string" && <p className="booking-error">{t(error)}</p>}
       <div className="admin-layout">
         <ServiceForm key={editing?.id ?? "new"} categories={categories} service={editing ?? undefined} />

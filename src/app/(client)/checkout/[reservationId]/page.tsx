@@ -43,10 +43,12 @@ export default async function CheckoutPage({ params }: { params: Promise<{ reser
 
         {reservation.status === "pendiente_pago" && <>
           <div className="payment-deadline"><span>◷</span><p>{t("Tu horario está bloqueado durante 10 minutos, hasta las")} <strong>{reservation.paymentExpiresAt && new Date(reservation.paymentExpiresAt).toLocaleTimeString(locale === "en" ? "en-US" : "es-CO", { hour: "2-digit", minute: "2-digit", timeZone: "America/Bogota" })}</strong>.</p></div>
-          <div className="notice-demo"><strong>{t("Pago en línea (sandbox):")}</strong> {t("Paga con tarjeta, PSE o Nequi a través de Wompi. Recibirás tus QR en pantalla y por correo.")}</div>
           <WompiPaymentButton reservationId={reservation.id} customerEmail={reservation.customerEmail} />
-          <div className="notice-demo"><strong>{t("Respaldo para la demo:")}</strong> {t("El botón de prueba registra un pago simulado y genera los QR sin cobrar dinero real.")}</div>
-          <DemoPaymentButton reservationId={reservation.id} />
+          <details className="demo-payment">
+            <summary>{t("¿Problemas con Wompi? Usar el pago de prueba")}</summary>
+            <p className="notice-demo">{t("El botón de prueba registra un pago simulado y genera los QR sin cobrar dinero real.")}</p>
+            <DemoPaymentButton reservationId={reservation.id} secondary />
+          </details>
         </>}
 
         {reservation.status === "expirada" && <Link className="club-button" href={"/services/" + reservation.serviceId}>{t("Elegir otro horario")}</Link>}

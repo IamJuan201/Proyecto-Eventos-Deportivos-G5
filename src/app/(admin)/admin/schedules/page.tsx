@@ -1,4 +1,5 @@
 import { createClosureAction, deleteClosureAction } from "@/features/schedules/api/schedule.actions";
+import { AdminTabs } from "@/shared/components/admin-tabs";
 import { closureTypes, listActiveClosures } from "@/features/schedules/services/closure.service";
 import { serviceService } from "@/features/services/services/service.service";
 import { getLocale } from "@/shared/i18n/locale.server";
@@ -13,7 +14,7 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
   return (
     <main className="club-container admin-wrap">
       <section className="page-heading compact-page-heading"><span className="eyebrow">{t("AGENDA DEL COMPLEJO")}</span><h1>{t("Horarios y cierres.")}</h1><p>{t("El horario de atención es de 8:00 a. m. a 5:00 p. m. Los lunes permanecen cerrados; registra aquí mantenimientos y fechas especiales.")}</p></section>
-      <nav className="admin-tabs" aria-label={t("Secciones de operación")}><a href="/admin/categories">{t("Categorías")}</a><a href="/admin/services">{t("Servicios")}</a><a href="/admin/schedules" aria-current="page">{t("Horarios")}</a><a href="/admin/employees">{t("Empleados")}</a><a href="/admin/metrics">{t("Métricas")}</a></nav>
+      <AdminTabs active="/admin/schedules" />
       <div className="admin-layout schedule-layout">
         <section className="glass-panel admin-list"><div className="admin-list-heading"><div><h2>{t("Horarios por servicio")}</h2><p>{t("Turnos disponibles de una hora")}</p></div><span className="schedule-clock">08:00 — 17:00</span></div>
           {services.map((service) => <article className="schedule-row" key={service.id}><div><strong>{t(service.name)}</strong><small>{service.capacity} {t(service.chargeType === "por_persona" ? "cupos por hora" : "espacios simultáneos")}</small></div><span>{service.operatingDays.map((day) => t(weekdays[day]).slice(0, 2)).join(" · ")}</span></article>)}
