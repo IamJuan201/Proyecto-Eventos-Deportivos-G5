@@ -14,7 +14,7 @@ export function DeleteServiceButton({ id, name }: { id: string; name: string }) 
         }
       }}
     >
-      <button type="submit" className="small-link">
+      <button type="submit" className="small-link service-action service-action-delete">
         {t("Eliminar")}
       </button>
     </form>

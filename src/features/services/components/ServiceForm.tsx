@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef, useState, type DragEvent, type ChangeEvent } from "react";
 import type { Category } from "@/features/categories/types/category.types";
 import { saveService, type ServiceFormState } from "@/features/services/api/service.actions";
 import { chargeTypes, qrTypes, serviceIcons, weekDays, type Service } from "@/features/services/types/service.types";
 import { useTranslate } from "@/shared/i18n/locale-provider";
+import { useToast } from "@/shared/components/toast-provider";
 
 const initialState: ServiceFormState = {};
 
@@ -16,10 +17,43 @@ interface ServiceFormProps {
 
 export function ServiceForm({ categories, service }: ServiceFormProps) {
   const t = useTranslate();
+  const showToast = useToast();
   const [state, formAction, pending] = useActionState(saveService, initialState);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const dragDepthRef = useRef(0);
+  const [imagePreview, setImagePreview] = useState(service?.imageUrl ?? "");
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
   const selectableCategories = categories.filter(
     (category) => category.isActive || category.id === service?.categoryId,
   );
+
+  useEffect(() => {
+    if (!imagePreview.startsWith("blob:")) return;
+    return () => URL.revokeObjectURL(imagePreview);
+  }, [imagePreview]);
+
+  useEffect(() => {
+    if (state.success && !pending) showToast({ title: t("Servicio creado."), kind: "success" });
+  }, [state.success, pending, showToast, t]);
+
+  const selectImage = (file?: File) => {
+    if (!file) return;
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => selectImage(event.currentTarget.files?.[0]);
+
+  const handleImageDrop = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    dragDepthRef.current = 0;
+    setIsDraggingImage(false);
+    const file = event.dataTransfer.files[0];
+    if (!file || !imageInputRef.current) return;
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    imageInputRef.current.files = transfer.files;
+    selectImage(file);
+  };
 
   return (
     <form action={formAction} className="glass-panel admin-form">
@@ -144,15 +178,49 @@ export function ServiceForm({ categories, service }: ServiceFormProps) {
         />
       </label>
 
-      <label>
-        {t("URL de la imagen")}
+      <label
+        className={`service-image-dropzone${imagePreview ? " has-image" : ""}${isDraggingImage ? " is-dragging" : ""}`}
+        data-dragging={isDraggingImage || undefined}
+        onDragEnter={(event) => {
+          event.preventDefault();
+          if (!event.dataTransfer.types.includes("Files")) return;
+          dragDepthRef.current += 1;
+          setIsDraggingImage(true);
+        }}
+        onDragOver={(event) => {
+          event.preventDefault();
+          if (event.dataTransfer.types.includes("Files")) event.dataTransfer.dropEffect = "copy";
+        }}
+        onDragLeave={(event) => {
+          event.preventDefault();
+          dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+          if (dragDepthRef.current === 0) setIsDraggingImage(false);
+        }}
+        onDrop={handleImageDrop}
+        style={imagePreview ? { backgroundImage: `url(${JSON.stringify(imagePreview)})` } : undefined}
+      >
+        {imagePreview ? (
+          <>
+            <span className="service-image-change-hint">{t("Cambiar imagen")}</span>
+            {isDraggingImage && <strong className="service-image-drop-message">{t("Suelta para reemplazar la imagen")}</strong>}
+            <span className="sr-only">{t("Imagen del espacio. Haz clic o arrastra una imagen para cambiarla.")}</span>
+          </>
+        ) : (
+          <>
+            <span>{t("Imagen del espacio")}</span>
+            <strong>{isDraggingImage ? t("Suelta la imagen aquí") : t("Arrastra aquí una imagen o haz clic para seleccionarla")}</strong>
+            <small>{t("JPG, PNG, WebP o AVIF · máximo 3.5 MB")}</small>
+          </>
+        )}
         <input
-          className="club-input"
-          name="imageUrl"
-          type="url"
-          defaultValue={service?.imageUrl}
-          placeholder="https://..."
+          ref={imageInputRef}
+          className="service-image-input"
+          name="coverImage"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/avif"
+          onChange={handleImageChange}
         />
+        <input type="hidden" name="imageUrl" value={service?.imageUrl ?? ""} />
       </label>
 
       <label>
@@ -182,8 +250,6 @@ export function ServiceForm({ categories, service }: ServiceFormProps) {
       </fieldset>
 
       {state.error && <p className="booking-error">{t(state.error)}</p>}
-      {state.success && <p className="field-hint">{t("Servicio creado.")}</p>}
-
       <button className="club-button" type="submit" disabled={pending}>
         {pending ? t("Guardando...") : t("Guardar servicio")}
       </button>

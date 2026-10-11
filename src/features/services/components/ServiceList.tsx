@@ -36,7 +36,7 @@ export async function ServiceList({ services, categories }: ServiceListProps) {
             .join(" · ");
 
           return (
-            <article className="employee-row" key={service.id}>
+            <article className="employee-row service-admin-row" key={service.id}>
               <div className="employee-info">
                 <strong>{t(service.name)}</strong>
                 <small>
@@ -46,17 +46,18 @@ export async function ServiceList({ services, categories }: ServiceListProps) {
                 </small>
                 <small>{days}</small>
               </div>
-              <span className={"booking-status " + (service.isActive ? "" : "status-expirada")}>
-                {t(service.isActive ? "Activo" : "Inactivo")}
-              </span>
-              <Link href={`/admin/services?edit=${service.id}`} className="small-link">
-                {t("Editar")}
-              </Link>
-              <form action={toggleServiceStatus.bind(null, service.id, !service.isActive)}>
-                <button type="submit" className="small-link">
-                  {t(service.isActive ? "Desactivar" : "Activar")}
+              <form action={toggleServiceStatus.bind(null, service.id, !service.isActive)} className="service-status-form">
+                <button
+                  type="submit"
+                  className={`booking-status service-status-control${service.isActive ? "" : " status-expirada"}`}
+                  aria-label={`${t(service.isActive ? "Desactivar servicio" : "Activar servicio")}: ${service.name}`}
+                >
+                  {t(service.isActive ? "Activo" : "Inactivo")}
                 </button>
               </form>
+              <Link href={`/admin/services?edit=${service.id}`} className="small-link service-action service-action-edit">
+                {t("Editar")}
+              </Link>
               <DeleteServiceButton id={service.id} name={service.name} />
             </article>
           );

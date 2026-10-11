@@ -28,7 +28,14 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
       <div className="detail-back"><Link href="/services">← {t("Volver a los espacios")}</Link><span>{t("RESERVA EN LÍNEA · ÉLITE CLUB")}</span></div>
       <div className="detail-layout">
         <section className="glass-panel detail-panel">
-          <div className={"service-art service-art-" + art + " detail-visual"}><span className="detail-symbol" aria-hidden="true">{symbols[art] ?? "✦"}</span><span className="eyebrow detail-tag">{t(service.tag)}</span></div>
+          <div
+            className={"service-art service-art-" + art + " detail-visual"}
+            style={service.imageUrl ? {
+              backgroundImage: `linear-gradient(180deg, rgb(9 15 23 / 10%), rgb(9 15 23 / 38%)), url(${JSON.stringify(service.imageUrl)})`,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+            } : undefined}
+          ><span className="detail-symbol" aria-hidden="true">{symbols[art] ?? "✦"}</span><span className="eyebrow detail-tag">{t(service.tag)}</span></div>
           <span className="eyebrow">{t(category?.name ?? "Élite Club")}</span>
           <h1>{t(service.name)}</h1>
           <p className="detail-description">{t(service.description)}</p>
