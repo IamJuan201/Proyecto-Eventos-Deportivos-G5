@@ -106,6 +106,6 @@ export function TurnstileWidget({ siteKey, onVerify, onExpire }: TurnstileWidget
       strategy="afterInteractive"
       onLoad={() => setReady(true)}
     />
-    <div ref={containerRef} className="flex justify-center" />
+    <div ref={containerRef} className="turnstile-container" aria-label="Verificación de seguridad" />
   </>;
 }
