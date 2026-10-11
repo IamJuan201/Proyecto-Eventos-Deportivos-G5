@@ -7,7 +7,6 @@ type HeroSlide = {
   alt: string;
 };
 
-// Reemplaza estos enlacespor las imágenes de tus espacios cuando las tengas.
 const slides: HeroSlide[] = [
   {
     src: "https://images.unsplash.com/photo-1728486145245-d4cb0c9c3470?auto=format&fit=crop&w=2200&q=85",
