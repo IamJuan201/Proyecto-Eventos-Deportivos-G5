@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/shared/components/toast-provider";
+import { useTranslate } from "@/shared/i18n/locale-provider";
 
 type Props = {
   qrDataUrl: string;
@@ -17,6 +19,8 @@ type Props = {
 
 export function DownloadQrPdfButton({ qrDataUrl, ticketLabel, serviceLabel, serviceName, reservationCode, dateTime, fileName, buttonLabel, pendingLabel, errorLabel }: Props) {
   const [pending, setPending] = useState(false);
+  const showToast = useToast();
+  const t = useTranslate();
 
   async function downloadPdf() {
     setPending(true);
@@ -31,9 +35,10 @@ export function DownloadQrPdfButton({ qrDataUrl, ticketLabel, serviceLabel, serv
       anchor.click();
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast({ title: t("Descarga lista"), message: t("El código QR se descargó correctamente."), kind: "success" });
     } catch (error) {
       console.error("Could not create the reservation QR PDF", error);
-      window.alert(errorLabel);
+      showToast({ title: t("No se pudo descargar"), message: errorLabel, kind: "error" });
     } finally {
       setPending(false);
     }

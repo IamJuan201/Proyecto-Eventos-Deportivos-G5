@@ -11,11 +11,13 @@ const extraOrigins = (process.env.ALLOWED_ACTION_ORIGINS ?? "")
 
 const nextConfig: NextConfig = {
   /* config options here */
+  devIndicators: false,
   reactCompiler: true,
   allowedDevOrigins: [...tunnelOrigins, ...extraOrigins],
   experimental: {
     serverActions: {
       allowedOrigins: ["localhost:3000", "127.0.0.1:3000", ...tunnelOrigins, ...extraOrigins],
+      bodySizeLimit: "4mb",
     },
   },
 };

@@ -21,7 +21,7 @@ export async function SiteHeader() {
       <header className="site-header">
         <div className="club-container site-header-inner">
           <Link href="/" aria-label="Élite Club, inicio" className="brand-lockup">
-            <Image src="/images/logo.png" alt="" width={44} height={44} className="brand-logo-img" priority />
+            <Image src="/images/elite-emblem.png" alt="" width={48} height={40} className="brand-logo-img" priority />
             <span className="brand-copy"><strong>ÉLITE CLUB</strong><small>{t("Deporte · bienestar")}</small></span>
           </Link>
           <HeaderNav role={user?.role} />
