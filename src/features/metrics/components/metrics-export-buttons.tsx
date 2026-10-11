@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/shared/components/toast-provider";
+import { useTranslate } from "@/shared/i18n/locale-provider";
 import type { DashboardMetrics, SalesPeak } from "@/features/metrics/services/metrics.service";
 
 type ExportBooking = {
@@ -43,6 +45,8 @@ function peakDate(peak: SalesPeak | null, locale: string, period: "day" | "week"
 }
 
 export function MetricsExportButtons({ locale, labels }: Props) {
+  const showToast = useToast();
+  const t = useTranslate();
   const [xlsxPending, setXlsxPending] = useState(false);
   const [pdfPending, setPdfPending] = useState(false);
 
@@ -150,9 +154,10 @@ export function MetricsExportButtons({ locale, labels }: Props) {
       anchor.download = `elite-club-${locale === "en" ? "metrics" : "metricas"}-${new Date().toISOString().slice(0, 10)}.xlsx`;
       document.body.append(anchor); anchor.click(); anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast({ title: t("Descarga lista"), message: t("El reporte XLS se descargó correctamente."), kind: "success" });
     } catch (error) {
       console.error("Could not create the Excel metrics report", error);
-      window.alert(labels.exportError);
+      showToast({ title: t("No se pudo descargar"), message: labels.exportError, kind: "error" });
     } finally {
       setXlsxPending(false);
     }
@@ -174,9 +179,10 @@ export function MetricsExportButtons({ locale, labels }: Props) {
       anchor.click();
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast({ title: t("Descarga lista"), message: t("El reporte PDF se descargó correctamente."), kind: "success" });
     } catch (error) {
       console.error("Could not create the PDF metrics report", error);
-      window.alert(labels.exportError);
+      showToast({ title: t("No se pudo descargar"), message: labels.exportError, kind: "error" });
     } finally {
       setPdfPending(false);
     }

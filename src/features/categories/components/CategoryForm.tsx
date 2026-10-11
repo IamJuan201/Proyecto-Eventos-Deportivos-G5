@@ -1,16 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { saveCategory, type CategoryFormState } from "@/features/categories/api/category.actions";
 import type { Category } from "@/features/categories/types/category.types";
 import { useTranslate } from "@/shared/i18n/locale-provider";
+import { useToast } from "@/shared/components/toast-provider";
 
 const initialState: CategoryFormState = {};
 
 export function CategoryForm({ category }: { category?: Category }) {
   const t = useTranslate();
+  const showToast = useToast();
   const [state, formAction, pending] = useActionState(saveCategory, initialState);
+
+  useEffect(() => {
+    if (state.success && !pending) showToast({ title: t("Categoría creada."), kind: "success" });
+  }, [state.success, pending, showToast, t]);
 
   return (
     <form action={formAction} className="glass-panel admin-form">
@@ -44,8 +50,6 @@ export function CategoryForm({ category }: { category?: Category }) {
       </label>
 
       {state.error && <p className="booking-error">{t(state.error)}</p>}
-      {state.success && <p className="field-hint">{t("Categoría creada.")}</p>}
-
       <button className="club-button" type="submit" disabled={pending}>
         {pending ? t("Guardando...") : t("Guardar categoría")}
       </button>

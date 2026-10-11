@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { translate, type Locale } from './messages';
 
@@ -38,5 +38,5 @@ export function useLocale() {
 
 export function useTranslate() {
   const { locale } = useLocale();
-  return (text: string) => translate(text, locale);
+  return useCallback((text: string) => translate(text, locale), [locale]);
 }
