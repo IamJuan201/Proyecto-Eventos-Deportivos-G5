@@ -124,6 +124,8 @@ const english: Record<string, string> = {
   "Tu reserva, sin sorpresas.": "Your booking, no surprises.",
   "Agenda de martes a domingo, de 8:00 a. m. a 5:00 p. m. Puedes reservar hasta con 15 días de anticipación.": "Open Tuesday to Sunday, 8:00 AM to 5:00 PM. Book up to 15 days in advance.",
   "Volver a los espacios": "Back to spaces",
+  "Descubre el club": "Discover the club",
+  "Desplazarse para descubrir el club": "Scroll to discover the club",
   "RESERVA EN LÍNEA · ÉLITE CLUB": "ONLINE BOOKING · ÉLITE CLUB",
   "Cobro por persona": "Charged per person",
   "Cobro por hora": "Charged per hour",

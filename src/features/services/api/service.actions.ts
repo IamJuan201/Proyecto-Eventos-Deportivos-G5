@@ -11,6 +11,7 @@ import { randomUUID } from "node:crypto";
 const SERVICES_PATH = "/admin/services";
 const SERVICE_IMAGE_BUCKET = "service-images";
 const MAX_SERVICE_IMAGE_BYTES = 3_500_000;
+const UPLOAD_ERROR = "No se pudo subir la imagen. Verifica la configuración del bucket de Storage.";
 const IMAGE_EXTENSIONS: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
@@ -53,12 +54,19 @@ export async function saveService(_prevState: ServiceFormState, formData: FormDa
       if (!extension) return { error: "Usa una imagen JPG, PNG, WebP o AVIF." };
       if (imageFile.size > MAX_SERVICE_IMAGE_BYTES) return { error: "La imagen debe pesar máximo 3.5 MB." };
 
-      const supabase = createSupabaseAdminClient();
+      const supabase = (() => {
+        try {
+          return createSupabaseAdminClient();
+        } catch (error) {
+          console.error(error);
+          throw new Error(UPLOAD_ERROR);
+        }
+      })();
       uploadedPath = `services/${id || "new"}/cover-${randomUUID()}.${extension}`;
       const { error: uploadError } = await supabase.storage
         .from(SERVICE_IMAGE_BUCKET)
         .upload(uploadedPath, imageFile, { contentType: imageFile.type, cacheControl: "31536000", upsert: false });
-      if (uploadError) throw new Error("No se pudo subir la imagen. Verifica la configuración del bucket de Storage.");
+      if (uploadError) throw new Error(UPLOAD_ERROR);
       input.imageUrl = supabase.storage.from(SERVICE_IMAGE_BUCKET).getPublicUrl(uploadedPath).data.publicUrl;
     }
 
@@ -107,7 +115,7 @@ export async function deleteService(id: string) {
 
 async function removeServiceImage(publicUrl: string) {
   try {
-    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
     if (!supabaseUrl) return;
 
     const publicPrefix = `${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/public/${SERVICE_IMAGE_BUCKET}/`;
