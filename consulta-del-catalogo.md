@@ -1,143 +1,186 @@
-# Bitácora Técnica de Desarrollo: Proyecto Élite Club
+# HU-20: Consulta del Catálogo de Servicios y Mejoras de Experiencia de Usuario (UI/UX)
 
-Este documento registra de manera integral y cronológica todos los avances, refactorizaciones y características desarrolladas en el proyecto **Élite Club - Eventos Deportivos**, sirviendo como registro de cambios (Changelog) y guía técnica tanto de lo ejecutado previamente como de las sesiones presentes y futuras.
-
----
-
-## 📌 Tabla de Contenidos
-1. [Visión General del Proyecto](#visión-general-del-proyecto)
-2. [Sprint 1: Base de Diseño y Catálogo de Servicios (HU-20)](#1-sprint-1-base-de-diseño-y-catálogo-de-servicios-hu-20)
-3. [Sprint 2: Hero Section, Identidad Visual y Responsive Navbar / Footer](#2-sprint-2-hero-section-identidad-visual-y-responsive-navbar--footer)
-4. [Sprint 3: Normalización de Botones y Paleta Azul Cielo](#3-sprint-3-normalización-de-botones-y-paleta-azul-cielo)
-5. [Sprint 4: Módulo de Autenticación, OAuth y Navbar de Usuario](#4-sprint-4-módulo-de-autenticación-oauth-y-navbar-de-usuario)
-6. [Resumen de Archivos y Componentes Clave](#5-resumen-de-archivos-y-componentes-clave)
-7. [Convención para Documentar Cambios Futuros](#6-convención-para-documentar-cambios-futuros)
+Documentación técnica detallada de los cambios de diseño, maquetación responsive, identidad visual y componentes interactivos realizados en el marco de la historia de usuario **HU-20: Consulta del catálogo de servicios** (rama: `jonathan-feature/HU-20/Consulta-del-catalogo-de-servicios`).
 
 ---
 
-## Visión General del Proyecto
-* **Framework:** Next.js 16 (App Router con Turbopack) & React 19.
-* **Lenguaje:** TypeScript (estricto).
-* **Estilos:** Tailwind CSS v4 con variables CSS personalizadas para tema oscuro atlético.
-* **Base de Datos / Persistencia:** Prisma ORM, Supabase Auth / SSR y tienda demo local para sprints ágiles.
-* **Identidad Visual:** Tema oscuro cinematográfico (`#0b0f15`, `#121824`), con acento corporativo **Azul Cielo** (`#0ea5e9` / `#38bdf8`), bordes sutiles y efectos Glassmorphism translúcidos.
+## 1. Resumen Ejecutivo de Cambios
+
+Se realizó una modernización integral de la experiencia de usuario (UI/UX) y de la arquitectura visual de la aplicación **Élite Club**, enfocada en diseño, adaptabilidad multidispositivo (PC, tablet y celulares Android) y rendimiento visual, **manteniendo intacta la lógica de negocio, esquemas de Prisma, autenticación con Supabase y endpoints de API**:
+
+1. **Nueva Paleta "Midnight Slate"**: Suavizado del tema oscuro para eliminar el tono negro carbón excesivo y ofrecer una ambientación de lujo deportivo con azul noche profundo.
+2. **Nueva Identidad Visual e Insignia Deportiva Transparente**: Sustitución de los logos previos con recuadro blanco por la nueva insignia atlética con canal alfa 100% transparente (`elite-logo.png`) y favicon centrado de 512×512 px (`icon.png`).
+3. **Navbar Adaptativo (PC y Celular)**: Rediseño del encabezado para evitar superposiciones con el botón de inicio de sesión en pantallas pequeñas y ampliación ergonómica en pantallas de escritorio.
+4. **Depuración de Vistas de Empleado**: Filtrado estricto en la barra inferior móvil y en el pie de página para ocultar accesos de clientes irrelevantes para el personal operativo.
+5. **Carrusel Interactivo de Catálogo (`ServiceCarousel`)**: Creación de un carrusel dinámico en la página principal y en la cabecera del catálogo con navegación por tarjetas, botones táctiles y puntos indicadores.
+6. **Optimización Avanzada para Celulares y Android**: Ajuste de proporciones de tarjeta, efecto *peek* (vista previa del siguiente elemento), gestos táctiles por hardware y espaciado de seguridad inferior (*safe area padding*) para evitar que la barra fija tape botones y precios.
+7. **Limpieza Visual de Flechas y Microinteracciones**: Eliminación de caracteres de texto plano (`→`, `↗`, `<i>→</i>`) sustituyéndolos por líneas degradadas y transiciones hover con aceleración cúbica.
+8. **Rediseño Responsive de Autenticación y Cambio de Contraseña**: Modernización visual de los formularios de restablecimiento y recuperación de contraseña con visibilidad alternable (ojito mostrar/ocultar).
 
 ---
 
-## 1. Sprint 1: Base de Diseño y Catálogo de Servicios (HU-20)
-* **Objetivo:** Establecer el sistema de diseño base en `src/app/globals.css` y la navegación del catálogo de servicios deportivos.
-* **Cambios realizados:**
-  - Definición de tokens y variables `:root` (`--bg-base`, `--bg-surface`, `--glass-bg`, `--glass-border`, `--transition-smooth`).
-  - Creación de clases de utilidad para Glassmorphism (`.glass-panel`) con `backdrop-filter: blur(16px)`.
-  - Estructuración de tarjetas de servicios (`ServiceCard`) con tags de categoría, símbolos visuales deportivos (`〰`, `≈`, `≋`, `✦`, etc.), cálculo dinámico de precios (por persona / por hora) y modal/vista de detalle por servicio (`/services/[serviceId]`).
-  - Sistema de animaciones sutiles con `.club-card-hover` y scroll suave en el documento.
+## 2. Paleta de Colores y Variables de Diseño (`src/app/globals.css`)
+
+Se actualizó la paleta de colores para conseguir un contraste agradable y eliminar la fatiga visual del fondo negro puro:
+
+| Variable CSS | Valor Anterior | Nuevo Valor | Propósito / Uso |
+| :--- | :--- | :--- | :--- |
+| `--bg-base` | `#0b0f15` / `#141618` | `#0e1726` | Fondo principal de la aplicación (azul noche refinado). |
+| `--bg-surface` | `#131922` / `#1A1D20` | `#162238` | Superficie de paneles y secciones destacadas. |
+| `--bg-card` | `rgba(19, 25, 34, 0.7)` | `rgba(22, 34, 56, 0.75)` | Fondo translúcido de tarjetas de catálogo y carrusel. |
+| `--glass-bg` | `rgba(26, 29, 32, 0.75)` | `rgba(15, 23, 42, 0.75)` | Paneles con efecto Glassmorphism y desenfoque. |
+| `--glass-border` | `rgba(255, 255, 255, 0.08)` | `rgba(255, 255, 255, 0.10)` | Delimitador sutil de paneles flotantes. |
+| `--site-header-height` | `64px` | `84px` | Altura del encabezado en escritorio para mayor presencia y ergonomía. |
+| `--accent-blue` | `#0085FF` | `#0ea5e9` / `#38bdf8` | Azul cielo deportivo de alto impacto para botones y acentos. |
+| `--transition-smooth` | `all 0.6s cubic-bezier` | `all 280ms cubic-bezier(0.16, 1, 0.3, 1)` | Curva de aceleración ágil sin retardo perceptual. |
 
 ---
 
-## 2. Sprint 2: Hero Section, Identidad Visual y Responsive Navbar / Footer
-* **Objetivo:** Crear un Hero impactante con imagen de fondo, optimizar la experiencia responsive y unificar la barra de navegación y el pie de página.
-* **Cambios realizados:**
-  - **Hero Banner Centrado:**
-    - Generación e integración de imagen de alta resolución de complejo deportivo nocturno (`/public/images/hero-bg.jpg`).
-    - Banner estructurado con pseudo-elementos `::before` y `::after` para aplicar un degradado oscuro semi-transparente que no opaque el texto.
-    - Tipografía grande y centrada con título: *"Tu próximo gran momento empieza aquí"*.
-  - **Nuevo Icono y Logo:**
-    - Integración del logotipo oficial del club (letra **E** estilizada con punto de acento en azul cielo) en `/public/images/logo.png` y favicon `/src/app/icon.png`.
-  - **Barra de Progreso de Lectura para PC (`ScrollProgressBar`):**
-    - Componente cliente en `src/shared/components/scroll-progress-bar.tsx`.
-    - Rastreo de scroll optimizado con `requestAnimationFrame` que llena una línea azul degradada en la parte inferior del navbar mientras se navega hacia abajo.
-  - **Navbar Sticky:**
-    - Cabecera fija (`position: sticky; top: 0; z-index: 50`) con efecto blur que acompaña al usuario durante todo el desplazamiento.
-  - **Barra Inferior Móvil (`MobileBottomNav`):**
-    - En pantallas celulares (`max-width: 640px`), las opciones de navegación principales se trasladan a una barra fija inferior ergonómica para pulgar.
-    - Opciones adaptativas según el rol del usuario (Cliente, Empleado o Administrador).
-  - **Depuración del Footer (`SiteFooter`):**
-    - Se eliminaron los enlaces duplicados que repetían la navegación del navbar.
-    - Reorganización en cuadrícula de 3 columnas: Marca/Identidad, Horarios del complejo e Información de contacto.
+## 3. Identidad Visual y Logotipo Transparente
+
+### 3.1 Procesamiento de la Insignia Deportiva
+* Se integró la nueva insignia atlética (raqueta, balón y olas deportivas en cian y azul).
+* Se procesó mediante canal alfa para garantizar **0% de fondo blanco y 100% de transparencia pura**.
+* Se aplicó recorte automático de espacio transparente (*trimming*) con margen respirable de seguridad.
+* Se generó la ruta [`public/images/elite-logo.png`](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/public/images/elite-logo.png) para **romper de forma definitiva la caché de disco de Google Chrome** (`Disk Cache`) que retenía la imagen anterior.
+
+### 3.2 Favicon e Icono de Pestaña
+* Se generó [`src/app/icon.png`](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/app/icon.png) en formato cuadrado de `512×512 px` con el emblema centrado y fondo transparente, optimizado para pestañas de navegador y accesos directos en Android/iOS.
+
+### 3.3 Estilos de Logotipo
+En [globals.css](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/app/globals.css):
+* Se eliminó cualquier `border-radius` o recuadro blanco que recortara la silueta del logo.
+* Se aplicó `object-fit: contain` y un resplandor sutil: `filter: drop-shadow(0 2px 8px rgba(14, 165, 233, 0.35))`.
 
 ---
 
-## 3. Sprint 3: Normalización de Botones y Paleta Azul Cielo
-* **Objetivo:** Refinar la interfaz eliminando flechas duras en botones y adoptando la paleta de color Azul Cielo (`sky blue`).
-* **Cambios realizados:**
-  - **Actualización de Paleta:**
-    - `--accent-blue`: Actualizado a `#0ea5e9` (Sky Blue 500).
-    - `--accent-blue-hover`: Actualizado a `#38bdf8` (Sky Blue 400).
-    - `--accent-sky`: Introducido con `#38bdf8`.
-  - **Rediseño de `.club-button`:**
-    - Eliminado `text-transform: uppercase` agresivo.
-    - Tipografía más suave (`font-weight: 600`, `letter-spacing: 0.02em`).
-    - Degradado moderno de azul cielo `linear-gradient(135deg, #0ea5e9, #0284c7)` con sombra difusa.
-    - Versión secundaria con vidrio esmerilado y borde celeste translúcido.
-  - **Limpieza de Caracteres Flecha:**
-    - Eliminadas las flechas `↗` y `→` de todos los botones de la interfaz:
-      - Botón del hero *"Explorar espacios"*.
-      - Botón de login en el header.
-      - Título de las tarjetas de servicio.
-      - Botón de submit en el formulario de reserva (`BookingForm`).
-      - Botón de confirmación de pago de prueba (`DemoPaymentButton`).
-      - Enlaces de estado en *"Mis reservas"*.
+## 4. Encabezado y Navbar Responsive
+
+### 4.1 En Pantallas de Escritorio (PC)
+* Altura del encabezado aumentada a `84px` (`--site-header-height: 84px`).
+* Logo renderizado a `50×50 px` con texto de marca `ÉLITE CLUB` de 15px en negrita y espaciado de letras aumentado (`letter-spacing: .14em`).
+* Enlaces de navegación con tipografía de `14px`, estados activos claros y transiciones hover con resplandor.
+* Botón de autenticación aumentado con mayor padding (`10px 18px`) y efecto píldora deportiva.
+
+### 4.2 En Pantallas Móviles (< 640px)
+* **Resolución de colisiones**: Se corrigió el problema donde el botón de inicio de sesión se montaba sobre el nombre de la página.
+* **Control de texto adaptativo (`GuestHeaderControls`)**:
+  - Implementación de spans condicionales: `.auth-switch-text-full` ("Iniciar sesión" / "Registrarse") y `.auth-switch-text-short` ("Entrar" / "Registro").
+  - Reglas de `white-space: nowrap !important;` y `flex-shrink: 0;` en el contenedor de autenticación.
+  - Nombre de marca con truncado elegante (`text-overflow: ellipsis`) garantizando que nunca invada la zona de botones.
 
 ---
 
-## 4. Sprint 4: Módulo de Autenticación, OAuth y Navbar de Usuario
-* **Objetivo:** Crear una pantalla de inicio de sesión premium, moderna y translúcida, junto con un sistema de usuario autenticado en la barra de navegación.
-* **Cambios realizados:**
-  - **Botones OAuth en la Parte Superior (`OAuthButtons.tsx`):**
-    - Botones dedicados para **Google** y **GitHub** ubicados al inicio del formulario.
-    - Iconos SVG limpios y fieles a las marcas oficiales (Google multicolor y GitHub vectorizado).
-    - Bordes sutiles `border-gray-300/25`, esquinas redondeadas `rounded-lg`, fondo translúcido y hover suave con halo azul cielo.
-    - Se eliminó el texto de advertencia inferior para una interfaz más despejada y minimalista.
-  - **Divisor Central con la Palabra `"or"`:**
-    - Separador visual estilizado con línea tenue y badge en píldora con `backdrop-blur`.
-  - **Campos del Formulario Tradicional:**
-    - Entradas de `Email o Username` y `Password`.
-    - Estilizado de inputs con fondo translúcido oscuro, bordes sutiles y anillo de enfoque en azul cielo.
-    - Enlace *"¿Olvidaste tu contraseña?"* en color blanco/slate suave con transición hover al azul cielo del club.
-  - **Tarjeta de Login Centrada y Fondo Cinematográfico:**
-    - Se centró la tarjeta de login en pantalla tanto para PC como para dispositivos móviles.
-    - Se eliminó el panel explicativo de la izquierda para lograr una vista limpia, enfocada y directa.
-    - Se eliminaron los textos de cuentas de prueba que sobrecargaban la vista.
-    - Enlace *"Regístrate aquí"* estilizado en blanco con efecto hover azul cielo.
-    - Fondo de pantalla utilizando la imagen nocturna del club (`hero-bg.jpg`) con capa translúcida oscura y efecto blur.
-  - **Header Dinámico (Estado de Sesión):**
-    - **Usuario No Logueado:** Muestra dos botones limpios en el navbar:
-      1. *"Iniciar sesión"* (texto sutil con hover celeste).
-      2. *"Registrarse"* (botón en píldora blanco de alto contraste con hover azul cielo).
-    - **Usuario Logueado (`UserMenuDropdown.tsx`):**
-      - Muestra el nombre del usuario en texto blanco legible.
-      - Avatar circular con la inicial del usuario sobre un gradiente azul cielo.
-      - Menú desplegable interactivo al hacer clic, con acceso directo a reservas/panel según rol y botón para **Cerrar sesión**.
+## 5. Depuración de Vistas de Empleado (Móvil y Footer)
+
+Para evitar que los empleados vean opciones de clientes irrelevantes o duplicadas:
+
+### 5.1 Barra Inferior Móvil ([mobile-bottom-nav.tsx](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/shared/components/mobile-bottom-nav.tsx))
+* **Rol Empleado**: Ahora visualiza exclusivamente sus herramientas operativas:
+  - **Mi actividad** (`/employee` - Ícono de portapapeles/lista).
+  - **Escanear QR** (`/scanner` - Ícono de escáner).
+  - Se eliminaron para este rol los accesos de "Inicio", "Espacios", "Mis reservas" y el duplicado de "Cuenta".
+* **Rol Cliente / Visitante**: Mantiene la navegación tradicional ("Inicio", "Espacios", "Mis reservas", "Cuenta"/"Entrar").
+
+### 5.2 Pie de Página ([site-footer.tsx](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/shared/components/site-footer.tsx))
+* Se ocultó la columna de enlaces públicos de cliente ("Explora Élite Club") para empleados, reduciendo la contaminación visual del pie de página.
 
 ---
 
-## 5. Resumen de Archivos y Componentes Clave
+## 6. Carrusel Interactivo de Catálogo (`ServiceCarousel`)
 
-| Archivo / Componente | Propósito |
-| :--- | :--- |
-| `src/app/globals.css` | Variables de diseño, scroll progress, responsive queries y reglas maestras. |
-| `src/app/(auth)/login/page.tsx` | Página de login centrada con fondo hero-bg y tarjeta translúcida. |
-| `src/features/auth/components/auth-forms.tsx` | Componentes `LoginForm` y `RegisterForm` con lógica de envío y feedback. |
-| `src/features/auth/components/OAuthButtons.tsx` | Botones superiores OAuth para Google y GitHub. |
-| `src/shared/components/site-header.tsx` | Barra de navegación superior con soporte de sesión dinámica. |
-| `src/shared/components/user-menu-dropdown.tsx` | Componente de usuario autenticado con avatar y menú desplegable. |
-| `src/shared/components/scroll-progress-bar.tsx` | Barra de lectura animada en la parte superior. |
-| `src/shared/components/mobile-bottom-nav.tsx` | Barra de navegación fija inferior para dispositivos móviles. |
-| `src/shared/components/site-footer.tsx` | Pie de página depurado de tres columnas. |
+Se implementó el componente cliente [`src/shared/components/service-carousel.tsx`](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/shared/components/service-carousel.tsx):
+
+### 6.1 Características Principales
+* **Navegación Fluida**: Desplazamiento horizontal por tarjetas con alineación asistida (`scroll-snap-align: start`).
+* **Botones de Control**: Flechas anterior y siguiente con deshabilitado automático cuando se alcanza el inicio o fin del carrusel.
+* **Indicadores de Puntos (*Dots*)**: Muestra la tarjeta activa y permite saltar directamente a cualquier elemento mediante clic.
+* **Soporte de Arrastre (*Pointer Drag*)**: Permite arrastrar el carrusel tanto con el dedo en pantallas táctiles como con el mouse en computadoras o en herramientas de emulación de navegador (Chrome DevTools).
+* **Prevención de Clic Accidental**: Si el usuario inicia un arrastre para deslizar, se previene automáticamente la navegación accidental al enlace del servicio.
+* **Cálculo Dinámico de Métricas**: Detección automática del ancho de tarjeta y separación (*gap*) en tiempo real vía `window.getComputedStyle`.
+
+### 6.2 Integración en las Páginas
+* **Página de Inicio (`src/app/page.tsx`)**: Ubicado en la sección destacada inmediatamente después del bloque de métricas operativas.
+* **Página del Catálogo (`src/app/(public)/services/page.tsx`)**: Integrado al inicio del catálogo con `showAllLink={false}` como vitrina destacada previa al desglose por categorías.
 
 ---
 
-## 6. Convención para Documentar Cambios Futuros
+## 7. Optimizaciones Específicas para Celulares y Android
 
-Cada vez que se efectúe una modificación o nueva funcionalidad en el proyecto, se debe agregar una nueva sección bajo la siguiente estructura:
+A partir de las pruebas en dispositivos y capturas móviles, se aplicaron mejoras críticas de usabilidad táctil:
 
-```markdown
-### Sprint X: [Nombre de la Característica / Modificación]
-* **Fecha:** [DD/MM/AAAA]
-* **Objetivo:** [Breve descripción de la necesidad del usuario o requerimiento técnico]
-* **Cambios realizados:**
-  - [Detalle de cambios en componentes, estilos o lógica]
-* **Archivos afectados:**
-  - `ruta/al/archivo.tsx`
-* **Pruebas y Verificación:** [typecheck, lint, build, pruebas funcionales]
-```
+### 7.1 Espacio de Seguridad Inferior (*Bottom Safe Area*)
+* Se detectó que la barra inferior fija (`.mobile-bottom-nav`) tapaba la parte baja de las tarjetas (precio y botón `RESERVAR`).
+* **Solución**: Se asignó a `.site-main` en pantallas móviles:
+  ```css
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  ```
+  Esto garantiza que el contenido completo sea visible sin solapamientos en cualquier teléfono.
+
+### 7.2 Proporciones de Tarjetas Compactas en Celular
+* **Cabecera de arte (`.carousel-card-art`)**: Reducida de `175px` a `120px` en móviles para que la tarjeta no monopolice la altura de la pantalla.
+* **Texto descriptivo**: Limitado a 2 líneas (`display: -webkit-box; -webkit-line-clamp: 2; overflow: hidden;`) para mantener alturas homogéneas en todas las tarjetas.
+* **Efecto Peek**: Ancho de tarjeta configurado en `flex: 0 0 calc(80vw - 16px); max-width: 300px;`, dejando asomar un ~15% de la tarjeta contigua para incentivar el gesto de deslizamiento.
+
+### 7.3 Física Táctil Nativa de Android
+* `touch-action: pan-x pan-y;`: Prioriza el deslizamiento horizontal fluido en el hilo del compositor del navegador.
+* `-webkit-overflow-scrolling: touch;`: Desplazamiento por inercia acelerado por hardware a 60-120 fps.
+* `overscroll-behavior-x: contain;`: Previene que el gesto horizontal active por error la acción del navegador de retroceder página en Android Chrome.
+
+---
+
+## 8. Limpieza Visual y Microinteracciones
+
+* **Eliminación de Flechas de Texto Plano**: Se suprimieron todas las flechas rústicas (`→`, `↗`, `<i>→</i>`) en:
+  - La sección hero de la página principal.
+  - La tira de pasos de reserva (`.flow-strip`).
+  - La página de confirmación y consulta de reservas (`my-reservations`).
+  - Paneles administrativos de empleados y métricas.
+* **Líneas Conectoras Modernas**: En el flujo de pasos (`.flow-strip`), se implementaron divisores con degradado cian (`.flow-step-divider`).
+* **Efectos Hover**: Botones de catálogo, tarjetas y controles del carrusel cuentan con elevación sutil (`translateY(-4px)`), aumento de brillo y sombras de color cian (`0 8px 24px rgba(14, 165, 233, 0.25)`).
+
+---
+
+## 9. Rediseño Responsive de Autenticación y Contraseñas
+
+### 9.1 Componente de Restablecimiento ([password-reset-form.tsx](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/features/auth/components/password-reset-form.tsx))
+* Botón interactivo de visibilidad (*mostrar/ocultar contraseña*) con íconos de ojo y ojo tachado.
+* Banners de estado estilizados para mensajes de error y confirmación.
+* Campos de entrada con íconos vectoriales SVG en lugar de inputs estándar.
+* **Garantía de negocio**: Se conservó al 100% la lógica del cliente Supabase (`supabase.auth.updateUser`), estados de carga y redirecciones.
+
+### 9.2 Vistas de Acceso
+* En [login](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/app/(auth)/login/page.tsx), [register](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/app/(auth)/register/page.tsx), [forgot-password](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/app/(auth)/forgot-password/page.tsx) y [reset-password](file:///e:/Music/Proyecto-Eventos-Deportivos-G5-develop/src/app/(auth)/reset-password/page.tsx):
+  - Fondo atmosférico con imagen del complejo deportivo y superposición translúcida con desenfoque de 6px.
+  - Tarjetas flotantes con bordes sutiles y centrado vertical y horizontal responsivo.
+  - Eliminación de cajas blancas decorativas alrededor del logo para que el nuevo emblema transparente luzca integrado.
+
+---
+
+## 10. Inventario de Archivos Afectados
+
+| Archivo | Tipo de Cambio | Descripción |
+| :--- | :--- | :--- |
+| `src/app/globals.css` | Modificado | Paleta Midnight Slate, dimensiones del header, carrusel interactivo, optimizaciones Android y safe area padding. |
+| `src/shared/components/service-carousel.tsx` | Creado | Componente cliente del carrusel con soporte táctil, arrastre con ratón, métricas dinámicas e indicadores. |
+| `public/images/elite-logo.png` | Creado | Nueva insignia atlética procesada con fondo 100% transparente en canal alfa. |
+| `src/app/icon.png` | Modificado | Favicon cuadrado de 512×512 px centrado con transparencia pura. |
+| `src/shared/components/site-header.tsx` | Modificado | Enlace al nuevo logo transparente, aumento ergonómico de dimensiones para PC y ajuste responsive. |
+| `src/shared/components/guest-header-controls.tsx` | Modificado | Textos duales adaptativos para evitar solapamientos en pantallas pequeñas. |
+| `src/shared/components/mobile-bottom-nav.tsx` | Modificado | Filtrado estricto de accesos para empleados en celulares. |
+| `src/shared/components/site-footer.tsx` | Modificado | Nuevo logo transparente y ocultación de enlaces de cliente para empleados. |
+| `src/app/page.tsx` | Modificado | Inclusión del `ServiceCarousel`, eliminación de flechas de texto plano y líneas de flujo modernas. |
+| `src/app/(public)/services/page.tsx` | Modificado | Inclusión del carrusel en la cabecera del catálogo de espacios. |
+| `src/features/auth/components/password-reset-form.tsx` | Modificado | Rediseño visual con botón de alternancia de contraseña (ver/ocultar) y alertas. |
+| `src/app/(auth)/reset-password/page.tsx` | Modificado | Limpieza de recuadros blancos, nuevo logo transparente y diseño centrado. |
+| `src/app/(auth)/forgot-password/page.tsx` | Modificado | Limpieza de recuadros blancos, nuevo logo transparente y diseño centrado. |
+| `src/app/(auth)/login/page.tsx` | Modificado | Referencia al nuevo logo transparente y tarjeta translúcida centrada. |
+| `src/app/(auth)/register/page.tsx` | Modificado | Referencia al nuevo logo transparente tanto en versión móvil como de escritorio. |
+| `consulta-del-catalogo.md` | Actualizado | Documentación técnica completa y consolidada de todos los cambios de la historia. |
+
+---
+
+## 11. Validación y Calidad Técnica
+
+* **TypeScript**: Ejecución exitosa de `npm run typecheck` (`tsc --noEmit`) con **0 errores**.
+* **Integridad del Backend**: No se alteraron esquemas de base de datos (`prisma/schema.prisma`), funciones de servidor (`actions`), endpoints de pago ni lógica de seguridad.

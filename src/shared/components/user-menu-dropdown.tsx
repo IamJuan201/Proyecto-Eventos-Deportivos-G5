@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/features/auth/services/auth.service';
+import { useTranslate } from '@/shared/i18n/locale-provider';
 
 interface UserMenuDropdownProps {
   accountName: string;
@@ -22,6 +23,7 @@ export function UserMenuDropdown({
   const [pending, setPending] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const t = useTranslate();
 
   // Cerrar al hacer clic afuera
   useEffect(() => {
@@ -92,7 +94,7 @@ export function UserMenuDropdown({
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-              <span>{role === 'admin' ? 'Panel de administración' : role === 'empleado' ? 'Mi actividad' : 'Mis reservas'}</span>
+              <span>{t(role === 'admin' ? 'Panel de administración' : role === 'empleado' ? 'Mi actividad' : 'Mis reservas')}</span>
             </Link>
 
             <button
@@ -106,7 +108,7 @@ export function UserMenuDropdown({
                 <polyline points="16 17 21 12 16 7" />
                 <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
-              <span>{pending ? 'Cerrando sesión…' : 'Cerrar sesión'}</span>
+              <span>{pending ? t('Cerrando sesión…') : t('Cerrar sesión')}</span>
             </button>
           </div>
         </div>
