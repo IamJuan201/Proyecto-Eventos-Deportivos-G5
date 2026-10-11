@@ -72,7 +72,7 @@ interface TurnstileWidgetProps {
  */
 export function TurnstileWidget({ siteKey, onVerify, onExpire }: TurnstileWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [ready, setReady] = useState(() => getTurnstile() !== undefined);
+  const [ready, setReady] = useState(() => typeof window !== 'undefined' && getTurnstile() !== undefined);
   const callbacksRef = useRef({ onVerify, onExpire });
 
   useEffect(() => {
