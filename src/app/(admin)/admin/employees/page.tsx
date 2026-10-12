@@ -1,4 +1,5 @@
 import { assignEmployeeAction, changeEmployeePasswordAction, createEmployeeAction, toggleEmployeeAction } from "@/features/employees/api/employee.actions";
+import { requireAdmin } from "@/features/auth/lib/session";
 import { AdminTabs } from "@/shared/components/admin-tabs";
 import { listStaff } from "@/features/employees/services/staff.service";
 import { serviceService } from "@/features/services/services/service.service";
@@ -7,6 +8,7 @@ import { getLocale } from "@/shared/i18n/locale.server";
 import { translate } from "@/shared/i18n/messages";
 
 export default async function EmployeesPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  await requireAdmin();
   const [{ error }, employees, services, locale] = await Promise.all([searchParams, listStaff(), serviceService.list(), getLocale()]);
   const t = (text: string) => translate(text, locale);
   const activeServices = services.filter((service) => service.isActive);

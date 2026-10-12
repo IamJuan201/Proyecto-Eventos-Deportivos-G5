@@ -1,4 +1,5 @@
 import { CategoryForm } from "@/features/categories/components/CategoryForm";
+import { requireAdmin } from "@/features/auth/lib/session";
 import { AdminTabs } from "@/shared/components/admin-tabs";
 import { CategoryList } from "@/features/categories/components/CategoryList";
 import { categoryService } from "@/features/categories/services/category.service";
@@ -6,6 +7,7 @@ import { getLocale } from "@/shared/i18n/locale.server";
 import { translate } from "@/shared/i18n/messages";
 
 export default async function CategoriesPage({ searchParams }: PageProps<"/admin/categories">) {
+  await requireAdmin();
   const { edit, error } = await searchParams;
   const [categories, locale] = await Promise.all([categoryService.list(), getLocale()]);
   const t = (text: string) => translate(text, locale);

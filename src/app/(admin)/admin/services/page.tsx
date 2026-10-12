@@ -1,4 +1,5 @@
 import { categoryService } from "@/features/categories/services/category.service";
+import { requireAdmin } from "@/features/auth/lib/session";
 import { AdminTabs } from "@/shared/components/admin-tabs";
 import { ServiceForm } from "@/features/services/components/ServiceForm";
 import { ServiceList } from "@/features/services/components/ServiceList";
@@ -7,6 +8,7 @@ import { getLocale } from "@/shared/i18n/locale.server";
 import { translate } from "@/shared/i18n/messages";
 
 export default async function ServicesPage({ searchParams }: PageProps<"/admin/services">) {
+  await requireAdmin();
   const { edit, error } = await searchParams;
   const [services, categories, locale] = await Promise.all([serviceService.list(), categoryService.list(), getLocale()]);
   const t = (text: string) => translate(text, locale);
