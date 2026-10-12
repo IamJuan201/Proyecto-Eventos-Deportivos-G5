@@ -1,4 +1,5 @@
 import { createClosureAction, deleteClosureAction } from "@/features/schedules/api/schedule.actions";
+import { requireAdmin } from "@/features/auth/lib/session";
 import { AdminTabs } from "@/shared/components/admin-tabs";
 import { closureTypes, listActiveClosures } from "@/features/schedules/services/closure.service";
 import { serviceService } from "@/features/services/services/service.service";
@@ -11,6 +12,7 @@ import type { WeekDay } from "@/features/services/types/service.types";
 const weekdays = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
 
 export default async function SchedulesPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  await requireAdmin();
   const [{ error }, allServices, closures, locale] = await Promise.all([searchParams, serviceService.list(), listActiveClosures(), getLocale()]);
   const t = (text: string) => translate(text, locale);
   const services = allServices;

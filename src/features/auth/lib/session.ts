@@ -78,6 +78,17 @@ export async function requireRole(role: UserRole): Promise<AppUser> {
   return user;
 }
 
+/**
+ * Guard for admin pages. Call it in every page, not only in the layout: layouts and pages
+ * render in parallel, so a layout redirect does not keep the page data out of the RSC payload.
+ */
+export async function requireAdmin(): Promise<AppUser> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login?next=%2Fadmin%2Fmetrics");
+  if (user.role !== "admin") redirect(user.role === "empleado" ? "/employee" : "/");
+  return user;
+}
+
 export async function registerAccount(input: { fullName: string; email: string; password: string }) {
   if (input.password.length < 8) throw new Error("La contraseña debe tener al menos 8 caracteres.");
   return createUser({ fullName: input.fullName, email: input.email, passwordHash: await hashPassword(input.password) });

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdmin } from "@/features/auth/lib/session";
 import { AdminTabs } from "@/shared/components/admin-tabs";
 import { getDashboardMetrics, type SalesPeak } from "@/features/metrics/services/metrics.service";
 import { getLocale } from "@/shared/i18n/locale.server";
@@ -44,6 +45,7 @@ function pieSlicePath(startAngle: number, endAngle: number, radius = 72) {
 }
 
 export default async function MetricsPage() {
+  await requireAdmin();
   const [metrics, locale] = await Promise.all([getDashboardMetrics(), getLocale()]);
   const t = (text: string) => translate(text, locale);
   const cards = [
