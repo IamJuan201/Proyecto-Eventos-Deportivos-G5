@@ -325,6 +325,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .auth-forgot-link:hover, .auth-forgot-link:focus-visible { color: #e0f2fe; text-shadow: 0 0 8px rgb(56 189 248 / 75%), 0 0 18px rgb(14 165 233 / 55%); outline: none; }
 .auth-forgot-link span { transition: transform 180ms ease; }
 .auth-forgot-link:hover span { transform: translateX(2px); }
+.auth-terms-link { color: #67ccff; font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
+.auth-terms-link:hover, .auth-terms-link:focus-visible { color: #e0f2fe; }
 
 /* Barra de progreso de lectura (PC) */
 .scroll-progress-track {

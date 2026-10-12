@@ -7,13 +7,14 @@ import { issueOtpCode } from "@/features/auth/services/otp.service";
  * Registers an email account without starting a session.
  * Issues an 8-digit OTP and tells the client to open the verify page.
  *
- * @param request JSON body with fullName, email and password.
+ * @param request JSON body with fullName, email, password and acceptedTerms.
  * @returns Created user with the emailConfirmationRequired flag.
  */
 export async function POST(request: NextRequest) {
   try {
-    const input = await request.json() as { fullName?: string; email?: string; password?: string; nextPath?: string; turnstileToken?: string };
+    const input = await request.json() as { fullName?: string; email?: string; password?: string; acceptedTerms?: boolean; nextPath?: string; turnstileToken?: string };
     if (!input.fullName?.trim() || !input.email || !input.password) return NextResponse.json({ message: "Completa nombre, correo y contraseña." }, { status: 400 });
+    if (input.acceptedTerms !== true) return NextResponse.json({ message: "Acepta los términos y condiciones para crear tu cuenta." }, { status: 400 });
     if (isTurnstileEnforced() && !(await verifyTurnstileToken(input.turnstileToken ?? ""))) return NextResponse.json({ message: "La verificación de seguridad falló. Inténtalo de nuevo." }, { status: 403 });
     const user = await registerAccount({ fullName: input.fullName, email: input.email, password: input.password });
     await issueOtpCode(user.id);
