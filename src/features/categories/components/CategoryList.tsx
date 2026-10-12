@@ -18,22 +18,19 @@ export function CategoryList({ categories, locale }: { categories: Category[]; l
 
       {categories.length ? (
         categories.map((category) => (
-          <article className="employee-row" key={category.id}>
+          <article className="employee-row category-row" key={category.id}>
             <div className="employee-info">
               <strong>{t(category.name)}</strong>
               <small>{t(category.description || "Sin descripción")}</small>
             </div>
-            <span className={"booking-status " + (category.isActive ? "" : "status-expirada")}>
-              {t(category.isActive ? "Activa" : "Inactiva")}
-            </span>
+            <form action={toggleCategoryStatus.bind(null, category.id, !category.isActive)}>
+              <button type="submit" className={`booking-status service-status-control${category.isActive ? "" : " status-expirada"}`} aria-label={`${t(category.isActive ? "Desactivar categoría" : "Activar categoría")}: ${category.name}`}>
+                {t(category.isActive ? "Activa" : "Inactiva")}
+              </button>
+            </form>
             <Link href={`/admin/categories?edit=${category.id}`} className="small-link">
               {t("Editar")}
             </Link>
-            <form action={toggleCategoryStatus.bind(null, category.id, !category.isActive)}>
-              <button type="submit" className="small-link">
-                {t(category.isActive ? "Desactivar" : "Activar")}
-              </button>
-            </form>
             <DeleteCategoryButton id={category.id} name={category.name} />
           </article>
         ))
