@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createReservationAction, loadAvailability } from "@/features/reservations/api/reservation.actions";
@@ -15,7 +16,7 @@ function ReserveButton({ disabled }: { disabled: boolean }) {
   return <button className="club-button" type="submit" disabled={disabled || pending}>{pending ? t("Guardando tu espacio…") : t("Continuar al pago")}</button>;
 }
 
-export function BookingForm({ service, minDate, maxDate }: { service: Service; minDate: string; maxDate: string }) {
+export function BookingForm({ service, minDate, maxDate, documentNumber }: { service: Service; minDate: string; maxDate: string; documentNumber: string | null }) {
   const t = useTranslate();
   const [state, action] = useActionState(createReservationAction, {});
   const [date, setDate] = useState(minDate);
@@ -100,8 +101,13 @@ export function BookingForm({ service, minDate, maxDate }: { service: Service; m
 
       <div className="booking-field">
         <span className="field-label">{t("Titular de la reserva")}</span>
-        <p className="field-hint">{t("Usaremos los datos de tu cuenta para identificar la reserva.")}</p>
-        <input className="club-input" name="idNumber" placeholder={t("Número de documento")} minLength={5} required />
+        {documentNumber ? <>
+          <p className="booking-holder-document">{t("Documento")}: <strong>{documentNumber}</strong></p>
+          <p className="field-hint">{t("Usamos el documento de tu cuenta.")} <Link href="/profile">{t("Cámbialo en tu perfil")}</Link>.</p>
+        </> : <>
+          <p className="field-hint">{t("Tu cuenta aún no tiene documento. Lo guardaremos para tus próximas reservas.")}</p>
+          <input className="club-input" name="idNumber" placeholder={t("Número de documento")} minLength={5} maxLength={30} autoComplete="off" required />
+        </>}
       </div>
       <label className="terms-label minor-check"><input type="checkbox" name="containsMinor" checked={containsMinor} onChange={(event) => setContainsMinor(event.target.checked)} /><span>{t("En el grupo vienen menores de edad.")}</span></label>
       {containsMinor && <div className="booking-field"><label htmlFor="adult-responsible">{t("Adulto responsable")}</label><input id="adult-responsible" className="club-input" name="responsibleAdult" placeholder={t("Nombre del adulto responsable")} minLength={3} required /><small className="field-hint">{t("Los menores deben ingresar acompañados por un adulto.")}</small></div>}

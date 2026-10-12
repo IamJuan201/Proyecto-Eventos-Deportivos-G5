@@ -1,5 +1,6 @@
 import "server-only";
 import type { Rol, Usuario } from "@/generated/prisma/client";
+import { DOCUMENT_TAKEN, INVALID_DOCUMENT, isValidDocument, normalizeDocument } from "@/features/auth/lib/document";
 import { getPrisma, isPrismaError } from "@/shared/lib/prisma";
 
 export type UserRole = "admin" | "empleado" | "cliente";
@@ -9,6 +10,8 @@ export interface AppUser {
   email: string;
   fullName: string;
   role: UserRole;
+  /** Identity document (Usuario.cedula); null for accounts created before it was asked at sign-up. */
+  documentNumber: string | null;
 }
 
 type UserRow = Usuario & { rol: Rol };
@@ -18,6 +21,7 @@ export const toAppUser = (row: UserRow): AppUser => ({
   email: row.correo,
   fullName: row.nombre,
   role: row.rol.nombre as UserRole,
+  documentNumber: row.cedula,
 });
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,11 +44,15 @@ export async function createUser(input: {
   role?: UserRole;
   authProvider?: string;
   authId?: string;
+  documentNumber?: string;
 }): Promise<AppUser> {
   const email = normalizeEmail(input.email);
   const fullName = input.fullName.trim();
   if (!EMAIL.test(email)) throw new Error("Escribe un correo válido.");
   if (fullName.length < 3) throw new Error("Escribe tu nombre completo.");
+  const documentNumber = input.documentNumber === undefined ? undefined : normalizeDocument(input.documentNumber);
+  if (documentNumber !== undefined && !isValidDocument(documentNumber)) throw new Error(INVALID_DOCUMENT);
+  if (documentNumber && (await getPrisma().usuario.count({ where: { cedula: documentNumber } }))) throw new Error(DOCUMENT_TAKEN);
   try {
     const row = await getPrisma().usuario.create({
       data: {
@@ -55,6 +63,7 @@ export async function createUser(input: {
         // OAuth providers already verified the address.
         correoConfirmado: input.authProvider !== undefined && input.authProvider !== "email",
         authId: input.authId,
+        cedula: documentNumber,
         rol: { connect: { nombre: input.role ?? "cliente" } },
       },
       include: { rol: true },
