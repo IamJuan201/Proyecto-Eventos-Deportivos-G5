@@ -560,7 +560,7 @@ const featureEnglish: Record<string, string> = {
   'Reservas': 'Bookings', 'Perfil': 'Profile', 'Actividad': 'Activity', 'Escanear': 'Scan',
   'Panel': 'Dashboard', 'Catálogo': 'Catalog', 'Agenda': 'Schedule', 'Equipo': 'Team',
   'TU CUENTA': 'YOUR ACCOUNT', 'Mi perfil.': 'My profile.',
-  'Consulta tus datos, cambia tu contraseña o cierra tu sesión.': 'Review your details, change your password or sign out.',
+  'Consulta y edita tus datos, cambia tu contraseña o cierra tu sesión.': 'Review and edit your details, change your password or sign out.',
   'Rol': 'Role', 'Servicio asignado': 'Assigned service', 'Acceso con': 'Signs in with', 'Correo confirmado': 'Email confirmed',
   'Miembro desde': 'Member since', 'Sí': 'Yes', 'No': 'No', 'Administrador': 'Administrator', 'Empleado': 'Staff',
   'Correo y contraseña': 'Email and password', 'Crear una contraseña': 'Create a password', 'Contraseña actual': 'Current password',
@@ -570,6 +570,18 @@ const featureEnglish: Record<string, string> = {
   'La contraseña actual no es correcta.': 'The current password is incorrect.',
   'La nueva contraseña debe ser distinta de la actual.': 'The new password must be different from the current one.',
   'No encontramos tu cuenta.': 'We could not find your account.', 'Inicia sesión para continuar.': 'Sign in to continue.',
+  'Editar datos': 'Edit details', 'Guardar cambios': 'Save changes', 'Sin registrar': 'Not registered', 'Tus datos se actualizaron.': 'Your details were updated.',
+  'Escribe tu nombre completo (3 a 120 caracteres).': 'Enter your full name (3 to 120 characters).',
+  'Cambiar correo': 'Change email', 'Nuevo correo': 'New email', 'Enviar enlace de confirmación': 'Send confirmation link',
+  'Te enviaremos un enlace al correo nuevo. Hasta que lo abras, seguirás entrando con el actual.': 'We will send a link to the new email. Until you open it, you keep signing in with the current one.',
+  'Te enviamos un enlace a': 'We sent a link to', 'Tu correo cambia cuando lo abras; vence en 30 minutos.': 'Your email changes when you open it; it expires in 30 minutes.',
+  'Tu cuenta entra con Google o GitHub. Crea una contraseña antes de cambiar el correo.': 'Your account signs in with Google or GitHub. Create a password before changing the email.',
+  'Escribe un correo válido.': 'Enter a valid email.', 'Ese ya es el correo de tu cuenta.': 'That is already your account email.',
+  'Ya existe una cuenta con ese correo.': 'An account with that email already exists.',
+  'Confirma tu nuevo correo.': 'Confirm your new email.', 'El cambio se aplica cuando confirmas desde este enlace.': 'The change applies when you confirm from this link.',
+  'Vas a usar este correo en tu cuenta:': 'You are about to use this email on your account:', 'Confirmar nuevo correo': 'Confirm new email',
+  'Listo. Desde ahora tu cuenta usa': 'Done. From now on your account uses', 'Ir a mi perfil': 'Go to my profile',
+  'El enlace no es válido o ya venció. Pide el cambio de nuevo desde tu perfil.': 'This link is invalid or has expired. Request the change again from your profile.',
 };
 
 export function translate(text: string, locale: Locale): string {
