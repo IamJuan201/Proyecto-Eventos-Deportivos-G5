@@ -16,9 +16,10 @@ export default async function VerifyEmailPage({ searchParams }: PageProps<'/veri
   const reason = query.reason === 'login' ? 'login' : 'register';
   const nextPath = safeNextPath(typeof query.next === 'string' ? query.next : '/');
   const state = await getVerificationState(email);
-  return <div className="flex min-h-screen bg-sport-bg">
-    <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-sport-surface relative overflow-hidden px-12"><div className="absolute inset-0 bg-linear-to-br from-sport-emerald/10 to-transparent" /><div className="relative z-10 text-center space-y-6"><div className="w-20 h-20 rounded-full bg-sport-emerald/20 border-2 border-sport-emerald flex items-center justify-center mx-auto"><span className="text-4xl">✓</span></div><h1 className="text-4xl font-black text-sport-text">Verifica tu <span className="text-sport-emerald">correo</span></h1><p className="text-sport-muted text-lg max-w-xs">Un código de 8 dígitos protege tu cuenta.</p></div></div>
-    <div className="flex w-full lg:w-1/2 items-center justify-center px-6 py-12"><div className="w-full max-w-md space-y-8">
+  return <main className="auth-page verify-page">
+    <div className="verify-layout">
+      <section className="verify-intro"><span className="verify-mark" aria-hidden="true">✓</span><span className="eyebrow">ÉLITE CLUB · CUENTA SEGURA</span><h1>Verifica tu <span>correo</span></h1><p>Un código de un solo uso protege tu cuenta y tus reservas.</p></section>
+      <section className="verify-card glass-panel">
       <VerifyEmailForm
         email={email}
         reason={reason}
@@ -27,6 +28,7 @@ export default async function VerifyEmailPage({ searchParams }: PageProps<'/veri
         initialResendInSeconds={state?.resendInSeconds ?? 0}
         cooldownMinutes={getOtpResendCooldownMinutes()}
       />
-    </div></div>
-  </div>;
+      </section>
+    </div>
+  </main>;
 }

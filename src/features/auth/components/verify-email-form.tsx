@@ -120,35 +120,35 @@ export function VerifyEmailForm({ email, reason, nextPath, initialExpiresInSecon
 
   const isLoginReason = reason === 'login';
 
-  return <div className="space-y-6">
-    <div className="text-center">
-      <h2 className="text-3xl font-bold text-sport-text">{isLoginReason ? 'Confirma tu correo para continuar' : 'Revisa tu correo'}</h2>
-      <p className="mt-2 text-sm text-sport-muted">
+  return <div className="verify-form">
+    <div className="verify-form-heading">
+      <h2>{isLoginReason ? 'Confirma tu correo para continuar' : 'Revisa tu correo'}</h2>
+      <p>
         {isLoginReason
-          ? <>Cerraste la verificación antes de terminar. Ingresa el código de 8 dígitos que te enviamos a <strong className="text-sport-text">{email}</strong>.</>
-          : <>Te enviamos un código de 8 dígitos a <strong className="text-sport-text">{email}</strong>. Ingrésalo para activar tu cuenta.</>}
+          ? <>Cerraste la verificación antes de terminar. Ingresa el código de 8 dígitos que te enviamos a <strong>{email}</strong>.</>
+          : <>Te enviamos un código de 8 dígitos a <strong>{email}</strong>. Ingrésalo para activar tu cuenta.</>}
       </p>
     </div>
-    <form className="space-y-5" onSubmit={submit}>
-      <label className="block text-sm font-medium text-sport-text">Código de verificación
+    <form className="verify-form-fields" onSubmit={submit}>
+      <label>Código de verificación
         <input
-          className="mt-1 block w-full rounded-lg border border-sport-border bg-sport-surface-2 px-4 py-3 text-center text-2xl font-bold tracking-[0.5em] text-sport-text"
+          className="verify-code-input"
           name="code" inputMode="numeric" autoComplete="one-time-code" required
           pattern="[0-9]{8}" maxLength={8} minLength={8} placeholder="••••••••"
           value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 8))}
         />
       </label>
       {expiresIn > 0
-        ? <p className="text-center text-sm text-sport-muted">El código vence en {formatCountdown(expiresIn)}.</p>
-        : <p className="text-center text-sm text-red-400">El código venció. Pide uno nuevo para continuar.</p>}
-      {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
-      {notice && <p role="status" className="text-sm text-sport-emerald">{notice}</p>}
-      <button className="flex w-full justify-center rounded-lg bg-sport-emerald px-4 py-3 font-semibold text-sport-bg" type="submit" disabled={pending}>{pending ? 'Verificando…' : 'Confirmar correo'}</button>
+        ? <p className="verify-timer">El código vence en <strong>{formatCountdown(expiresIn)}</strong>.</p>
+        : <p className="verify-expired">El código venció. Pide uno nuevo para continuar.</p>}
+      {error && <p role="alert" className="booking-error">{error}</p>}
+      {notice && <p role="status" className="verify-notice">{notice}</p>}
+      <button className="club-button verify-submit" type="submit" disabled={pending}>{pending ? 'Verificando…' : 'Confirmar correo'}</button>
     </form>
-    <div className="text-center text-sm">
+    <div className="verify-resend">
       {resendIn > 0
-        ? <p className="text-sport-muted">Pedir otro código en {formatCountdown(resendIn)}.</p>
-        : <button className="font-medium text-sport-emerald" type="button" onClick={resend} disabled={resending}>{resending ? 'Enviando…' : 'No me llegó. Enviar otro código'}</button>}
+        ? <p>Pedir otro código en <strong>{formatCountdown(resendIn)}</strong>.</p>
+        : <button type="button" onClick={resend} disabled={resending}>{resending ? 'Enviando…' : 'No me llegó. Enviar otro código'}</button>}
     </div>
   </div>;
 }
