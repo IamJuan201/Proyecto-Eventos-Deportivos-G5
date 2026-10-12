@@ -9,6 +9,7 @@ export type LoginCredentials = {
 export type RegisterData = {
   fullName: string;
   email: string;
+  documentNumber: string;
   password: string;
   acceptedTerms: boolean;
   turnstileToken?: string;
