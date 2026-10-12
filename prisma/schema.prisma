@@ -58,7 +58,7 @@ enum ResultadoAcceso {
 }
 
 model Rol {
-  id          String    @id @default(uuid()) @db.Uuid
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nombre      String    @unique @db.VarChar(40)
   descripcion String?   @db.VarChar(240)
   activo      Boolean   @default(true)
@@ -68,7 +68,7 @@ model Rol {
 }
 
 model Usuario {
-  id                String              @id @default(uuid()) @db.Uuid
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   rolId             String              @map("rol_id") @db.Uuid
   nombre            String              @db.VarChar(120)
   correo            String              @unique @db.VarChar(254)
@@ -76,30 +76,33 @@ model Usuario {
   proveedorAuth     String              @default("email") @map("proveedor_auth") @db.VarChar(40)
   correoConfirmado  Boolean             @default(false) @map("correo_confirmado")
   cedula            String?             @unique @db.VarChar(30)
+  authId            String?             @unique @map("auth_id") @db.Uuid
   activo            Boolean             @default(true)
   creadoEn          DateTime            @default(now()) @map("creado_en") @db.Timestamptz(6)
   rol               Rol                 @relation(fields: [rolId], references: [id], onDelete: Restrict)
-  membresias        Membresia[]
+  membresias        Membresia[]         @relation("ClienteMembresias")
   reservas          Reserva[]           @relation("ClienteReservas")
-  terminosAceptados TerminosAceptados[]
-  empleado          Empleado?
+  terminosAceptados TerminosAceptados[] @relation("ClienteTerminos")
+  empleado          Empleado?           @relation("UsuarioEmpleado")
   cierresCreados    CierreServicio[]    @relation("CierreCreador")
+  codigoOtp         CodigoOtp?
 
   @@index([rolId, activo])
   @@map("Usuario")
 }
 
 model Categoria {
-  id        String     @id @default(uuid()) @db.Uuid
-  nombre    String     @unique @db.VarChar(80)
-  activa    Boolean    @default(true)
-  servicios Servicio[]
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre      String     @unique @db.VarChar(80)
+  descripcion String?    @db.VarChar(200)
+  activa      Boolean    @default(true)
+  servicios   Servicio[]
 
   @@map("Categoria")
 }
 
 model Servicio {
-  id                String            @id @default(uuid()) @db.Uuid
+  id                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   categoriaId       String            @map("categoria_id") @db.Uuid
   nombre            String            @db.VarChar(100)
   descripcion       String            @db.VarChar(500)
@@ -109,6 +112,10 @@ model Servicio {
   capacidadPersonas Int               @default(20) @map("capacidad_personas")
   tipoQr            TipoQR            @map("tipo_qr")
   imagenUrl         String?           @map("imagen_url") @db.VarChar(500)
+  /// Ilustración de la tarjeta del catálogo (water, waves, court…); null = court.
+  icono             String?           @db.VarChar(20)
+  /// Texto corto destacado en la tarjeta, por ejemplo "Olas cada 30 min".
+  etiqueta          String?           @db.VarChar(60)
   activo            Boolean           @default(true)
   categoria         Categoria         @relation(fields: [categoriaId], references: [id], onDelete: Restrict)
   horarios          HorarioServicio[]
@@ -122,7 +129,7 @@ model Servicio {
 }
 
 model HorarioServicio {
-  id         String   @id @default(uuid()) @db.Uuid
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   servicioId String   @map("servicio_id") @db.Uuid
   diaSemana  Int      @map("dia_semana") @db.SmallInt
   horaInicio DateTime @map("hora_inicio") @db.Time(0)
@@ -135,13 +142,13 @@ model HorarioServicio {
 }
 
 model Membresia {
-  id                  String    @id @default(uuid()) @db.Uuid
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   clienteId           String    @map("cliente_id") @db.Uuid
   descuentoPorcentaje Decimal   @map("descuento_porcentaje") @db.Decimal(5, 2)
   fechaInicio         DateTime  @map("fecha_inicio") @db.Date
   fechaFin            DateTime  @map("fecha_fin") @db.Date
   activa              Boolean   @default(true)
-  cliente             Usuario   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  cliente             Usuario   @relation("ClienteMembresias", fields: [clienteId], references: [id], onDelete: Cascade)
   reservas            Reserva[]
 
   @@index([clienteId, activa, fechaInicio, fechaFin])
@@ -149,29 +156,30 @@ model Membresia {
 }
 
 model CierreServicio {
-  id          String     @id @default(uuid()) @db.Uuid
-  servicioId  String     @map("servicio_id") @db.Uuid
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  servicioId  String?    @map("servicio_id") @db.Uuid
   fechaInicio DateTime   @map("fecha_inicio") @db.Timestamptz(6)
   fechaFin    DateTime   @map("fecha_fin") @db.Timestamptz(6)
   motivo      String     @db.VarChar(240)
   tipo        TipoCierre
   creadoPor   String     @map("creado_por") @db.Uuid
   activo      Boolean    @default(true)
-  servicio    Servicio   @relation(fields: [servicioId], references: [id], onDelete: Cascade)
+  servicio    Servicio?  @relation(fields: [servicioId], references: [id], onDelete: Cascade)
   creador     Usuario    @relation("CierreCreador", fields: [creadoPor], references: [id], onDelete: Restrict)
 
   @@index([servicioId, activo, fechaInicio, fechaFin])
+  @@index([creadoPor])
   @@map("CierreServicio")
 }
 
 model Empleado {
-  id              String           @id @default(uuid()) @db.Uuid
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   usuarioId       String           @unique @map("usuario_id") @db.Uuid
   servicioId      String           @map("servicio_id") @db.Uuid
   activo          Boolean          @default(true)
   ultimaActividad DateTime?        @map("ultima_actividad") @db.Timestamptz(6)
   eliminadoEn     DateTime?        @map("eliminado_en") @db.Timestamptz(6)
-  usuario         Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+  usuario         Usuario          @relation("UsuarioEmpleado", fields: [usuarioId], references: [id], onDelete: Restrict)
   servicio        Servicio         @relation(fields: [servicioId], references: [id], onDelete: Restrict)
   accesos         RegistroAcceso[]
 
@@ -180,7 +188,7 @@ model Empleado {
 }
 
 model Reserva {
-  id                String             @id @default(uuid()) @db.Uuid
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   clienteId         String             @map("cliente_id") @db.Uuid
   servicioId        String             @map("servicio_id") @db.Uuid
   membresiaId       String?            @map("membresia_id") @db.Uuid
@@ -202,21 +210,22 @@ model Reserva {
   servicio          Servicio           @relation(fields: [servicioId], references: [id], onDelete: Restrict)
   membresia         Membresia?         @relation(fields: [membresiaId], references: [id], onDelete: SetNull)
   terminos          TerminosAceptados?
-  pago              Pago?
+  pagos             Pago[]
   codigosQr         CodigoQR[]
 
   @@index([servicioId, fecha, horaInicio, horaFin, estado])
   @@index([clienteId, fecha, estado])
+  @@index([membresiaId])
   @@map("Reserva")
 }
 
 model TerminosAceptados {
-  id              String   @id @default(uuid()) @db.Uuid
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   clienteId       String   @map("cliente_id") @db.Uuid
   reservaId       String   @unique @map("reserva_id") @db.Uuid
   versionTerminos String   @map("version_terminos") @db.VarChar(30)
   aceptadoEn      DateTime @default(now()) @map("aceptado_en") @db.Timestamptz(6)
-  cliente         Usuario  @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  cliente         Usuario  @relation("ClienteTerminos", fields: [clienteId], references: [id], onDelete: Restrict)
   reserva         Reserva  @relation(fields: [reservaId], references: [id], onDelete: Cascade)
 
   @@index([clienteId, aceptadoEn])
@@ -224,11 +233,13 @@ model TerminosAceptados {
 }
 
 model Pago {
-  id                String     @id @default(uuid()) @db.Uuid
-  reservaId         String     @unique @map("reserva_id") @db.Uuid
-  stripePaymentId   String?    @unique @map("stripe_payment_id") @db.VarChar(255)
+  id                String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservaId         String     @map("reserva_id") @db.Uuid
+  pasarela          String     @default("wompi") @db.VarChar(30)
+  referencia        String     @unique @db.VarChar(64)
+  transaccionId     String?    @unique @map("transaccion_id") @db.VarChar(100)
   monto             Decimal    @db.Decimal(12, 2)
-  medioPago         String     @map("medio_pago") @db.VarChar(40)
+  medioPago         String?    @map("medio_pago") @db.VarChar(40)
   estado            EstadoPago @default(pendiente)
   fechaPago         DateTime?  @map("fecha_pago") @db.Timestamptz(6)
   nombreComprobante String     @map("nombre_comprobante") @db.VarChar(120)
@@ -236,12 +247,13 @@ model Pago {
   correoComprobante String     @map("correo_comprobante") @db.VarChar(254)
   reserva           Reserva    @relation(fields: [reservaId], references: [id], onDelete: Restrict)
 
+  @@index([reservaId, estado])
   @@index([estado, fechaPago])
   @@map("Pago")
 }
 
 model CodigoQR {
-  id        String           @id @default(uuid()) @db.Uuid
+  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   reservaId String           @map("reserva_id") @db.Uuid
   codigo    String           @unique @db.VarChar(255)
   tipo      TipoQR
@@ -250,11 +262,12 @@ model CodigoQR {
   reserva   Reserva          @relation(fields: [reservaId], references: [id], onDelete: Cascade)
   accesos   RegistroAcceso[]
 
+  @@index([reservaId])
   @@map("QR")
 }
 
 model RegistroAcceso {
-  id          String          @id @default(uuid()) @db.Uuid
+  id          String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   qrId        String?         @map("qr_id") @db.Uuid
   empleadoId  String          @map("empleado_id") @db.Uuid
   servicioId  String          @map("servicio_id") @db.Uuid
@@ -266,5 +279,28 @@ model RegistroAcceso {
   servicio    Servicio        @relation(fields: [servicioId], references: [id], onDelete: Restrict)
 
   @@index([servicioId, fechaHora, resultado])
+  @@index([empleadoId, fechaHora])
+  @@index([qrId])
   @@map("RegistroAcceso")
+}
+
+model Festivo {
+  id     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fecha  DateTime @unique @db.Date
+  nombre String   @db.VarChar(120)
+
+  @@map("Festivo")
+}
+
+model CodigoOtp {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId     String   @unique @map("usuario_id") @db.Uuid
+  codigoHash    String   @map("codigo_hash") @db.VarChar(64)
+  expiraEn      DateTime @map("expira_en") @db.Timestamptz(6)
+  intentos      Int      @default(0)
+  ultimoEnvioEn DateTime @default(now()) @map("ultimo_envio_en") @db.Timestamptz(6)
+  creadoEn      DateTime @default(now()) @map("creado_en") @db.Timestamptz(6)
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("CodigoOtp")
 }

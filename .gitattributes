@@ -1,0 +1,3 @@
+# Prisma guarda un checksum de cada migración aplicada: mantener LF en todos los sistemas.
+prisma/migrations/**/*.sql text eol=lf
+prisma/migrations/migration_lock.toml text eol=lf

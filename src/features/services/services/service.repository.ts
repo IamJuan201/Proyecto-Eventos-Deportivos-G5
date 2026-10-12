@@ -1,4 +1,4 @@
-import type { Service, ServiceInput } from "@/features/services/types/service.types";
+import type { Service, ServiceInput, WeekDay } from "@/features/services/types/service.types";
 
 /** Persistence boundary: swap the mock for the real implementation once HU-05 defines the table. */
 export interface ServiceRepository {
@@ -8,4 +8,6 @@ export interface ServiceRepository {
   update(id: string, input: ServiceInput): Promise<Service>;
   setActive(id: string, isActive: boolean): Promise<Service>;
   delete(id: string): Promise<void>;
+  /** Weekdays that have active bookings (paid, or unpaid within their hold) from today on. */
+  bookedWeekDays(id: string): Promise<WeekDay[]>;
 }

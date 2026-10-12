@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { clearJsonSession } from "@/features/auth/lib/json-auth";
+import { clearSession } from "@/features/auth/lib/session";
 
 export async function POST() {
-  await clearJsonSession();
+  await clearSession();
   return NextResponse.json({ success: true });
 }

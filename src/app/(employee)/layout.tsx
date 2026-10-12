@@ -1,13 +1,12 @@
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { getJsonCurrentUser } from '@/features/auth/lib/json-auth';
-import { listDemoEmployees } from '@/shared/lib/demo-store';
+import { getCurrentUser } from '@/features/auth/lib/session';
+import { getActiveStaffByUser } from '@/features/employees/services/staff.service';
 
 export default async function EmployeeLayout({ children }: { children: ReactNode }) {
-  const user = await getJsonCurrentUser();
+  const user = await getCurrentUser();
   if (!user) redirect('/login?next=%2Femployee');
   if (user.role !== 'empleado') redirect(user.role === 'admin' ? '/admin/metrics' : '/');
-  const employees = await listDemoEmployees();
-  if (!employees.some((employee) => employee.email.toLowerCase() === user.email.toLowerCase() && employee.isActive)) redirect('/login?error=employee-inactive');
+  if (!(await getActiveStaffByUser(user.id))) redirect('/login?error=employee-inactive');
   return children;
 }

@@ -1,17 +1,15 @@
-import ScanPage from "../../../features/access-control/components/scan/page";
-import { getEmployeeAccessStats, listDemoEmployees, listDemoServices } from "@/shared/lib/demo-store";
-import { getJsonCurrentUser } from "@/features/auth/lib/json-auth";
 import { redirect } from "next/navigation";
+import ScanPage from "@/features/access-control/components/scan/page";
+import { getAccessStats, isPoolService } from "@/features/access-control/services/access.service";
+import { getCurrentUser } from "@/features/auth/lib/session";
+import { getActiveStaffByUser } from "@/features/employees/services/staff.service";
 
 export default async function ScannerPage() {
-	const user = await getJsonCurrentUser();
+	const user = await getCurrentUser();
 	if (!user) redirect("/login?next=%2Fscanner");
 	if (user.role !== "empleado") redirect(user.role === "admin" ? "/admin/metrics" : "/");
-	const [services, employees] = await Promise.all([listDemoServices(), listDemoEmployees()]);
-	const employee = employees.find((item) => item.email.toLowerCase() === user.email.toLowerCase() && item.isActive);
-	if (!employee) redirect("/login?error=employee-inactive");
-	const service = services.find((item) => item.id === employee.serviceId && item.isActive);
-	if (!service) redirect("/login?error=employee-inactive");
-	const stats = await getEmployeeAccessStats(employee.id);
-	return <ScanPage service={service} stats={stats} />;
+	const employee = await getActiveStaffByUser(user.id);
+	if (!employee?.serviceActive) redirect("/login?error=employee-inactive");
+	const [stats, isPool] = await Promise.all([getAccessStats(employee.id), isPoolService(employee.serviceId)]);
+	return <ScanPage serviceName={employee.serviceName} isPoolService={isPool} stats={stats} />;
 }

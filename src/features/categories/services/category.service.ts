@@ -1,5 +1,5 @@
 import type { CategoryRepository } from "@/features/categories/services/category.repository";
-import { mockCategoryRepository } from "@/features/categories/services/mock-category.repository";
+import { prismaCategoryRepository } from "@/features/categories/services/prisma-category.repository";
 import type { Category, CategoryInput } from "@/features/categories/types/category.types";
 
 export class CategoryValidationError extends Error {}
@@ -49,10 +49,9 @@ export function createCategoryService(repository: CategoryRepository) {
       return repository.setActive(id, isActive);
     },
     delete(id: string): Promise<void> {
-      // TODO: Block deletion when the category has services (HU-18).
       return repository.delete(id);
     },
   };
 }
 
-export const categoryService = createCategoryService(mockCategoryRepository);
+export const categoryService = createCategoryService(prismaCategoryRepository);

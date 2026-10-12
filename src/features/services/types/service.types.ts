@@ -11,6 +11,32 @@ export const weekDays: { value: WeekDay; label: string }[] = [
   { value: 0, label: "Domingo" },
 ];
 
+export const chargeTypes = [
+  { value: "por_hora", label: "Por espacio / hora" },
+  { value: "por_persona", label: "Por persona" },
+] as const;
+export type ChargeType = (typeof chargeTypes)[number]["value"];
+
+export const qrTypes = [
+  { value: "grupal", label: "Un QR por reserva" },
+  { value: "individual", label: "Un QR por persona" },
+] as const;
+export type QrType = (typeof qrTypes)[number]["value"];
+
+/** Card illustrations available in globals.css (`service-art-<value>`). */
+export const serviceIcons = [
+  { value: "court", label: "Cancha" },
+  { value: "football", label: "Fútbol" },
+  { value: "micro", label: "Microfútbol" },
+  { value: "water", label: "Piscina" },
+  { value: "waves", label: "Olas" },
+  { value: "slides", label: "Toboganes" },
+  { value: "kids", label: "Infantil" },
+  { value: "fitness", label: "Gimnasio" },
+  { value: "wellness", label: "Bienestar" },
+] as const;
+export type ServiceIcon = (typeof serviceIcons)[number]["value"];
+
 /** Each service is an individual bookable instance (e.g. "Cancha 1") with its own calendar. */
 export interface Service {
   id: string;
@@ -19,12 +45,17 @@ export interface Service {
   description: string;
   imageUrl: string;
   price: number;
-  durationMinutes: number;
-  /** 1 for individual bookings, greater than 1 for collective capacity. */
+  /** Spaces per slot when charged per hour, or spots per slot when charged per person. */
   capacity: number;
+  /** Maximum people allowed in a single booking. */
+  capacityPeople: number;
+  chargeType: ChargeType;
+  qrType: QrType;
   operatingDays: WeekDay[];
+  icon: ServiceIcon;
+  /** Short highlight shown on the catalog card. */
+  tag: string;
   isActive: boolean;
-  createdAt: Date;
 }
 
-export type ServiceInput = Omit<Service, "id" | "isActive" | "createdAt">;
+export type ServiceInput = Omit<Service, "id" | "isActive">;
