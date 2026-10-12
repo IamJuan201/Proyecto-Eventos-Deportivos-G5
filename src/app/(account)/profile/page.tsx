@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/features/auth/lib/session";
 import { getProfile } from "@/features/auth/services/account.service";
 import { ChangePasswordForm } from "@/features/auth/components/change-password-form";
+import { ChangeEmailForm, EditProfileForm } from "@/features/auth/components/edit-profile-form";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 import { getLocale } from "@/shared/i18n/locale.server";
 import { translate } from "@/shared/i18n/messages";
@@ -19,6 +20,7 @@ export default async function ProfilePage() {
   const rows = [
     { label: "Nombre", value: profile.fullName },
     { label: "Correo", value: profile.email },
+    ...(profile.role === "cliente" ? [{ label: "Documento", value: profile.documentNumber ?? t("Sin registrar") }] : []),
     { label: "Rol", value: t(ROLE_LABELS[profile.role] ?? profile.role) },
     ...(profile.serviceName ? [{ label: "Servicio asignado", value: t(profile.serviceName) }] : []),
     { label: "Acceso con", value: t(PROVIDER_LABELS[profile.provider] ?? profile.provider) },
@@ -27,7 +29,7 @@ export default async function ProfilePage() {
   ];
   return (
     <main className="club-container profile-wrap">
-      <section className="page-heading compact-page-heading"><span className="eyebrow">{t("TU CUENTA")}</span><h1>{t("Mi perfil.")}</h1><p>{t("Consulta tus datos, cambia tu contraseña o cierra tu sesión.")}</p></section>
+      <section className="page-heading compact-page-heading"><span className="eyebrow">{t("TU CUENTA")}</span><h1>{t("Mi perfil.")}</h1><p>{t("Consulta y edita tus datos, cambia tu contraseña o cierra tu sesión.")}</p></section>
       <div className="profile-layout">
         <section className="glass-panel profile-card" aria-labelledby="profile-data-title">
           <div className="profile-identity"><span className="profile-avatar" aria-hidden="true">{profile.fullName.trim().charAt(0).toUpperCase()}</span><div><h2 id="profile-data-title">{profile.fullName}</h2><small>{profile.email}</small></div></div>
@@ -35,6 +37,13 @@ export default async function ProfilePage() {
             {rows.map((row) => <div key={row.label}><dt>{t(row.label)}</dt><dd>{row.value}</dd></div>)}
           </dl>
           <LogoutButton />
+        </section>
+        <section className="glass-panel profile-card" aria-labelledby="profile-edit-title">
+          <h2 id="profile-edit-title">{t("Editar datos")}</h2>
+          <EditProfileForm fullName={profile.fullName} documentNumber={profile.documentNumber} showDocument={profile.role === "cliente"} />
+          <h3 className="profile-subtitle">{t("Cambiar correo")}</h3>
+          <p className="profile-hint">{t("Te enviaremos un enlace al correo nuevo. Hasta que lo abras, seguirás entrando con el actual.")}</p>
+          <ChangeEmailForm email={profile.email} hasPassword={profile.hasPassword} />
         </section>
         <section className="glass-panel profile-card" aria-labelledby="profile-password-title">
           <h2 id="profile-password-title">{t(profile.hasPassword ? "Cambiar contraseña" : "Crear una contraseña")}</h2>

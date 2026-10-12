@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import type { EstadoReserva, Prisma } from "@/generated/prisma/client";
+import { DOCUMENT_TAKEN, INVALID_DOCUMENT, isValidDocument, normalizeDocument } from "@/features/auth/lib/document";
 import { sendReservationQrEmail } from "@/features/payments/services/qr-mail.service";
 import { isClosedOn, isHoliday } from "@/features/schedules/services/closure.service";
 import { serviceService } from "@/features/services/services/service.service";
@@ -118,8 +119,6 @@ export async function createReservation(input: {
   idNumber: string; acceptedTerms: boolean; containsMinor: boolean; responsibleAdult: string;
 }): Promise<string> {
   if (!input.acceptedTerms) throw new Error("Acepta los términos para continuar.");
-  const idNumber = input.idNumber.trim();
-  if (idNumber.length < 5 || idNumber.length > 30) throw new Error("Revisa el número de documento.");
   const responsibleAdult = input.responsibleAdult.trim();
   if (input.containsMinor && (responsibleAdult.length < 3 || responsibleAdult.length > 120)) throw new Error("Indica el nombre del adulto responsable de los menores.");
   const service = await serviceService.getById(input.serviceId);
@@ -143,8 +142,12 @@ export async function createReservation(input: {
       // Serializes bookings of the same service and day so the last spot cannot be sold twice.
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${service.id + input.date}))`;
       const client = await tx.usuario.findUniqueOrThrow({ where: { id: input.userId } });
-      if (client.cedula && client.cedula !== idNumber) throw new Error("El documento no coincide con el registrado en tu cuenta.");
-      if (!client.cedula) await tx.usuario.update({ where: { id: client.id }, data: { cedula: idNumber } });
+      // The document registered on the account is the one used; it is asked here only for older accounts without one.
+      if (!client.cedula) {
+        const idNumber = normalizeDocument(input.idNumber);
+        if (!isValidDocument(idNumber)) throw new Error(INVALID_DOCUMENT);
+        await tx.usuario.update({ where: { id: client.id }, data: { cedula: idNumber } });
+      }
       const now = new Date();
       const sameSlot = { fecha: toDbDate(input.date), ...overlapping(input.time, endTime), AND: [blocking(now)] } satisfies Prisma.ReservaWhereInput;
       if (await tx.reserva.count({ where: { ...sameSlot, clienteId: client.id } })) throw new Error("Ya tienes una reserva activa en ese horario.");
@@ -163,7 +166,7 @@ export async function createReservation(input: {
       return booking.id;
     });
   } catch (error) {
-    if (isPrismaError(error, "P2002")) throw new Error("Ese documento ya está registrado en otra cuenta.");
+    if (isPrismaError(error, "P2002")) throw new Error(DOCUMENT_TAKEN);
     throw error;
   }
 }

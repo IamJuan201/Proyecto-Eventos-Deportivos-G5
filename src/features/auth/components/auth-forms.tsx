@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition, type FormEvent } from 'react';
 import { authService, AuthError, safeNextPath } from '@/features/auth/services/auth.service';
 import { OAuthButtons } from '@/features/auth/components/OAuthButtons';
-import { useTranslate } from '@/shared/i18n/locale-provider';
+import { useLocale, useTranslate } from '@/shared/i18n/locale-provider';
 import { PasswordInput } from '@/shared/components/password-input';
 import { TurnstileWidget, getTurnstileSiteKey, isTurnstileWidgetEnabled } from '@/features/auth/components/turnstile-widget';
 
@@ -49,8 +49,11 @@ export function LoginForm({ nextPath = '/', oauthError = false }: { nextPath?: s
   </form><OAuthDivider label={t('O continuar con')} /><OAuthButtons nextPath={safeNextPath(nextPath)} /></div>;
 }
 
+const TERMS_URL = 'https://policies.google.com/terms';
+
 export function RegisterForm({ nextPath = '/' }: { nextPath?: string }) {
   const t = useTranslate();
+  const { locale } = useLocale();
   const router = useRouter();
   const [error, setError] = useState('');
   const [pending, startTransition] = useTransition();
@@ -63,7 +66,7 @@ export function RegisterForm({ nextPath = '/' }: { nextPath?: string }) {
     if (password !== String(form.get('confirm-password'))) { setError(t('Las contraseñas no coinciden.')); return; }
     if (captchaEnabled && !turnstileToken) { setError(t('Completa la verificación de seguridad.')); return; }
     try {
-      const user = await authService.register({ fullName: String(form.get('name')), email: String(form.get('email')), password, turnstileToken: turnstileToken || undefined }, nextPath);
+      const user = await authService.register({ fullName: String(form.get('name')), email: String(form.get('email')), documentNumber: String(form.get('documentNumber')), password, acceptedTerms: form.get('acceptedTerms') === 'on', turnstileToken: turnstileToken || undefined }, nextPath);
       if (user.emailConfirmationRequired) {
         const destination = `/verify-email?email=${encodeURIComponent(user.email)}&reason=register&next=${encodeURIComponent(safeNextPath(nextPath))}`;
         startTransition(() => { router.replace(destination); });
@@ -74,10 +77,11 @@ export function RegisterForm({ nextPath = '/' }: { nextPath?: string }) {
   }
   return <div className="space-y-6"><form className="space-y-4" onSubmit={submit}>
     <label className="block text-sm font-medium text-sport-text">{t('Nombre completo')}<input className="club-input mt-2" name="name" autoComplete="name" required minLength={3} placeholder={t('Juan Pérez')} /></label>
+    <label className="block text-sm font-medium text-sport-text">{t('Número de documento')}<input className="club-input mt-2" name="documentNumber" autoComplete="off" required minLength={5} maxLength={30} pattern="[A-Za-z0-9.\- ]{5,30}" title={t('Escribe un número de documento válido (5 a 20 letras o números).')} placeholder={t('Cédula o pasaporte')} /><small className="field-hint">{t('Lo usamos para identificar tus reservas y pagos.')}</small></label>
     <label className="block text-sm font-medium text-sport-text">{t('Correo electrónico')}<input className="club-input mt-2" name="email" type="email" autoComplete="email" required placeholder={t('ejemplo@correo.com')} /></label>
     <label className="block text-sm font-medium text-sport-text">{t('Contraseña')}<PasswordInput className="club-input" wrapperClassName="mt-2" name="password" autoComplete="new-password" required minLength={8} placeholder={t('Mínimo 8 caracteres')} /></label>
     <label className="block text-sm font-medium text-sport-text">{t('Confirmar contraseña')}<PasswordInput className="club-input" wrapperClassName="mt-2" name="confirm-password" autoComplete="new-password" required minLength={8} /></label>
-    <label className="flex items-start gap-3 text-sm text-sport-muted"><input className="mt-1 accent-sport-emerald" type="checkbox" required />{t('Acepto los términos del servicio y la política de privacidad.')}</label>
+    <label className="flex items-start gap-3 text-sm text-sport-muted"><input className="mt-1 accent-sport-emerald" type="checkbox" name="acceptedTerms" required /><span>{t('Acepto los')} <a className="auth-terms-link" href={`${TERMS_URL}?hl=${locale}`} target="_blank" rel="noopener noreferrer">{t('términos y condiciones')}<span className="sr-only"> {t('(se abre en una pestaña nueva)')}</span></a>.</span></label>
     {captchaEnabled && <TurnstileWidget siteKey={getTurnstileSiteKey()} onVerify={setTurnstileToken} onExpire={() => setTurnstileToken('')} />}
     {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
     <button className="club-button w-full" type="submit" disabled={pending}>{pending ? t('Creando cuenta…') : t('Crear cuenta')}</button>

@@ -89,7 +89,7 @@ export async function requireAdmin(): Promise<AppUser> {
   return user;
 }
 
-export async function registerAccount(input: { fullName: string; email: string; password: string }) {
+export async function registerAccount(input: { fullName: string; email: string; password: string; documentNumber: string }) {
   if (input.password.length < 8) throw new Error("La contraseña debe tener al menos 8 caracteres.");
-  return createUser({ fullName: input.fullName, email: input.email, passwordHash: await hashPassword(input.password) });
+  return createUser({ fullName: input.fullName, email: input.email, documentNumber: input.documentNumber, passwordHash: await hashPassword(input.password) });
 }
