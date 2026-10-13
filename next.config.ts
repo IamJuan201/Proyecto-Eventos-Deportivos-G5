@@ -11,6 +11,8 @@ const extraOrigins = (process.env.ALLOWED_ACTION_ORIGINS ?? "")
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Minimal self-contained server in .next/standalone, used by the Docker image.
+  output: "standalone",
   devIndicators: false,
   reactCompiler: true,
   allowedDevOrigins: [...tunnelOrigins, ...extraOrigins],

@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      target: runner
+      secrets:
+        - env
+    image: eventos-deportivos-g5:latest
+    container_name: eventos-deportivos-g5
+    env_file: .env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  # Runs only on demand: docker compose --profile tools run --rm migrate
+  migrate:
+    build:
+      context: .
+      target: migrate
+      secrets:
+        - env
+    env_file: .env
+    profiles: ["tools"]
+
+secrets:
+  env:
+    file: .env
