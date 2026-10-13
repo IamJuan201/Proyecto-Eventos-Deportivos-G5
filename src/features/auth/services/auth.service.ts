@@ -9,7 +9,9 @@ export type LoginCredentials = {
 export type RegisterData = {
   fullName: string;
   email: string;
+  documentNumber: string;
   password: string;
+  acceptedTerms: boolean;
   turnstileToken?: string;
 };
 
@@ -79,6 +81,7 @@ async function toAuthError(response: Response, fallback: string): Promise<AuthEr
 export const authService = {
   async loginWithOAuth(provider: "google" | "github", nextPath = "/"): Promise<void> {
     const supabase = createSupabaseBrowserClient();
+    // Supabase Redirect URLs must allow <origin>/api/auth/callback** (the ** accepts the ?next= query).
     const callback = new URL("/api/auth/callback", window.location.origin);
     callback.searchParams.set("next", safeNextPath(nextPath));
     const { error } = await supabase.auth.signInWithOAuth({
