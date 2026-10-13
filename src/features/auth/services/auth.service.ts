@@ -81,11 +81,12 @@ async function toAuthError(response: Response, fallback: string): Promise<AuthEr
 export const authService = {
   async loginWithOAuth(provider: "google" | "github", nextPath = "/"): Promise<void> {
     const supabase = createSupabaseBrowserClient();
+    // Supabase Redirect URLs must allow <origin>/api/auth/callback** (the ** accepts the ?next= query).
     const callback = new URL("/api/auth/callback", window.location.origin);
     callback.searchParams.set("next", safeNextPath(nextPath));
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: callback.toString() },
     });
     if (error) throw new Error(error.message);
   },
