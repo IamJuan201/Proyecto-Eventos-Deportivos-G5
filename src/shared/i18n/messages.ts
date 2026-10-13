@@ -94,6 +94,7 @@ const english: Record<string, string> = {
   "Acepta los términos y condiciones para crear tu cuenta.": "Accept the terms and conditions to create your account.",
   "¿Primera vez en Élite Club?": "New to Élite Club?",
   "Inicia sesión para reservar": "Log in to book",
+  "Iniciar sesión para reservar": "Log in to book",
   "Ir a mi panel": "Go to my dashboard",
   "Continuar al pago": "Continue to payment",
   "Completar pago": "Complete payment",
