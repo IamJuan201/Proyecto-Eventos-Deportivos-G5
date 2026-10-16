@@ -1,7 +1,7 @@
 import { createClosureAction, deleteClosureAction } from "@/features/schedules/api/schedule.actions";
 import { requireAdmin } from "@/features/auth/lib/session";
 import { AdminTabs } from "@/shared/components/admin-tabs";
-import { closureTypes, listActiveClosures } from "@/features/schedules/services/closure.service";
+import { closureTypes, isHoliday, listActiveClosures } from "@/features/schedules/services/closure.service";
 import { serviceService } from "@/features/services/services/service.service";
 import { getLocale } from "@/shared/i18n/locale.server";
 import { translate } from "@/shared/i18n/messages";
@@ -23,9 +23,10 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
     const value = date.toISOString().slice(0, 10);
     return { value, weekday: dayOfWeek(value) as WeekDay, dayNumber: value.slice(-2) };
   });
+  const holidays = new Set((await Promise.all(visibleDates.map(async ({ value }) => (await isHoliday(value)) ? value : null))).filter((value): value is string => value !== null));
   return (
     <main className="club-container admin-wrap">
-      <section className="page-heading compact-page-heading"><span className="eyebrow">{t("AGENDA DEL COMPLEJO")}</span><h1>{t("Horarios y cierres.")}</h1><p>{t("El horario de atención es de 8:00 a. m. a 5:00 p. m. Los lunes permanecen cerrados; registra aquí mantenimientos y fechas especiales.")}</p></section>
+      <section className="page-heading compact-page-heading"><span className="eyebrow">{t("AGENDA DEL COMPLEJO")}</span><h1>{t("Horarios y cierres.")}</h1><p>{t("El horario de atención es de 8:00 a. m. a 5:00 p. m. Los festivos registrados y los cierres que programes bloquean las reservas.")}</p></section>
       <AdminTabs active="/admin/schedules" />
       <div className="admin-layout schedule-layout">
         <section className="glass-panel admin-list"><div className="admin-list-heading"><div><h2>{t("Horarios por servicio")}</h2><p>{t("Turnos disponibles de una hora")}</p></div><div className="schedule-clock"><small>{t("Horario del complejo")}</small><strong>08:00 — 17:00</strong></div></div>
@@ -40,10 +41,10 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
                 <span className={`schedule-active-state ${isUnavailable ? "is-inactive" : ""}`}><i aria-hidden="true" />{t(currentClosure ? "Inactivo por cierre" : service.isActive ? "Activo" : "Servicio inactivo")}</span>
                 <span className="schedule-days" aria-label={t("Disponibilidad de los próximos siete días")}>{visibleDates.map(({ value, weekday, dayNumber }) => {
                   const closure = serviceClosures.find((item) => item.from <= value && item.to >= value);
-                  const closedByRule = weekday === 1;
-                  const isOpen = service.isActive && !closedByRule && !closure && service.operatingDays.includes(weekday);
+                  const holiday = holidays.has(value);
+                  const isOpen = service.isActive && !holiday && !closure && service.operatingDays.includes(weekday);
                   const dayClass = isOpen ? "is-open" : `is-closed${closure ? " is-closure-day" : ""}`;
-                  const dayTitle = closure ? `${t("Inactivo por cierre")}: ${t(closure.reason)}` : isOpen ? "Disponible" : closedByRule ? "Cerrado todos los lunes" : service.isActive ? "No opera este día" : "Servicio inactivo";
+                  const dayTitle = closure ? `${t("Inactivo por cierre")}: ${t(closure.reason)}` : holiday ? "Festivo" : isOpen ? "Disponible" : service.isActive ? "No opera este día" : "Servicio inactivo";
                   return <span className={dayClass} key={value} title={`${t(weekdays[weekday])} ${dayNumber}: ${t(dayTitle)}`}><b>{t(weekdays[weekday]).slice(0, 2)}</b><small>{dayNumber}</small></span>;
                 })}</span>
                 {nextClosure && <span className={`schedule-closure-note ${currentClosure ? "is-current" : ""}`}><strong>{t(currentClosure ? "Inactivo hasta" : "Próximo cierre")}</strong> {currentClosure ? currentClosure.to : `${nextClosure.from} — ${nextClosure.to}`} · {t(nextClosure.reason)}</span>}
@@ -66,7 +67,7 @@ export default async function SchedulesPage({ searchParams }: { searchParams: Pr
           const closureState = closure.from <= today && closure.to >= today ? "Inactivo ahora" : closure.from > today ? "Programado" : "Finalizado";
           const stateClass = closureState === "Finalizado" ? "is-past" : closureState === "Programado" ? "is-scheduled" : "is-current";
           return <article className="schedule-row closure-row" key={closure.id}><div className="closure-copy"><strong>{t(closure.reason)}</strong><small>{t(closure.serviceName ?? "Todo el complejo")} · {t(closureTypes.find((type) => type.value === closure.type)?.label ?? "")}</small></div><div className="closure-date-state"><span className={`closure-state ${stateClass}`}>{t(closureState)}</span><span className="closure-dates">{closure.from} — {closure.to}</span></div><form action={deleteClosureAction}><input type="hidden" name="id" value={closure.id} /><button type="submit" className="small-link">{t("Eliminar cierre")}</button></form></article>;
-        }) : <div className="empty-state">{t("No hay cierres adicionales. Los lunes ya están bloqueados por regla del complejo.")}</div>}
+        }) : <div className="empty-state">{t("No hay cierres registrados. Los festivos se bloquean según el calendario de Colombia.")}</div>}
       </section>
     </main>
   );
