@@ -14,7 +14,6 @@ export const TERMS_VERSION = "2026-10-01";
 const PAYMENT_WINDOW_MS = 10 * 60_000;
 /** One-hour slots from 08:00 to 16:00 (the complex closes at 17:00). */
 const SLOT_HOURS = Array.from({ length: 9 }, (_, index) => 8 + index);
-const MONDAY = 1;
 
 export interface ReservationView {
   id: string;
@@ -86,7 +85,7 @@ export const expireStaleReservations = () => expireStale({});
 
 const opensOn = (service: Service, date: string) => {
   const day = dayOfWeek(date);
-  return day !== MONDAY && service.operatingDays.some((operatingDay) => operatingDay === day);
+  return service.operatingDays.some((operatingDay) => operatingDay === day);
 };
 
 async function isBookableDay(service: Service, date: string) {

@@ -63,7 +63,7 @@ export function BookingForm({ service, minDate, maxDate, documentNumber }: { ser
       <div className="booking-field">
         <label htmlFor="booking-date">{t("Fecha de tu visita")}</label>
         <input id="booking-date" className="club-input" name="date" type="date" min={minDate} max={maxDate} value={date} onChange={(event) => setDate(event.target.value)} required />
-        <small className="field-hint">{t("Reserva hasta 15 días antes. El complejo cierra los lunes y los festivos.")}</small>
+        <small className="field-hint">{t("Reserva hasta 15 días antes. Los festivos registrados y los cierres programados no están disponibles.")}</small>
       </div>
 
       <div className="booking-field">
