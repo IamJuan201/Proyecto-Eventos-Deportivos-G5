@@ -40,7 +40,7 @@ export default async function ServiceDetailPage({ params }: PageProps<"/services
           <p className="detail-description">{t(service.description)}</p>
           <div className="detail-facts"><span>{t(service.chargeType === "por_persona" ? "Cobro por persona" : "Cobro por hora")}</span><span>{t(service.qrType === "individual" ? "Un QR por persona" : "Un QR por reserva")}</span><span>{t("Turnos de una hora")}</span></div>
           <div className="detail-price-block"><div><small>{t("DESDE")}</small><strong>{money(service.price)}</strong><span> / {t(service.chargeType === "por_persona" ? "persona" : "hora")}</span></div><div><small>{t("DISPONIBILIDAD")}</small><strong>{service.capacity}</strong><span> {t(service.chargeType === "por_persona" ? "cupos" : "espacios por turno")}</span></div></div>
-          <div className="detail-note"><p>{t("Los lunes el complejo cierra por mantenimiento. Las reservas incluyen un QR digital válido durante el turno elegido.")}</p></div>
+          <div className="detail-note"><p>{t("Las reservas incluyen un QR digital válido durante el turno elegido.")}</p></div>
         </section>
         <section className="glass-panel detail-panel booking-panel" aria-labelledby="booking-title">
           <div className="booking-heading"><span className="eyebrow">{t("RESERVA TU TURNO")}</span><h2 id="booking-title">{t("Arma tu plan.")}</h2></div>
