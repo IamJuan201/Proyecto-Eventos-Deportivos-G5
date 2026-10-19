@@ -4,15 +4,21 @@ import { startSession } from "@/features/auth/lib/session";
 import { createUser, findUserByEmail } from "@/features/auth/services/user.service";
 
 export async function GET(request: NextRequest) {
+  // APP_URL is the public origin behind reverse proxies. request.url may contain
+  // the container address (for example, http://0.0.0.0:3000) instead.
+  const publicOrigin = process.env.APP_URL
+    ? new URL(process.env.APP_URL).origin
+    : request.nextUrl.origin;
+  const redirectTo = (path: string) => NextResponse.redirect(new URL(path, publicOrigin));
   const code = request.nextUrl.searchParams.get("code");
   const requestedPath = request.nextUrl.searchParams.get("next");
   const nextPath = requestedPath?.startsWith("/") && !requestedPath.startsWith("//") ? requestedPath : "/";
-  if (!code) return NextResponse.redirect(new URL("/login?error=oauth", request.url));
+  if (!code) return redirectTo("/login?error=oauth");
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) return NextResponse.redirect(new URL("/login?error=oauth", request.url));
+  if (error) return redirectTo("/login?error=oauth");
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user?.email) return NextResponse.redirect(new URL("/login?error=oauth", request.url));
+  if (!user?.email) return redirectTo("/login?error=oauth");
   let localUserId = (await findUserByEmail(user.email))?.id;
   if (!localUserId) {
     try {
@@ -22,7 +28,7 @@ export async function GET(request: NextRequest) {
       localUserId = (await findUserByEmail(user.email))?.id;
     }
   }
-  if (!localUserId) return NextResponse.redirect(new URL("/login?error=oauth", request.url));
+  if (!localUserId) return redirectTo("/login?error=oauth");
   await startSession(localUserId);
-  return NextResponse.redirect(new URL(nextPath, request.url));
+  return redirectTo(nextPath);
 }
