@@ -14,11 +14,10 @@ export async function GET(request: NextRequest) {
   const requestedPath = request.nextUrl.searchParams.get("next");
   const nextPath = requestedPath?.startsWith("/") && !requestedPath.startsWith("//") ? requestedPath : "/";
   if (!code) return redirectTo("/login?error=oauth");
-  const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) return redirectTo("/login?error=oauth");
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user?.email) return redirectTo("/login?error=oauth");
+  // Supabase is only used to verify the OAuth code; startSession issues the app cookie.
+  const supabase = await createSupabaseServerClient({ persistSession: false });
+  const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error || !user?.email) return redirectTo("/login?error=oauth");
   let localUserId = (await findUserByEmail(user.email))?.id;
   if (!localUserId) {
     try {
